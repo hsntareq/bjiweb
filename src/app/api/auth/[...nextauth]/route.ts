@@ -1,8 +1,13 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
     CredentialsProvider({
       name: "Email",
       credentials: {
@@ -61,8 +66,25 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt" as const,
   },
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
+    async jwt({ token, user, account }) {
+      if (account?.provider === "google" && user?.email) {
+        // Exchange Google identity for a backend JWT
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/google`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              googleId: account.providerAccountId,
+              email: user.email,
+            }),
+          }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          token.accessToken = data.access_token;
+        }
+      } else if (user) {
         token.accessToken = (user as any).accessToken;
       }
       return token;
