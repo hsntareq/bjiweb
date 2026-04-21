@@ -2,6 +2,7 @@ import { ChevronRight, Clock, Package, ShoppingCart, TrendingUp } from "lucide-r
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "../api/auth/[...nextauth]/route";
+import PersonalReportFormWrapper from "./personal-report-form-wrapper";
 import SignOutButton from "./sign-out-button";
 
 const stats = [
@@ -61,6 +62,9 @@ export default async function DashboardPage() {
 						</div>
 					))}
 				</div>
+
+				{/* Personal Report Form */}
+				<PersonalReportFormWrapper />
 
 				{/* Quick actions */}
 				<div className="grid md:grid-cols-2 gap-4">
