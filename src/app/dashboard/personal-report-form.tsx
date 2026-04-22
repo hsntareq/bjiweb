@@ -161,9 +161,9 @@ function Toggle({ checked, onChange, label, isEdited }: { checked: boolean; onCh
 		<button
 			type="button"
 			onClick={onChange}
-			className={`relative flex items-center justify-between w-full px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border transition-all text-xs sm:text-sm font-medium ${checked
-				? "bg-indigo-50 border-indigo-300 text-indigo-700"
-				: "bg-white border-gray-200 text-gray-500 hover:border-gray-300"
+			className={`relative flex items-center justify-between w-full px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border transition-all duration-300 text-xs sm:text-sm font-medium shadow-sm hover:shadow-md hover:-translate-y-0.5 ${checked
+				? "bg-gradient-to-r from-indigo-50 to-violet-50 border-indigo-200 text-indigo-700"
+				: "bg-white border-gray-200 text-gray-600 hover:border-gray-300"
 				}`}
 		>
 			{isEdited && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>}
@@ -212,14 +212,14 @@ function NumberField({
 					const clampedValue = Number.isFinite(numericValue) ? Math.max(0, numericValue) : 0;
 					onChange(name, typeof max === "number" ? Math.min(max, clampedValue) : clampedValue);
 				}}
-				className="border border-gray-200 rounded-lg px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 text-center focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition bg-white"
+				className="w-full border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm hover:border-gray-300 bg-white/50 focus:bg-white"
 			/>
 		</div>
 	);
 }
 
 function SectionTitle({ title }: { title: string }) {
-	return <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mt-2 mb-2">{title}</h3>;
+	return <h3 className="text-xs font-bold uppercase tracking-widest text-indigo-400/80 mt-3 mb-3 flex items-center gap-2"><span className="w-4 h-px bg-indigo-200"></span>{title}<span className="flex-1 h-px bg-indigo-100/50"></span></h3>;
 }
 
 export default function PersonalReportForm({
@@ -251,10 +251,11 @@ export default function PersonalReportForm({
 	const [, setTick] = useState(0);
 	const [lastLoadedDate, setLastLoadedDate] = useState<string | null>(null);
 
-	const liveTimerMs = timerStartedAt ? Math.max(0, Date.now() - timerStartedAt) : 0;
+	const isToday = date === toDateStr(new Date());
+	const liveTimerMs = (isToday && timerStartedAt) ? Math.max(0, Date.now() - timerStartedAt) : 0;
 	const timerSeconds = Math.floor(liveTimerMs / 1000);
 	const totalOrgWorkSeconds = Math.min(23 * 3600 + 59 * 60 + 59, Math.max(0, manualOrgWorkSeconds + timerSeconds));
-	const timerRunning = timerStartedAt != null;
+	const timerRunning = isToday && timerStartedAt != null;
 
 	// When defaultData changes (from parent), update the form
 	useEffect(() => {
@@ -281,13 +282,17 @@ export default function PersonalReportForm({
 				reportKeeping: Boolean(converted.reportKeeping),
 				selfCriticism: Boolean(converted.selfCriticism),
 			};
-			setTimerStartedAt(nextForm.orgWorkStartedAt ? new Date(nextForm.orgWorkStartedAt).getTime() : null);
+			const newTimerStartedAt = nextForm.orgWorkStartedAt ? new Date(nextForm.orgWorkStartedAt).getTime() : null;
+			setTimerStartedAt(newTimerStartedAt);
 			const baseSeconds = Math.min(
 				23 * 3600 + 59 * 60 + 59,
 				Math.max(0, nextForm.orgWorkHours * 3600 + nextForm.orgWorkMinutes * 60 + nextForm.orgWorkSeconds),
 			);
 			setManualOrgWorkSeconds(baseSeconds);
-			const mergedSeconds = Math.min(23 * 3600 + 59 * 60 + 59, baseSeconds + timerSeconds);
+			
+			const newLiveTimerMs = newTimerStartedAt ? Math.max(0, Date.now() - newTimerStartedAt) : 0;
+			const newTimerSeconds = Math.floor(newLiveTimerMs / 1000);
+			const mergedSeconds = Math.min(23 * 3600 + 59 * 60 + 59, baseSeconds + newTimerSeconds);
 
 			if (lastLoadedDate !== date) {
 				setForm({
@@ -361,7 +366,7 @@ export default function PersonalReportForm({
 			23 * 3600 + 59 * 60 + 59,
 			Math.max(0, originalForm.orgWorkHours * 3600 + originalForm.orgWorkMinutes * 60 + originalForm.orgWorkSeconds)
 		);
-		return manualOrgWorkSeconds !== originalBaseSeconds;
+		return totalOrgWorkSeconds !== originalBaseSeconds;
 	};
 
 	const isDirty = (() => {
@@ -445,7 +450,6 @@ export default function PersonalReportForm({
 		handleDateSwitch(toDateStr(d));
 	}
 
-	const isToday = date === toDateStr(new Date());
 	const timerDisplay = formatDurationWithSeconds(liveTimerMs);
 
 	function handleSubmit(e: React.FormEvent) {
@@ -473,8 +477,8 @@ export default function PersonalReportForm({
 	}
 
 	return (
-		<div className="max-w-2xl mx-auto my-8">
-			<form onSubmit={handleSubmit} className="relative bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+		<div className="max-w-2xl mx-auto my-8 sm:my-12">
+			<form onSubmit={handleSubmit} className="relative bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/50 overflow-hidden ring-1 ring-black/5 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
 				{/* Overlay Loader */}
 				{(defaultData === undefined || submitting) && (
 					<div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[2px] flex items-center justify-center">
@@ -482,18 +486,18 @@ export default function PersonalReportForm({
 					</div>
 				)}
 				{/* Form Header with date navigation */}
-				<div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gray-50">
-					<div className="text-center mb-3">
-						<p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{t.dailyReport}</p>
-						<p className="text-base font-bold text-gray-800">{formatDisplayDate(date)}</p>
+				<div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-indigo-100/50 bg-gradient-to-r from-indigo-50/50 to-violet-50/50">
+					<div className="text-center mb-4">
+						<p className="text-[11px] text-indigo-500/80 font-bold uppercase tracking-widest mb-1">{t.dailyReport}</p>
+						<p className="text-lg sm:text-xl font-black text-gray-800 tracking-tight">{formatDisplayDate(date)}</p>
 					</div>
-					<div className="grid grid-cols-1 sm:grid-cols-2 items-start gap-3 sm:gap-4">
+					<div className="grid grid-cols-1 sm:grid-cols-2 items-center gap-3 sm:gap-4">
 						<div className="flex flex-col items-center sm:items-start gap-1 w-full">
-							<div className="flex items-center gap-2 justify-center sm:justify-start w-full">
+							<div className="flex items-center gap-1.5 sm:gap-2 justify-center sm:justify-start w-full">
 								<button
 									type="button"
 									onClick={() => shiftDate(-1)}
-									className="w-8 h-8 flex items-center justify-center rounded-lg border border-indigo-200 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition text-lg leading-none flex-shrink-0"
+									className="w-10 h-10 flex items-center justify-center rounded-xl border border-indigo-200 text-indigo-700 bg-white hover:bg-indigo-50 transition-all hover:scale-105 active:scale-95 shadow-sm text-xl leading-none flex-shrink-0"
 									aria-label={t.previousDay}
 								>
 									‹
@@ -503,22 +507,22 @@ export default function PersonalReportForm({
 									value={date}
 									max={toDateStr(new Date())}
 									onChange={(e) => handleDateSwitch(e.target.value)}
-									className="flex-1 sm:flex-none text-center text-sm border border-indigo-200 rounded-lg px-2 py-1.5 text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition bg-indigo-50"
+									className="flex-1 sm:flex-none h-10 text-center text-sm font-medium border border-indigo-200 rounded-xl px-2 py-1 text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white shadow-sm"
 								/>
 								<button
 									type="button"
 									onClick={() => shiftDate(1)}
 									disabled={isToday}
-									className="w-8 h-8 flex items-center justify-center rounded-lg border border-indigo-200 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition text-lg leading-none disabled:opacity-30 disabled:cursor-not-allowed flex-shrink-0"
+									className="w-10 h-10 flex items-center justify-center rounded-xl border border-indigo-200 text-indigo-700 bg-white hover:bg-indigo-50 transition-all hover:scale-105 active:scale-95 shadow-sm text-xl leading-none disabled:opacity-40 disabled:hover:scale-100 disabled:cursor-not-allowed flex-shrink-0"
 									aria-label={t.nextDay}
 								>
 									›
 								</button>
 								<button
 									type="button"
-									onClick={() => onDateChange(toDateStr(new Date()))}
+									onClick={() => handleDateSwitch(toDateStr(new Date()))}
 									disabled={isToday}
-									className="text-[11px] px-2 py-1 h-8 rounded-md border border-indigo-200 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 disabled:opacity-30 disabled:cursor-not-allowed font-medium transition-colors ml-1"
+									className="text-[11px] px-3 h-10 rounded-xl border border-indigo-200 text-indigo-700 bg-white hover:bg-indigo-50 disabled:opacity-40 disabled:cursor-not-allowed font-semibold tracking-wide uppercase transition-all shadow-sm flex items-center justify-center"
 								>
 									{t.today}
 								</button>
@@ -530,11 +534,14 @@ export default function PersonalReportForm({
 								type="button"
 								onClick={timerRunning ? pauseOrgWorkTimer : startOrgWorkTimer}
 								disabled={!isToday || timerSubmitting}
-								className="text-xs px-2 py-1 rounded-lg border border-indigo-200 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 disabled:opacity-50 disabled:cursor-not-allowed leading-tight shrink-0"
+								className={`h-10 px-4 rounded-xl border font-medium transition-all shadow-sm flex-shrink-0 flex items-center justify-center ${timerRunning
+									? "border-red-200 text-red-700 bg-red-50 hover:bg-red-100 animate-pulse"
+									: "border-indigo-200 text-indigo-700 bg-white hover:bg-indigo-50 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5 hover:shadow-md"
+									}`}
 							>
-								<span className="flex flex-col items-center">
-									<span className="font-semibold">{timerDisplay}</span>
-									<span>{timerRunning ? t.pauseTimer : t.startTimer}</span>
+								<span className="flex flex-col items-center justify-center leading-none">
+									<span className="font-bold text-[14px] font-mono tracking-tight">{timerDisplay}</span>
+									<span className="text-[9px] uppercase tracking-wider mt-0.5">{timerRunning ? t.pauseTimer : t.startTimer}</span>
 								</span>
 							</button>
 						</div>
@@ -585,7 +592,7 @@ export default function PersonalReportForm({
 									value={orgWorkInput}
 									onChange={(e) => handleOrgWorkInputChange(e.target.value)}
 									onBlur={normalizeOrgWorkInput}
-									className="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition bg-white text-center"
+									className="w-full border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 text-center font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm hover:border-gray-300 bg-white/50 focus:bg-white"
 									placeholder="hh:mm:ss"
 									aria-label={`${t.orgWork} hh:mm:ss`}
 								/>
@@ -603,13 +610,20 @@ export default function PersonalReportForm({
 					</div>
 				</div>
 
-				<div className="px-4 sm:px-6 pb-4 sm:pb-6">
+				<div className="px-4 sm:px-6 py-4 sm:py-5 border-t border-indigo-50 bg-gray-50/30">
 					<button
 						type="submit"
 						disabled={submitting}
-						className="w-full py-2 sm:py-2.5 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm tracking-wide shadow-sm"
+						className="w-full flex items-center justify-center px-6 py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-sm font-bold uppercase tracking-wide rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:transform-none disabled:shadow-none"
 					>
-						{submitting ? t.saving : t.saveReport}
+						{submitting ? (
+							<span className="flex items-center gap-2">
+								<Loader2 className="w-4 h-4 animate-spin" />
+								{t.saving}
+							</span>
+						) : (
+							t.saveReport
+						)}
 					</button>
 				</div>
 			</form>

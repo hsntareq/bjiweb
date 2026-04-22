@@ -35,6 +35,35 @@ function todayStr() {
 	return `${yyyy}-${mm}-${dd}`;
 }
 
+function isTokenExpired(token: string | null | undefined): boolean {
+	if (!token) return true;
+	try {
+		const parts = token.split(".");
+		if (parts.length !== 3) return false; // Not a JWT (e.g. Google opaque token), assume valid and let backend decide
+		const base64Url = parts[1];
+		if (!base64Url) return false;
+		
+		// Add padding if needed
+		const padding = "=".repeat((4 - (base64Url.length % 4)) % 4);
+		const base64 = (base64Url + padding).replace(/-/g, "+").replace(/_/g, "/");
+		
+		const jsonPayload = decodeURIComponent(
+			atob(base64)
+				.split("")
+				.map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+				.join("")
+		);
+		const payload = JSON.parse(jsonPayload);
+		if (payload && payload.exp) {
+			// Check if token expires within the next 15 seconds
+			return payload.exp * 1000 < Date.now() + 15000;
+		}
+	} catch (e) {
+		return false; // If we can't parse it, assume it's valid and let the backend reject if needed
+	}
+	return false;
+}
+
 export default function PersonalReportFormWrapper() {
 	const [submitting, setSubmitting] = useState(false);
 	const [timerSubmitting, setTimerSubmitting] = useState(false);
@@ -42,7 +71,7 @@ export default function PersonalReportFormWrapper() {
 	const [isDateInitialized, setIsDateInitialized] = useState(false);
 	const [defaultData, setDefaultData] = useState<any | null | undefined>(undefined);
 	const [fallbackToken, setFallbackToken] = useState<string | null>(null);
-	const { data: session } = useSession();
+	const { data: session, status } = useSession();
 	const { locale } = useLocale();
 	const t = WRAPPER_TEXT[locale];
 
@@ -64,8 +93,17 @@ export default function PersonalReportFormWrapper() {
 	}, [session]);
 
 	const getAuthToken = useCallback(async (): Promise<string | null> => {
-		return fallbackToken || ((session as any)?.accessToken as string | undefined) || null;
-	}, [fallbackToken, session]);
+		let token = fallbackToken || ((session as any)?.accessToken as string | undefined) || null;
+		
+		if (session && (!token || isTokenExpired(token))) {
+			const refreshedToken = await refreshBackendToken();
+			if (refreshedToken) {
+				return refreshedToken;
+			}
+		}
+
+		return token;
+	}, [fallbackToken, session, refreshBackendToken]);
 
 	useEffect(() => {
 		try {
@@ -80,11 +118,14 @@ export default function PersonalReportFormWrapper() {
 	}, []);
 
 	useEffect(() => {
-		if (!isDateInitialized) return;
+		if (!isDateInitialized || status === "loading") return;
 
 		async function fetchReport() {
 			const token = await getAuthToken();
-			if (!token) return;
+			if (!token) {
+				setDefaultData(null);
+				return;
+			}
 			try {
 				setDefaultData(undefined);
 				const res = await axios.get(`${API_URL}/personal-report?date=${date}`, {
@@ -111,7 +152,8 @@ export default function PersonalReportFormWrapper() {
 			}
 		}
 		fetchReport();
-	}, [date, getAuthToken, refreshBackendToken, isDateInitialized]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [date, isDateInitialized, status]);
 
 	async function authorizedPost(url: string, data: any) {
 		let token = await getAuthToken();
