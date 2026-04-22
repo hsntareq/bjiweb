@@ -16,12 +16,14 @@ const LocaleContext = createContext<LocaleContextType>({
 
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
 	const [locale, setLocale] = useState<Locale>("en");
+	const [isInitialized, setIsInitialized] = useState(false);
 
 	useEffect(() => {
 		try {
-			const stored = localStorage.getItem("locale");
+			const stored = sessionStorage.getItem("locale");
 			if (stored === "bn" || stored === "en") {
 				setLocale(stored as Locale);
+				setIsInitialized(true);
 				return;
 			}
 		} catch (e) {
@@ -30,15 +32,17 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
 		// default from browser
 		const nav = typeof navigator !== "undefined" ? navigator.language?.slice(0, 2) : "en";
 		setLocale(nav === "bn" ? "bn" : "en");
+		setIsInitialized(true);
 	}, []);
 
 	useEffect(() => {
+		if (!isInitialized) return;
 		try {
-			localStorage.setItem("locale", locale);
+			sessionStorage.setItem("locale", locale);
 		} catch (e) {
 			// ignore
 		}
-	}, [locale]);
+	}, [locale, isInitialized]);
 
 	return <LocaleContext.Provider value={{ locale, setLocale }}>{children}</LocaleContext.Provider>;
 }

@@ -1,7 +1,7 @@
 import { ChevronRight, Clock, Package, ShoppingCart, TrendingUp } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth-options";
 import SignOutButton from "./sign-out-button";
 
 const stats = [

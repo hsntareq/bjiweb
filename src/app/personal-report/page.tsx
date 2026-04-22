@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import LanguageToggle from "../../components/LanguageToggle";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth-options";
 import SignOutButton from "../dashboard/sign-out-button";
 import PersonalReportTabs from "./PersonalReportTabs";
 

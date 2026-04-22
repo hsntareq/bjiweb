@@ -1,4 +1,5 @@
 "use client";
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocale } from "../../lib/locale";
 
@@ -16,6 +17,8 @@ type ReportData = {
 	socialWork: boolean;
 	orgWorkHours: number;
 	orgWorkMinutes: number;
+	orgWorkSeconds: number;
+	orgWorkStartedAt?: string | null;
 	safar: boolean;
 	reportKeeping: boolean;
 	selfCriticism: boolean;
@@ -25,7 +28,7 @@ const emptyReport = (): ReportData => ({
 	quranStudy: false,
 	haditsRead: 0,
 	literature: 0,
-	salahJamaat: 0,
+	salahJamaat: 5,
 	targetContactDawah: 0,
 	targetContactWorker: 0,
 	targetContactMember: 0,
@@ -35,10 +38,26 @@ const emptyReport = (): ReportData => ({
 	socialWork: false,
 	orgWorkHours: 0,
 	orgWorkMinutes: 0,
+	orgWorkSeconds: 0,
 	safar: false,
 	reportKeeping: false,
 	selfCriticism: false,
 });
+
+const MAX_SALAH_JAMAAT = 5;
+
+function normalizeSalahJamaat(value: unknown) {
+	if (typeof value === "boolean") {
+		return value ? 1 : 0;
+	}
+
+	const numericValue = Number(value ?? 0);
+	if (!Number.isFinite(numericValue)) {
+		return 0;
+	}
+
+	return Math.min(MAX_SALAH_JAMAAT, Math.max(0, numericValue));
+}
 
 function toDateStr(d: Date) {
 	const yyyy = d.getFullYear();
@@ -57,10 +76,19 @@ function formatDisplayDate(dateStr: string) {
 	return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
 }
 
-function formatTimeValue(hours: number, minutes: number) {
+function formatTimeValue(hours: number, minutes: number, seconds: number = 0) {
 	const h = String(Math.min(23, Math.max(0, Number(hours) || 0))).padStart(2, "0");
 	const m = String(Math.min(59, Math.max(0, Number(minutes) || 0))).padStart(2, "0");
-	return `${h}:${m}`;
+	const s = String(Math.min(59, Math.max(0, Number(seconds) || 0))).padStart(2, "0");
+	return `${h}:${m}:${s}`;
+}
+
+function formatDurationWithSeconds(ms: number) {
+	const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+	const hours = Math.floor(totalSeconds / 3600);
+	const minutes = Math.floor((totalSeconds % 3600) / 60);
+	const seconds = totalSeconds % 60;
+	return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
 const TEXT = {
@@ -83,13 +111,17 @@ const TEXT = {
 		activities: "Activities",
 		familyMeeting: "Family Meeting",
 		socialWork: "Social Work",
-		safarTravel: "Safar (Travel)",
+		safarTravel: "Safar (Visit)",
 		orgWork: "Org Work",
 		selfAssessment: "Self Assessment",
 		reportKeeping: "Report Keeping",
 		selfCriticism: "Self-Criticism",
 		saving: "Saving...",
 		saveReport: "Save Report",
+		startTimer: "Start Work",
+		pauseTimer: "Pause Work",
+		timer: "Timer",
+		timerForTodayOnly: "Timer works for today only",
 	},
 	bn: {
 		dailyReport: "দৈনিক রিপোর্ট",
@@ -117,19 +149,24 @@ const TEXT = {
 		selfCriticism: "আত্মসমালোচনা",
 		saving: "সংরক্ষণ হচ্ছে...",
 		saveReport: "রিপোর্ট সংরক্ষণ",
+		startTimer: "কাজ শুরু",
+		pauseTimer: "কাজ বিরতি",
+		timer: "টাইমার",
+		timerForTodayOnly: "টাইমার শুধু আজকের দিনের জন্য",
 	},
 } as const;
 
-function Toggle({ checked, onChange, label }: { checked: boolean; onChange: () => void; label: string }) {
+function Toggle({ checked, onChange, label, isEdited }: { checked: boolean; onChange: () => void; label: string; isEdited?: boolean }) {
 	return (
 		<button
 			type="button"
 			onClick={onChange}
-			className={`flex items-center justify-between w-full px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border transition-all text-xs sm:text-sm font-medium ${checked
+			className={`relative flex items-center justify-between w-full px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border transition-all text-xs sm:text-sm font-medium ${checked
 				? "bg-indigo-50 border-indigo-300 text-indigo-700"
 				: "bg-white border-gray-200 text-gray-500 hover:border-gray-300"
 				}`}
 		>
+			{isEdited && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>}
 			<span>{label}</span>
 			<span
 				className={`w-8 h-4 sm:w-10 sm:h-5 rounded-full relative transition-colors flex-shrink-0 ${checked ? "bg-indigo-500" : "bg-gray-200"}`}
@@ -143,17 +180,39 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: () =
 	);
 }
 
-function NumberField({ label, name, value, onChange }: { label: string; name: string; value: number; onChange: (name: string, value: number) => void }) {
+function NumberField({
+	label,
+	name,
+	value,
+	onChange,
+	max,
+	isEdited,
+}: {
+	label: string;
+	name: string;
+	value: number;
+	onChange: (name: string, value: number) => void;
+	max?: number;
+	isEdited?: boolean;
+}) {
 	return (
-		<div className="flex flex-col gap-0.5">
-			<label className="text-xs font-medium text-gray-500 uppercase tracking-wide">{label}</label>
+		<div className="flex flex-col gap-0.5 relative">
+			<label className="text-xs font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5">
+				{label}
+				{isEdited && <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>}
+			</label>
 			<input
 				type="number"
 				name={name}
 				min={0}
+				max={max}
 				value={value}
-				onChange={(e) => onChange(name, Math.max(0, Number(e.target.value)))}
-				className="border border-gray-200 rounded-lg px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition bg-white"
+				onChange={(e) => {
+					const numericValue = Number(e.target.value);
+					const clampedValue = Number.isFinite(numericValue) ? Math.max(0, numericValue) : 0;
+					onChange(name, typeof max === "number" ? Math.min(max, clampedValue) : clampedValue);
+				}}
+				className="border border-gray-200 rounded-lg px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 text-center focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition bg-white"
 			/>
 		</div>
 	);
@@ -167,129 +226,318 @@ export default function PersonalReportForm({
 	date,
 	onDateChange,
 	onSubmit,
+	onTimerStart,
+	onTimerPause,
 	submitting,
+	timerSubmitting,
 	defaultData,
 }: {
 	date: string;
 	onDateChange: (d: string) => void;
 	onSubmit: (data: ReportData & { date: string }) => void;
+	onTimerStart: (date: string) => Promise<void>;
+	onTimerPause: (date: string) => Promise<void>;
 	submitting: boolean;
+	timerSubmitting: boolean;
 	defaultData?: Partial<ReportData> | null;
 }) {
 	const { locale } = useLocale();
 	const t = TEXT[locale];
 	const [form, setForm] = useState<ReportData>(emptyReport);
-	const [orgWorkInput, setOrgWorkInput] = useState("00:00");
+	const [originalForm, setOriginalForm] = useState<ReportData | null>(null);
+	const [orgWorkInput, setOrgWorkInput] = useState("00:00:00");
+	const [manualOrgWorkSeconds, setManualOrgWorkSeconds] = useState(0);
+	const [timerStartedAt, setTimerStartedAt] = useState<number | null>(null);
+	const [, setTick] = useState(0);
+	const [lastLoadedDate, setLastLoadedDate] = useState<string | null>(null);
+
+	const liveTimerMs = timerStartedAt ? Math.max(0, Date.now() - timerStartedAt) : 0;
+	const timerSeconds = Math.floor(liveTimerMs / 1000);
+	const totalOrgWorkSeconds = Math.min(23 * 3600 + 59 * 60 + 59, Math.max(0, manualOrgWorkSeconds + timerSeconds));
+	const timerRunning = timerStartedAt != null;
 
 	// When defaultData changes (from parent), update the form
 	useEffect(() => {
+		if (defaultData === undefined) return;
 		if (defaultData) {
 			const converted: any = { ...defaultData };
-			// convert boolean/nullable salahJamaat to number
-			if (typeof converted.salahJamaat === "boolean") {
-				converted.salahJamaat = converted.salahJamaat ? 1 : 0;
-			} else if (converted.salahJamaat == null) {
-				converted.salahJamaat = 0;
-			} else {
-				converted.salahJamaat = Number(converted.salahJamaat || 0);
-			}
-			setForm((prev) => ({ ...prev, ...converted }));
-			setOrgWorkInput(
-				formatTimeValue(
-					Number(converted.orgWorkHours ?? 0),
-					Number(converted.orgWorkMinutes ?? 0),
-				),
+			const nextForm: ReportData = {
+				quranStudy: Boolean(converted.quranStudy),
+				haditsRead: Math.max(0, Number(converted.haditsRead ?? 0)),
+				literature: Math.max(0, Number(converted.literature ?? 0)),
+				salahJamaat: normalizeSalahJamaat(converted.salahJamaat),
+				targetContactDawah: Math.max(0, Number(converted.targetContactDawah ?? 0)),
+				targetContactWorker: Math.max(0, Number(converted.targetContactWorker ?? 0)),
+				targetContactMember: Math.max(0, Number(converted.targetContactMember ?? 0)),
+				workerContact: Math.max(0, Number(converted.workerContact ?? 0)),
+				bookDistribution: Math.max(0, Number(converted.bookDistribution ?? 0)),
+				familyMeeting: Boolean(converted.familyMeeting),
+				socialWork: Boolean(converted.socialWork),
+				orgWorkHours: Math.max(0, Number(converted.orgWorkHours ?? 0)),
+				orgWorkMinutes: Math.max(0, Number(converted.orgWorkMinutes ?? 0)),
+				orgWorkSeconds: Math.max(0, Number(converted.orgWorkSeconds ?? 0)),
+				orgWorkStartedAt: converted.orgWorkStartedAt ?? null,
+				safar: Boolean(converted.safar),
+				reportKeeping: Boolean(converted.reportKeeping),
+				selfCriticism: Boolean(converted.selfCriticism),
+			};
+			setTimerStartedAt(nextForm.orgWorkStartedAt ? new Date(nextForm.orgWorkStartedAt).getTime() : null);
+			const baseSeconds = Math.min(
+				23 * 3600 + 59 * 60 + 59,
+				Math.max(0, nextForm.orgWorkHours * 3600 + nextForm.orgWorkMinutes * 60 + nextForm.orgWorkSeconds),
 			);
+			setManualOrgWorkSeconds(baseSeconds);
+			const mergedSeconds = Math.min(23 * 3600 + 59 * 60 + 59, baseSeconds + timerSeconds);
+
+			if (lastLoadedDate !== date) {
+				setForm({
+					...nextForm,
+					orgWorkHours: Math.floor(mergedSeconds / 3600),
+					orgWorkMinutes: Math.floor((mergedSeconds % 3600) / 60),
+					orgWorkSeconds: mergedSeconds % 60,
+				});
+				setLastLoadedDate(date);
+				setOriginalForm(nextForm);
+			} else {
+				setForm((prev) => ({
+					...prev,
+					orgWorkHours: Math.floor(mergedSeconds / 3600),
+					orgWorkMinutes: Math.floor((mergedSeconds % 3600) / 60),
+					orgWorkSeconds: mergedSeconds % 60,
+					orgWorkStartedAt: nextForm.orgWorkStartedAt,
+				}));
+				setOriginalForm(nextForm);
+			}
+
+			setOrgWorkInput(formatTimeValue(Math.floor(mergedSeconds / 3600), Math.floor((mergedSeconds % 3600) / 60), mergedSeconds % 60));
 		} else {
-			setForm(emptyReport());
-			setOrgWorkInput("00:00");
+			if (lastLoadedDate !== date) {
+				setForm(emptyReport());
+				setLastLoadedDate(date);
+				setOriginalForm(emptyReport());
+			}
+			setManualOrgWorkSeconds(0);
+			setTimerStartedAt(null);
+			const mergedSeconds = Math.min(23 * 3600 + 59 * 60 + 59, timerSeconds);
+			setForm((prev) => ({
+				...prev,
+				orgWorkHours: Math.floor(mergedSeconds / 3600),
+				orgWorkMinutes: Math.floor((mergedSeconds % 3600) / 60),
+				orgWorkSeconds: mergedSeconds % 60,
+			}));
+			setOrgWorkInput(formatTimeValue(Math.floor(mergedSeconds / 3600), Math.floor((mergedSeconds % 3600) / 60), mergedSeconds % 60));
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [defaultData, date]);
 
-	function handleToggle(name: keyof ReportData) {
-		setForm((prev) => ({ ...prev, [name]: !(prev as any)[name] }));
+	useEffect(() => {
+		const h = Math.floor(totalOrgWorkSeconds / 3600);
+		const m = Math.floor((totalOrgWorkSeconds % 3600) / 60);
+		const s = totalOrgWorkSeconds % 60;
+		setForm((prev) => ({ ...prev, orgWorkHours: h, orgWorkMinutes: m, orgWorkSeconds: s }));
+		setOrgWorkInput(formatTimeValue(h, m, s));
+	}, [totalOrgWorkSeconds]);
+
+	useEffect(() => {
+		if (!timerRunning) return;
+		const id = window.setInterval(() => {
+			setTick((x) => x + 1);
+		}, 1000);
+		return () => window.clearInterval(id);
+	}, [timerRunning]);
+
+	function handleToggle(field: keyof ReportData) {
+		setForm((prev) => ({ ...prev, [field]: !prev[field] }));
 	}
 
+	const isFieldEdited = (field: keyof ReportData) => {
+		if (!originalForm) return false;
+		return form[field] !== originalForm[field];
+	};
+
+	const isOrgWorkEdited = () => {
+		if (!originalForm) return false;
+		const originalBaseSeconds = Math.min(
+			23 * 3600 + 59 * 60 + 59,
+			Math.max(0, originalForm.orgWorkHours * 3600 + originalForm.orgWorkMinutes * 60 + originalForm.orgWorkSeconds)
+		);
+		return manualOrgWorkSeconds !== originalBaseSeconds;
+	};
+
+	const isDirty = (() => {
+		if (!originalForm) return false;
+		for (const key of Object.keys(form) as (keyof ReportData)[]) {
+			if (key === "orgWorkHours" || key === "orgWorkMinutes" || key === "orgWorkSeconds" || key === "orgWorkStartedAt") {
+				continue;
+			}
+			if (form[key] !== originalForm[key]) return true;
+		}
+		return isOrgWorkEdited();
+	})();
+
+	useEffect(() => {
+		if (!isDirty) return;
+		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+			e.preventDefault();
+			e.returnValue = "";
+		};
+		window.addEventListener("beforeunload", handleBeforeUnload);
+		return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+	}, [isDirty]);
+
 	function handleNumber(name: string, value: number) {
-		setForm((prev) => ({ ...prev, [name]: value }));
+		setForm((prev) => ({
+			...prev,
+			[name]: name === "salahJamaat" ? normalizeSalahJamaat(value) : value,
+		}));
 	}
 
 	function handleOrgWorkInputChange(value: string) {
-		const digits = value.replace(/\D/g, "").slice(0, 4);
-		const masked = digits.length > 2 ? `${digits.slice(0, 2)}:${digits.slice(2)}` : digits;
+		const digits = value.replace(/\D/g, "").slice(0, 6);
+		let masked = digits;
+		if (digits.length > 4) {
+			masked = `${digits.slice(0, 2)}:${digits.slice(2, 4)}:${digits.slice(4, 6)}`;
+		} else if (digits.length > 2) {
+			masked = `${digits.slice(0, 2)}:${digits.slice(2, 4)}`;
+		}
 		setOrgWorkInput(masked);
 
 		const hoursRaw = digits.slice(0, 2);
 		const minutesRaw = digits.slice(2, 4);
+		const secondsRaw = digits.slice(4, 6);
 		const hours = hoursRaw ? Math.min(23, Number(hoursRaw)) : 0;
 		const minutes = minutesRaw ? Math.min(59, Number(minutesRaw)) : 0;
-
-		setForm((prev) => ({
-			...prev,
-			orgWorkHours: Number.isFinite(hours) ? hours : 0,
-			orgWorkMinutes: Number.isFinite(minutes) ? minutes : 0,
-		}));
+		const seconds = secondsRaw ? Math.min(59, Number(secondsRaw)) : 0;
+		const typedTotal = (Number.isFinite(hours) ? hours : 0) * 3600 + (Number.isFinite(minutes) ? minutes : 0) * 60 + (Number.isFinite(seconds) ? seconds : 0);
+		setManualOrgWorkSeconds(Math.max(0, typedTotal - timerSeconds));
 	}
 
 	function normalizeOrgWorkInput() {
-		setOrgWorkInput(formatTimeValue(form.orgWorkHours, form.orgWorkMinutes));
+		setOrgWorkInput(formatTimeValue(Math.floor(totalOrgWorkSeconds / 3600), Math.floor((totalOrgWorkSeconds % 3600) / 60), totalOrgWorkSeconds % 60));
+	}
+
+	async function startOrgWorkTimer() {
+		const today = toDateStr(new Date());
+		if (today !== date || timerRunning) return;
+		await onTimerStart(date);
+	}
+
+	async function pauseOrgWorkTimer() {
+		if (!timerRunning || !timerStartedAt) return;
+		await onTimerPause(date);
+	}
+
+	function handleDateSwitch(newDate: string) {
+		if (isDirty) {
+			const warningText = locale === "bn"
+				? "আপনার কিছু অসংরক্ষিত ডেটা আছে। আপনি কি নিশ্চিত যে আপনি তারিখ পরিবর্তন করতে চান? আপনার পরিবর্তনগুলো মুছে যাবে।"
+				: "You have unsaved changes. Are you sure you want to switch dates? Your changes will be lost.";
+			if (!window.confirm(warningText)) {
+				return;
+			}
+		}
+		onDateChange(newDate);
 	}
 
 	function shiftDate(days: number) {
 		const d = parseDateStr(date);
 		d.setDate(d.getDate() + days);
-		onDateChange(toDateStr(d));
+		handleDateSwitch(toDateStr(d));
 	}
 
 	const isToday = date === toDateStr(new Date());
+	const timerDisplay = formatDurationWithSeconds(liveTimerMs);
 
 	function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
-		onSubmit({ ...form, date });
+		onSubmit({
+			date,
+			quranStudy: form.quranStudy,
+			haditsRead: form.haditsRead,
+			literature: form.literature,
+			salahJamaat: form.salahJamaat,
+			targetContactDawah: form.targetContactDawah,
+			targetContactWorker: form.targetContactWorker,
+			targetContactMember: form.targetContactMember,
+			workerContact: form.workerContact,
+			bookDistribution: form.bookDistribution,
+			familyMeeting: form.familyMeeting,
+			socialWork: form.socialWork,
+			orgWorkHours: Math.floor(totalOrgWorkSeconds / 3600),
+			orgWorkMinutes: Math.floor((totalOrgWorkSeconds % 3600) / 60),
+			orgWorkSeconds: totalOrgWorkSeconds % 60,
+			safar: form.safar,
+			reportKeeping: form.reportKeeping,
+			selfCriticism: form.selfCriticism,
+		});
 	}
 
 	return (
 		<div className="max-w-2xl mx-auto my-8">
-			<form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+			<form onSubmit={handleSubmit} className="relative bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+				{/* Overlay Loader */}
+				{(defaultData === undefined || submitting) && (
+					<div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[2px] flex items-center justify-center">
+						<Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+					</div>
+				)}
 				{/* Form Header with date navigation */}
-				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gray-50 gap-2 sm:gap-0">
-					<div className="text-center sm:text-left">
+				<div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gray-50">
+					<div className="text-center mb-3">
 						<p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{t.dailyReport}</p>
 						<p className="text-base font-bold text-gray-800">{formatDisplayDate(date)}</p>
 					</div>
-					<div className="flex items-center gap-2 w-full sm:w-auto">
-						<button
-							type="button"
-							onClick={() => shiftDate(-1)}
-							className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 hover:border-gray-300 transition text-lg leading-none flex-shrink-0"
-							aria-label={t.previousDay}
-						>
-							‹
-						</button>
-						<input
-							type="date"
-							value={date}
-							max={toDateStr(new Date())}
-							onChange={(e) => onDateChange(e.target.value)}
-							className="flex-1 sm:flex-none text-sm border border-gray-200 rounded-lg px-2 py-1.5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition bg-white"
-						/>
-						<button
-							type="button"
-							onClick={() => shiftDate(1)}
-							disabled={isToday}
-							className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 hover:border-gray-300 transition text-lg leading-none disabled:opacity-30 disabled:cursor-not-allowed flex-shrink-0"
-							aria-label={t.nextDay}
-						>
-							›
-						</button>
-						<button
-							type="button"
-							onClick={() => onDateChange(toDateStr(new Date()))}
-							disabled={isToday}
-							className="text-xs ml-1 font-medium flex-shrink-0 text-indigo-600 hover:underline disabled:text-gray-400 disabled:no-underline disabled:cursor-not-allowed"
-						>
-							{t.today}
-						</button>
+					<div className="grid grid-cols-1 sm:grid-cols-2 items-start gap-3 sm:gap-4">
+						<div className="flex flex-col items-center sm:items-start gap-1 w-full">
+							<div className="flex items-center gap-2 justify-center sm:justify-start w-full">
+								<button
+									type="button"
+									onClick={() => shiftDate(-1)}
+									className="w-8 h-8 flex items-center justify-center rounded-lg border border-indigo-200 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition text-lg leading-none flex-shrink-0"
+									aria-label={t.previousDay}
+								>
+									‹
+								</button>
+								<input
+									type="date"
+									value={date}
+									max={toDateStr(new Date())}
+									onChange={(e) => handleDateSwitch(e.target.value)}
+									className="flex-1 sm:flex-none text-center text-sm border border-indigo-200 rounded-lg px-2 py-1.5 text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition bg-indigo-50"
+								/>
+								<button
+									type="button"
+									onClick={() => shiftDate(1)}
+									disabled={isToday}
+									className="w-8 h-8 flex items-center justify-center rounded-lg border border-indigo-200 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition text-lg leading-none disabled:opacity-30 disabled:cursor-not-allowed flex-shrink-0"
+									aria-label={t.nextDay}
+								>
+									›
+								</button>
+								<button
+									type="button"
+									onClick={() => onDateChange(toDateStr(new Date()))}
+									disabled={isToday}
+									className="text-[11px] px-2 py-1 h-8 rounded-md border border-indigo-200 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 disabled:opacity-30 disabled:cursor-not-allowed font-medium transition-colors ml-1"
+								>
+									{t.today}
+								</button>
+							</div>
+						</div>
+						<div className="flex items-center justify-center sm:justify-end gap-3 w-full">
+							{!isToday && <p className="text-[11px] text-gray-400 text-right leading-tight max-w-[100px] sm:max-w-none">{t.timerForTodayOnly}</p>}
+							<button
+								type="button"
+								onClick={timerRunning ? pauseOrgWorkTimer : startOrgWorkTimer}
+								disabled={!isToday || timerSubmitting}
+								className="text-xs px-2 py-1 rounded-lg border border-indigo-200 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 disabled:opacity-50 disabled:cursor-not-allowed leading-tight shrink-0"
+							>
+								<span className="flex flex-col items-center">
+									<span className="font-semibold">{timerDisplay}</span>
+									<span>{timerRunning ? t.pauseTimer : t.startTimer}</span>
+								</span>
+							</button>
+						</div>
 					</div>
 				</div>
 
@@ -298,10 +546,10 @@ export default function PersonalReportForm({
 					<div>
 						<SectionTitle title={t.religiousPractice} />
 						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-							<Toggle checked={form.quranStudy} onChange={() => handleToggle("quranStudy")} label={t.quranStudy} />
-							<NumberField label={t.salahInJamaat} name="salahJamaat" value={form.salahJamaat} onChange={handleNumber} />
-							<NumberField label={t.haditsRead} name="haditsRead" value={form.haditsRead} onChange={handleNumber} />
-							<NumberField label={t.literaturePages} name="literature" value={form.literature} onChange={handleNumber} />
+							<Toggle checked={form.quranStudy} onChange={() => handleToggle("quranStudy")} label={t.quranStudy} isEdited={isFieldEdited("quranStudy")} />
+							<NumberField label={t.salahInJamaat} name="salahJamaat" value={form.salahJamaat} onChange={handleNumber} max={MAX_SALAH_JAMAAT} isEdited={isFieldEdited("salahJamaat")} />
+							<NumberField label={t.haditsRead} name="haditsRead" value={form.haditsRead} onChange={handleNumber} isEdited={isFieldEdited("haditsRead")} />
+							<NumberField label={t.literaturePages} name="literature" value={form.literature} onChange={handleNumber} isEdited={isFieldEdited("literature")} />
 						</div>
 					</div>
 
@@ -309,11 +557,11 @@ export default function PersonalReportForm({
 					<div>
 						<SectionTitle title={t.dawahAndContacts} />
 						<div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-							<NumberField label={t.targetDawah} name="targetContactDawah" value={form.targetContactDawah} onChange={handleNumber} />
-							<NumberField label={t.targetWorker} name="targetContactWorker" value={form.targetContactWorker} onChange={handleNumber} />
-							<NumberField label={t.targetMember} name="targetContactMember" value={form.targetContactMember} onChange={handleNumber} />
-							<NumberField label={t.workerContact} name="workerContact" value={form.workerContact} onChange={handleNumber} />
-							<NumberField label={t.bookDistribution} name="bookDistribution" value={form.bookDistribution} onChange={handleNumber} />
+							<NumberField label={t.targetDawah} name="targetContactDawah" value={form.targetContactDawah} onChange={handleNumber} isEdited={isFieldEdited("targetContactDawah")} />
+							<NumberField label={t.targetWorker} name="targetContactWorker" value={form.targetContactWorker} onChange={handleNumber} isEdited={isFieldEdited("targetContactWorker")} />
+							<NumberField label={t.targetMember} name="targetContactMember" value={form.targetContactMember} onChange={handleNumber} isEdited={isFieldEdited("targetContactMember")} />
+							<NumberField label={t.workerContact} name="workerContact" value={form.workerContact} onChange={handleNumber} isEdited={isFieldEdited("workerContact")} />
+							<NumberField label={t.bookDistribution} name="bookDistribution" value={form.bookDistribution} onChange={handleNumber} isEdited={isFieldEdited("bookDistribution")} />
 						</div>
 					</div>
 
@@ -321,22 +569,25 @@ export default function PersonalReportForm({
 					<div>
 						<SectionTitle title={t.activities} />
 						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-							<Toggle checked={form.familyMeeting} onChange={() => handleToggle("familyMeeting")} label={t.familyMeeting} />
-							<Toggle checked={form.socialWork} onChange={() => handleToggle("socialWork")} label={t.socialWork} />
-							<Toggle checked={form.safar} onChange={() => handleToggle("safar")} label={t.safarTravel} />
+							<Toggle checked={form.familyMeeting} onChange={() => handleToggle("familyMeeting")} label={t.familyMeeting} isEdited={isFieldEdited("familyMeeting")} />
+							<Toggle checked={form.socialWork} onChange={() => handleToggle("socialWork")} label={t.socialWork} isEdited={isFieldEdited("socialWork")} />
+							<Toggle checked={form.safar} onChange={() => handleToggle("safar")} label={t.safarTravel} isEdited={isFieldEdited("safar")} />
 							{/* Org Work */}
-							<div className="flex flex-col gap-1">
-								<label className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t.orgWork}</label>
+							<div className="flex flex-col gap-0.5 relative">
+								<label className="text-xs font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5">
+									{t.orgWork}
+									{isOrgWorkEdited() && <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>}
+								</label>
 								<input
 									type="text"
 									inputMode="numeric"
-									maxLength={5}
+									maxLength={8}
 									value={orgWorkInput}
 									onChange={(e) => handleOrgWorkInputChange(e.target.value)}
 									onBlur={normalizeOrgWorkInput}
 									className="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition bg-white text-center"
-									placeholder="hh:mm"
-									aria-label={`${t.orgWork} hh:mm`}
+									placeholder="hh:mm:ss"
+									aria-label={`${t.orgWork} hh:mm:ss`}
 								/>
 							</div>
 						</div>
@@ -346,8 +597,8 @@ export default function PersonalReportForm({
 					<div>
 						<SectionTitle title={t.selfAssessment} />
 						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-							<Toggle checked={form.reportKeeping} onChange={() => handleToggle("reportKeeping")} label={t.reportKeeping} />
-							<Toggle checked={form.selfCriticism} onChange={() => handleToggle("selfCriticism")} label={t.selfCriticism} />
+							<Toggle checked={form.reportKeeping} onChange={() => handleToggle("reportKeeping")} label={t.reportKeeping} isEdited={isFieldEdited("reportKeeping")} />
+							<Toggle checked={form.selfCriticism} onChange={() => handleToggle("selfCriticism")} label={t.selfCriticism} isEdited={isFieldEdited("selfCriticism")} />
 						</div>
 					</div>
 				</div>
