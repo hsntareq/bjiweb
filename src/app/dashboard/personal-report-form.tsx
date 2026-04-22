@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type ReportData = {
 	quranStudy: boolean;
@@ -96,13 +96,24 @@ export default function PersonalReportForm({
 	onDateChange,
 	onSubmit,
 	submitting,
+	defaultData,
 }: {
 	date: string;
 	onDateChange: (d: string) => void;
 	onSubmit: (data: ReportData & { date: string }) => void;
 	submitting: boolean;
+	defaultData?: Partial<ReportData> | null;
 }) {
 	const [form, setForm] = useState<ReportData>(emptyReport);
+
+	// When defaultData changes (from parent), update the form
+	useEffect(() => {
+		if (defaultData) {
+			setForm((prev) => ({ ...prev, ...defaultData }));
+		} else {
+			setForm(emptyReport());
+		}
+	}, [defaultData, date]);
 
 	function handleToggle(name: keyof ReportData) {
 		setForm((prev) => ({ ...prev, [name]: !prev[name] }));
