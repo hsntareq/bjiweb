@@ -36,17 +36,17 @@ export const emptyMonthlyPlan = (monthStr: string): MonthlyPlanData => {
 	const daysInMonth = monthStr ? new Date(parseInt(monthStr.split("-")[0]), parseInt(monthStr.split("-")[1]), 0).getDate() : 30;
 	return {
 		quranStudyDays: daysInMonth,
-		haditsRead: 0,
-		literature: 0,
-		salahJamaat: 0,
-		targetContactDawah: 0,
-		targetContactWorker: 0,
-		targetContactMember: 0,
-		workerContact: 0,
-		bookDistribution: 0,
+		haditsRead: 100,
+		literature: 300,
+		salahJamaat: daysInMonth*5,
+		targetContactDawah: 9,
+		targetContactWorker: 3,
+		targetContactMember: 4,
+		workerContact: 3,
+		bookDistribution: 10,
 		familyMeetingDays: daysInMonth,
 		socialWorkDays: daysInMonth,
-		orgWorkHours: 0,
+		orgWorkHours: 90,
 		safarDays: daysInMonth,
 		reportKeepingDays: daysInMonth,
 		selfCriticismDays: daysInMonth,
@@ -56,13 +56,13 @@ export const emptyMonthlyPlan = (monthStr: string): MonthlyPlanData => {
 	memorizingSura: [],
 	memorizingAyat: [],
 	memorizingHadits: [],
-	baitulmalIncreaseAmount: 0,
-	sellBooksNumber: 0,
+	baitulmalIncreaseAmount: 200,
+	sellBooksNumber: 10,
 	socialHelp: [],
 	professionalHelp: [],
 	};
 };
-
+/*  */
 const TEXT = {
 	en: {
 		monthlyPlan: "Monthly Plan",
@@ -261,7 +261,8 @@ export default function MonthlyPlanForm({
 
 	function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
-		onSubmit({ ...form, month });
+		const { id, createdAt, updatedAt, userId, user, ...rest } = form as any;
+		onSubmit({ ...rest, month });
 	}
 
 	return (
