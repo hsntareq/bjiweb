@@ -2,7 +2,6 @@ import { ChevronRight, Clock, Package, ShoppingCart, TrendingUp } from "lucide-r
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "../api/auth/[...nextauth]/route";
-import PersonalReportFormWrapper from "./personal-report-form-wrapper";
 import SignOutButton from "./sign-out-button";
 
 const stats = [
@@ -63,8 +62,12 @@ export default async function DashboardPage() {
 					))}
 				</div>
 
-				{/* Personal Report Form */}
-				<PersonalReportFormWrapper />
+				{/* Personal Report - moved to separate page */}
+				<div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm mb-6">
+					<h2 className="text-sm font-bold text-gray-900 mb-2">Personal Reports</h2>
+					<p className="text-sm text-gray-500 mb-4">Daily reports, planning, status and targets — open the personal reports page to manage them.</p>
+					<a href="/personal-report" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:opacity-95">Open Personal Reports</a>
+				</div>
 
 				{/* Quick actions */}
 				<div className="grid md:grid-cols-2 gap-4">

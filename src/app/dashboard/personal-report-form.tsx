@@ -40,11 +40,19 @@ const emptyReport = (): ReportData => ({
 });
 
 function toDateStr(d: Date) {
-	return d.toISOString().split("T")[0];
+	const yyyy = d.getFullYear();
+	const mm = String(d.getMonth() + 1).padStart(2, "0");
+	const dd = String(d.getDate()).padStart(2, "0");
+	return `${yyyy}-${mm}-${dd}`;
+}
+
+function parseDateStr(dateStr: string) {
+	const [y, m, d] = dateStr.split("-").map((v) => Number(v));
+	return new Date(y, (m || 1) - 1, d || 1);
 }
 
 function formatDisplayDate(dateStr: string) {
-	const d = new Date(dateStr + "T00:00:00");
+	const d = parseDateStr(dateStr);
 	return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
 }
 
@@ -124,7 +132,7 @@ export default function PersonalReportForm({
 	}
 
 	function shiftDate(days: number) {
-		const d = new Date(date + "T00:00:00");
+		const d = parseDateStr(date);
 		d.setDate(d.getDate() + days);
 		onDateChange(toDateStr(d));
 	}
