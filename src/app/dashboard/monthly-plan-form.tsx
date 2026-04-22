@@ -1,6 +1,6 @@
 "use client";
-import { Loader2, Plus, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Loader2, Plus, Trash2, Save } from "lucide-react";
+import { useEffect, useState, useMemo } from "react";
 import { useLocale } from "../../lib/locale";
 
 export type MonthlyPlanData = {
@@ -67,6 +67,7 @@ const TEXT = {
 	en: {
 		monthlyPlan: "Monthly Plan",
 		religiousPractice: "Religious Practice",
+		lockedNotice: "Plans for previous months cannot be modified.",
 		quranStudy: "Quran Study (Days)",
 		salahInJamaat: "Salah in Jamaat (Times)",
 		haditsRead: "Hadits Read",
@@ -135,10 +136,11 @@ const TEXT = {
 		socialHelp: "সামাজিক সাহায্য",
 		professionalHelp: "পেশাগত সাহায্য",
 		add: "যোগ করুন",
+		lockedNotice: "পূর্ববর্তী মাসের পরিকল্পনা পরিবর্তন করা যায় না।",
 	},
 } as const;
 
-function NumberField({ label, name, value, onChange, max }: any) {
+function NumberField({ label, name, value, onChange, max, disabled }: any) {
 	return (
 		<div className="flex flex-col gap-0.5 relative">
 			<label className="text-xs font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5">{label}</label>
@@ -149,17 +151,19 @@ function NumberField({ label, name, value, onChange, max }: any) {
 				max={max}
 				value={value}
 				onChange={(e) => {
+					if (disabled) return;
 					const numericValue = Number(e.target.value);
 					const clampedValue = Number.isFinite(numericValue) ? Math.max(0, numericValue) : 0;
 					onChange(name, typeof max === "number" ? Math.min(max, clampedValue) : clampedValue);
 				}}
-				className="w-full border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm hover:border-gray-300 bg-white/50 focus:bg-white"
+				disabled={disabled}
+				className={`w-full border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm ${disabled ? 'bg-gray-100 cursor-not-allowed text-gray-500' : 'hover:border-gray-300 bg-white/50 focus:bg-white'}`}
 			/>
 		</div>
 	);
 }
 
-function TextField({ label, name, value, onChange }: any) {
+function TextField({ label, name, value, onChange, disabled }: any) {
 	return (
 		<div className="flex flex-col gap-0.5 relative sm:col-span-2">
 			<label className="text-xs font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5">{label}</label>
@@ -167,14 +171,15 @@ function TextField({ label, name, value, onChange }: any) {
 				type="text"
 				name={name}
 				value={value}
-				onChange={(e) => onChange(name, e.target.value)}
-				className="w-full border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm hover:border-gray-300 bg-white/50 focus:bg-white"
+				onChange={(e) => { if (!disabled) onChange(name, e.target.value); }}
+				disabled={disabled}
+				className={`w-full border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm ${disabled ? 'bg-gray-100 cursor-not-allowed text-gray-500' : 'hover:border-gray-300 bg-white/50 focus:bg-white'}`}
 			/>
 		</div>
 	);
 }
 
-function DynamicListField({ label, items, onChange, t }: any) {
+function DynamicListField({ label, items, onChange, t, disabled }: any) {
 	const [input, setInput] = useState("");
 
 	const handleAdd = () => {
@@ -195,22 +200,25 @@ function DynamicListField({ label, items, onChange, t }: any) {
 				<input
 					type="text"
 					value={input}
-					onChange={(e) => setInput(e.target.value)}
-					onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAdd())}
-					className="flex-1 border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm bg-white/50 focus:bg-white"
+					onChange={(e) => { if (!disabled) setInput(e.target.value); }}
+					onKeyDown={(e) => !disabled && e.key === "Enter" && (e.preventDefault(), handleAdd())}
+					disabled={disabled}
+					className={`flex-1 border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm ${disabled ? 'bg-gray-100 cursor-not-allowed text-gray-500' : 'bg-white/50 focus:bg-white'}`}
 				/>
-				<button type="button" onClick={handleAdd} className="bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-200 hover:bg-indigo-100 flex items-center gap-1 shadow-sm font-medium text-sm">
+				<button type="button" onClick={handleAdd} disabled={disabled} className={`px-3 py-1.5 rounded-xl border flex items-center gap-1 shadow-sm font-medium text-sm ${disabled ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed' : 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100'}`}>
 					<Plus className="w-4 h-4" /> {t.add}
 				</button>
 			</div>
 			{items.length > 0 && (
 				<ul className="mt-2 space-y-1.5">
 					{items.map((item: string, i: number) => (
-						<li key={i} className="flex items-center justify-between bg-white border border-gray-100 rounded-lg px-3 py-2 shadow-sm text-sm">
-							<span className="text-gray-700">{item}</span>
-							<button type="button" onClick={() => handleRemove(i)} className="text-red-400 hover:text-red-600 p-1">
-								<Trash2 className="w-4 h-4" />
-							</button>
+						<li key={i} className={`flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2 shadow-sm text-sm ${disabled ? 'bg-gray-50' : 'bg-white'}`}>
+							<span className={`text-gray-700 ${disabled ? 'opacity-70' : ''}`}>{item}</span>
+							{!disabled && (
+								<button type="button" onClick={() => handleRemove(i)} className="text-red-400 hover:text-red-600 p-1">
+									<Trash2 className="w-4 h-4" />
+								</button>
+							)}
 						</li>
 					))}
 				</ul>
@@ -238,6 +246,15 @@ export default function MonthlyPlanForm({
 	const t = TEXT[locale];
 	const [form, setForm] = useState<MonthlyPlanData>(emptyMonthlyPlan(month));
 	const daysInMonth = month ? new Date(parseInt(month.split("-")[0]), parseInt(month.split("-")[1]), 0).getDate() : 30;
+
+	const isLocked = useMemo(() => {
+		if (!month) return false;
+		const [year, monthNum] = month.split("-").map(Number);
+		const now = new Date();
+		const currentYear = now.getFullYear();
+		const currentMonth = now.getMonth() + 1;
+		return year < currentYear || (year === currentYear && monthNum < currentMonth);
+	}, [month]);
 
 	useEffect(() => {
 		if (defaultData) {
@@ -278,6 +295,11 @@ export default function MonthlyPlanForm({
 					<div className="text-center">
 						<p className="text-[11px] text-indigo-500/80 font-bold uppercase tracking-widest mb-1">{t.monthlyPlan}</p>
 						<p className="text-lg sm:text-xl font-black text-gray-800 tracking-tight">{month}</p>
+						{isLocked && (
+							<p className="mt-2 text-sm text-amber-600 bg-amber-50 py-1.5 px-3 rounded-lg inline-block border border-amber-200/50">
+								{t.lockedNotice}
+							</p>
+						)}
 					</div>
 				</div>
 
@@ -285,75 +307,75 @@ export default function MonthlyPlanForm({
 					<div>
 						<SectionTitle title={t.religiousPractice} />
 						<div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-							<NumberField label={t.quranStudy} name="quranStudyDays" value={form.quranStudyDays} onChange={handleNumber} max={daysInMonth} />
-							<NumberField label={t.salahInJamaat} name="salahJamaat" value={form.salahJamaat} onChange={handleNumber} />
-							<NumberField label={t.haditsRead} name="haditsRead" value={form.haditsRead} onChange={handleNumber} />
-							<NumberField label={t.literaturePages} name="literature" value={form.literature} onChange={handleNumber} />
+							<NumberField label={t.quranStudy} name="quranStudyDays" value={form.quranStudyDays} onChange={handleNumber} max={daysInMonth} disabled={isLocked} />
+							<NumberField label={t.salahInJamaat} name="salahJamaat" value={form.salahJamaat} onChange={handleNumber} disabled={isLocked} />
+							<NumberField label={t.haditsRead} name="haditsRead" value={form.haditsRead} onChange={handleNumber} disabled={isLocked} />
+							<NumberField label={t.literaturePages} name="literature" value={form.literature} onChange={handleNumber} disabled={isLocked} />
 						</div>
 					</div>
 
 					<div>
 						<SectionTitle title={t.dawahAndContacts} />
 						<div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-							<NumberField label={t.targetDawah} name="targetContactDawah" value={form.targetContactDawah} onChange={handleNumber} />
-							<NumberField label={t.targetWorker} name="targetContactWorker" value={form.targetContactWorker} onChange={handleNumber} />
-							<NumberField label={t.targetMember} name="targetContactMember" value={form.targetContactMember} onChange={handleNumber} />
-							<NumberField label={t.workerContact} name="workerContact" value={form.workerContact} onChange={handleNumber} />
-							<NumberField label={t.bookDistribution} name="bookDistribution" value={form.bookDistribution} onChange={handleNumber} />
+							<NumberField label={t.targetDawah} name="targetContactDawah" value={form.targetContactDawah} onChange={handleNumber} disabled={isLocked} />
+							<NumberField label={t.targetWorker} name="targetContactWorker" value={form.targetContactWorker} onChange={handleNumber} disabled={isLocked} />
+							<NumberField label={t.targetMember} name="targetContactMember" value={form.targetContactMember} onChange={handleNumber} disabled={isLocked} />
+							<NumberField label={t.workerContact} name="workerContact" value={form.workerContact} onChange={handleNumber} disabled={isLocked} />
+							<NumberField label={t.bookDistribution} name="bookDistribution" value={form.bookDistribution} onChange={handleNumber} disabled={isLocked} />
 						</div>
 					</div>
 
 					<div>
 						<SectionTitle title={t.activities} />
 						<div className="grid grid-cols-2 gap-3">
-							<NumberField label={t.familyMeeting} name="familyMeetingDays" value={form.familyMeetingDays} onChange={handleNumber} max={daysInMonth} />
-							<NumberField label={t.socialWork} name="socialWorkDays" value={form.socialWorkDays} onChange={handleNumber} max={daysInMonth} />
-							<NumberField label={t.safarTravel} name="safarDays" value={form.safarDays} onChange={handleNumber} max={daysInMonth} />
-							<NumberField label={t.orgWork} name="orgWorkHours" value={form.orgWorkHours} onChange={handleNumber} />
+							<NumberField label={t.familyMeeting} name="familyMeetingDays" value={form.familyMeetingDays} onChange={handleNumber} max={daysInMonth} disabled={isLocked} />
+							<NumberField label={t.socialWork} name="socialWorkDays" value={form.socialWorkDays} onChange={handleNumber} max={daysInMonth} disabled={isLocked} />
+							<NumberField label={t.safarTravel} name="safarDays" value={form.safarDays} onChange={handleNumber} max={daysInMonth} disabled={isLocked} />
+							<NumberField label={t.orgWork} name="orgWorkHours" value={form.orgWorkHours} onChange={handleNumber} disabled={isLocked} />
 						</div>
 					</div>
 
 					<div>
 						<SectionTitle title={t.newFields} />
 						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-							<DynamicListField label={t.increaseAssociate} items={form.increaseAssociate} onChange={(items: string[]) => handleList("increaseAssociate", items)} t={t} />
-							<DynamicListField label={t.increaseActivist} items={form.increaseActivist} onChange={(items: string[]) => handleList("increaseActivist", items)} t={t} />
-							<DynamicListField label={t.increaseMember} items={form.increaseMember} onChange={(items: string[]) => handleList("increaseMember", items)} t={t} />
-							<DynamicListField label={t.memorizingSura} items={form.memorizingSura} onChange={(items: string[]) => handleList("memorizingSura", items)} t={t} />
-							<DynamicListField label={t.memorizingAyat} items={form.memorizingAyat} onChange={(items: string[]) => handleList("memorizingAyat", items)} t={t} />
-							<DynamicListField label={t.memorizingHadits} items={form.memorizingHadits} onChange={(items: string[]) => handleList("memorizingHadits", items)} t={t} />
+							<DynamicListField label={t.increaseAssociate} items={form.increaseAssociate} onChange={(items: string[]) => handleList("increaseAssociate", items)} t={t} disabled={isLocked} />
+							<DynamicListField label={t.increaseActivist} items={form.increaseActivist} onChange={(items: string[]) => handleList("increaseActivist", items)} t={t} disabled={isLocked} />
+							<DynamicListField label={t.increaseMember} items={form.increaseMember} onChange={(items: string[]) => handleList("increaseMember", items)} t={t} disabled={isLocked} />
+							<DynamicListField label={t.memorizingSura} items={form.memorizingSura} onChange={(items: string[]) => handleList("memorizingSura", items)} t={t} disabled={isLocked} />
+							<DynamicListField label={t.memorizingAyat} items={form.memorizingAyat} onChange={(items: string[]) => handleList("memorizingAyat", items)} t={t} disabled={isLocked} />
+							<DynamicListField label={t.memorizingHadits} items={form.memorizingHadits} onChange={(items: string[]) => handleList("memorizingHadits", items)} t={t} disabled={isLocked} />
 							<div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
-								<NumberField label={t.baitulmalIncreaseAmount} name="baitulmalIncreaseAmount" value={form.baitulmalIncreaseAmount} onChange={handleNumber} />
-								<NumberField label={t.sellBooksNumber} name="sellBooksNumber" value={form.sellBooksNumber} onChange={handleNumber} />
+								<NumberField label={t.baitulmalIncreaseAmount} name="baitulmalIncreaseAmount" value={form.baitulmalIncreaseAmount} onChange={handleNumber} disabled={isLocked} />
+								<NumberField label={t.sellBooksNumber} name="sellBooksNumber" value={form.sellBooksNumber} onChange={handleNumber} disabled={isLocked} />
 							</div>
 
-							<DynamicListField label={t.socialHelp} items={form.socialHelp} onChange={(items: string[]) => handleList("socialHelp", items)} t={t} />
-							<DynamicListField label={t.professionalHelp} items={form.professionalHelp} onChange={(items: string[]) => handleList("professionalHelp", items)} t={t} />
+							<DynamicListField label={t.socialHelp} items={form.socialHelp} onChange={(items: string[]) => handleList("socialHelp", items)} t={t} disabled={isLocked} />
+							<DynamicListField label={t.professionalHelp} items={form.professionalHelp} onChange={(items: string[]) => handleList("professionalHelp", items)} t={t} disabled={isLocked} />
 						</div>
 					</div>
 
 					<div>
 						<SectionTitle title={t.selfAssessment} />
 						<div className="grid grid-cols-2 gap-3">
-							<NumberField label={t.reportKeeping} name="reportKeepingDays" value={form.reportKeepingDays} onChange={handleNumber} max={daysInMonth} />
-							<NumberField label={t.selfCriticism} name="selfCriticismDays" value={form.selfCriticismDays} onChange={handleNumber} max={daysInMonth} />
+							<NumberField label={t.reportKeeping} name="reportKeepingDays" value={form.reportKeepingDays} onChange={handleNumber} max={daysInMonth} disabled={isLocked} />
+							<NumberField label={t.selfCriticism} name="selfCriticismDays" value={form.selfCriticismDays} onChange={handleNumber} max={daysInMonth} disabled={isLocked} />
 						</div>
 					</div>
 
-					<div className="pt-2">
+					<div className="px-4 sm:px-6 py-5 bg-gray-50/50 border-t border-gray-100 flex justify-end">
 						<button
 							type="submit"
-							disabled={submitting}
-							className="w-full sm:w-auto relative group overflow-hidden rounded-xl bg-indigo-600 px-8 py-3.5 sm:py-3 text-sm font-bold text-white transition-all hover:bg-indigo-500 hover:shadow-[0_0_20px_rgba(79,70,229,0.3)] active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100 flex items-center justify-center gap-2"
+							disabled={submitting || isLocked}
+							className={`relative group overflow-hidden rounded-xl px-6 py-2.5 font-semibold text-sm transition-all duration-300 shadow-sm flex items-center gap-2 ${
+								isLocked || submitting ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-indigo-600 text-white hover:bg-indigo-500 hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm'
+							}`}
 						>
 							{submitting ? (
-								<>
-									<Loader2 className="w-4 h-4 animate-spin" />
-									<span>{t.saving}</span>
-								</>
+								<Loader2 className="w-4 h-4 animate-spin" />
 							) : (
-								<span>{t.saveReport}</span>
+								<Save className={`w-4 h-4 ${isLocked ? 'opacity-50' : 'group-hover:scale-110 transition-transform'}`} />
 							)}
+							{submitting ? t.saving : t.saveReport}
 						</button>
 					</div>
 				</div>
