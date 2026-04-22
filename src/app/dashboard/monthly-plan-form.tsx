@@ -19,7 +19,7 @@ export type MonthlyPlanData = {
 	safarDays: number;
 	reportKeepingDays: number;
 	selfCriticismDays: number;
-	
+
 	increaseAssociate: string[];
 	increaseActivist: string[];
 	increaseMember: string[];
@@ -32,22 +32,24 @@ export type MonthlyPlanData = {
 	professionalHelp: string[];
 };
 
-export const emptyMonthlyPlan = (): MonthlyPlanData => ({
-	quranStudyDays: 0,
-	haditsRead: 0,
-	literature: 0,
-	salahJamaat: 0,
-	targetContactDawah: 0,
-	targetContactWorker: 0,
-	targetContactMember: 0,
-	workerContact: 0,
-	bookDistribution: 0,
-	familyMeetingDays: 0,
-	socialWorkDays: 0,
-	orgWorkHours: 0,
-	safarDays: 0,
-	reportKeepingDays: 0,
-	selfCriticismDays: 0,
+export const emptyMonthlyPlan = (monthStr: string): MonthlyPlanData => {
+	const daysInMonth = monthStr ? new Date(parseInt(monthStr.split("-")[0]), parseInt(monthStr.split("-")[1]), 0).getDate() : 30;
+	return {
+		quranStudyDays: daysInMonth,
+		haditsRead: 0,
+		literature: 0,
+		salahJamaat: 0,
+		targetContactDawah: 0,
+		targetContactWorker: 0,
+		targetContactMember: 0,
+		workerContact: 0,
+		bookDistribution: 0,
+		familyMeetingDays: daysInMonth,
+		socialWorkDays: daysInMonth,
+		orgWorkHours: 0,
+		safarDays: daysInMonth,
+		reportKeepingDays: daysInMonth,
+		selfCriticismDays: daysInMonth,
 	increaseAssociate: [],
 	increaseActivist: [],
 	increaseMember: [],
@@ -58,7 +60,8 @@ export const emptyMonthlyPlan = (): MonthlyPlanData => ({
 	sellBooksNumber: 0,
 	socialHelp: [],
 	professionalHelp: [],
-});
+	};
+};
 
 const TEXT = {
 	en: {
@@ -233,13 +236,14 @@ export default function MonthlyPlanForm({
 }) {
 	const { locale } = useLocale();
 	const t = TEXT[locale];
-	const [form, setForm] = useState<MonthlyPlanData>(emptyMonthlyPlan());
+	const [form, setForm] = useState<MonthlyPlanData>(emptyMonthlyPlan(month));
+	const daysInMonth = month ? new Date(parseInt(month.split("-")[0]), parseInt(month.split("-")[1]), 0).getDate() : 30;
 
 	useEffect(() => {
 		if (defaultData) {
-			setForm({ ...emptyMonthlyPlan(), ...defaultData });
+			setForm({ ...emptyMonthlyPlan(month), ...defaultData });
 		} else {
-			setForm(emptyMonthlyPlan());
+			setForm(emptyMonthlyPlan(month));
 		}
 	}, [defaultData, month]);
 
@@ -268,7 +272,7 @@ export default function MonthlyPlanForm({
 						<Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
 					</div>
 				)}
-				
+
 				<div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-indigo-100/50 bg-gradient-to-r from-indigo-50/50 to-violet-50/50">
 					<div className="text-center">
 						<p className="text-[11px] text-indigo-500/80 font-bold uppercase tracking-widest mb-1">{t.monthlyPlan}</p>
@@ -280,7 +284,7 @@ export default function MonthlyPlanForm({
 					<div>
 						<SectionTitle title={t.religiousPractice} />
 						<div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-							<NumberField label={t.quranStudy} name="quranStudyDays" value={form.quranStudyDays} onChange={handleNumber} max={31} />
+							<NumberField label={t.quranStudy} name="quranStudyDays" value={form.quranStudyDays} onChange={handleNumber} max={daysInMonth} />
 							<NumberField label={t.salahInJamaat} name="salahJamaat" value={form.salahJamaat} onChange={handleNumber} />
 							<NumberField label={t.haditsRead} name="haditsRead" value={form.haditsRead} onChange={handleNumber} />
 							<NumberField label={t.literaturePages} name="literature" value={form.literature} onChange={handleNumber} />
@@ -301,13 +305,13 @@ export default function MonthlyPlanForm({
 					<div>
 						<SectionTitle title={t.activities} />
 						<div className="grid grid-cols-2 gap-3">
-							<NumberField label={t.familyMeeting} name="familyMeetingDays" value={form.familyMeetingDays} onChange={handleNumber} max={31} />
-							<NumberField label={t.socialWork} name="socialWorkDays" value={form.socialWorkDays} onChange={handleNumber} max={31} />
-							<NumberField label={t.safarTravel} name="safarDays" value={form.safarDays} onChange={handleNumber} max={31} />
+							<NumberField label={t.familyMeeting} name="familyMeetingDays" value={form.familyMeetingDays} onChange={handleNumber} max={daysInMonth} />
+							<NumberField label={t.socialWork} name="socialWorkDays" value={form.socialWorkDays} onChange={handleNumber} max={daysInMonth} />
+							<NumberField label={t.safarTravel} name="safarDays" value={form.safarDays} onChange={handleNumber} max={daysInMonth} />
 							<NumberField label={t.orgWork} name="orgWorkHours" value={form.orgWorkHours} onChange={handleNumber} />
 						</div>
 					</div>
-					
+
 					<div>
 						<SectionTitle title={t.newFields} />
 						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -321,7 +325,7 @@ export default function MonthlyPlanForm({
 								<NumberField label={t.baitulmalIncreaseAmount} name="baitulmalIncreaseAmount" value={form.baitulmalIncreaseAmount} onChange={handleNumber} />
 								<NumberField label={t.sellBooksNumber} name="sellBooksNumber" value={form.sellBooksNumber} onChange={handleNumber} />
 							</div>
-							
+
 							<DynamicListField label={t.socialHelp} items={form.socialHelp} onChange={(items: string[]) => handleList("socialHelp", items)} t={t} />
 							<DynamicListField label={t.professionalHelp} items={form.professionalHelp} onChange={(items: string[]) => handleList("professionalHelp", items)} t={t} />
 						</div>
@@ -330,8 +334,8 @@ export default function MonthlyPlanForm({
 					<div>
 						<SectionTitle title={t.selfAssessment} />
 						<div className="grid grid-cols-2 gap-3">
-							<NumberField label={t.reportKeeping} name="reportKeepingDays" value={form.reportKeepingDays} onChange={handleNumber} max={31} />
-							<NumberField label={t.selfCriticism} name="selfCriticismDays" value={form.selfCriticismDays} onChange={handleNumber} max={31} />
+							<NumberField label={t.reportKeeping} name="reportKeepingDays" value={form.reportKeepingDays} onChange={handleNumber} max={daysInMonth} />
+							<NumberField label={t.selfCriticism} name="selfCriticismDays" value={form.selfCriticismDays} onChange={handleNumber} max={daysInMonth} />
 						</div>
 					</div>
 
