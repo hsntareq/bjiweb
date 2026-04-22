@@ -67,22 +67,34 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user, account }) {
-      if (account?.provider === "google" && user?.email) {
-        // Exchange Google identity for a backend JWT
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/auth/google`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              googleId: account.providerAccountId,
-              email: user.email,
-            }),
+      const provider = account?.provider ?? (token.provider as string | undefined);
+      if (provider) {
+        (token as any).provider = provider;
+      }
+
+      if (account?.provider === "google" && account.providerAccountId) {
+        (token as any).googleId = account.providerAccountId;
+      }
+
+      if (provider === "google") {
+        const googleId = account?.providerAccountId || ((token as any).googleId as string | undefined);
+        const email = user?.email || (token.email as string | undefined);
+
+        // Keep backend JWT fresh for Google sessions.
+        if (googleId && email && (account || !token.accessToken)) {
+          try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/google`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ googleId, email }),
+            });
+            if (res.ok) {
+              const data = await res.json();
+              token.accessToken = data.access_token;
+            }
+          } catch {
+            // keep existing token.accessToken if refresh fails
           }
-        );
-        if (res.ok) {
-          const data = await res.json();
-          token.accessToken = data.access_token;
         }
       } else if (user) {
         token.accessToken = (user as any).accessToken;
@@ -91,6 +103,8 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       (session as any).accessToken = token.accessToken;
+      (session as any).provider = (token as any).provider;
+      (session as any).googleId = (token as any).googleId;
       return session;
     },
   },

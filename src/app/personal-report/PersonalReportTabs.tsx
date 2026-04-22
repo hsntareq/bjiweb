@@ -1,9 +1,33 @@
 "use client";
 import { useState } from "react";
+import { useLocale } from "../../lib/locale";
 import PersonalReportFormWrapper from "../dashboard/personal-report-form-wrapper";
 
+const TAB_LABELS = {
+	en: {
+		daily: "Daily Report",
+		planning: "Planning",
+		status: "Status",
+		targets: "Targets",
+		planningHint: "Planning tab - add planning UI here.",
+		statusHint: "Status tab - show aggregated status and metrics here.",
+		targetsHint: "Targets tab - manage targets and goals here.",
+	},
+	bn: {
+		daily: "দৈনিক রিপোর্ট",
+		planning: "পরিকল্পনা",
+		status: "অবস্থা",
+		targets: "টার্গেট",
+		planningHint: "পরিকল্পনা ট্যাব - এখানে পরিকল্পনার UI যোগ করুন।",
+		statusHint: "অবস্থা ট্যাব - এখানে সমষ্টিগত অবস্থা ও মেট্রিক দেখান।",
+		targetsHint: "টার্গেট ট্যাব - এখানে লক্ষ্য ও টার্গেট পরিচালনা করুন।",
+	},
+} as const;
+
 export default function PersonalReportTabs() {
-	const tabs = ["Daily Report", "Planning", "Status", "Targets"];
+	const { locale } = useLocale();
+	const t = TAB_LABELS[locale];
+	const tabs = [t.daily, t.planning, t.status, t.targets];
 	const [active, setActive] = useState(0);
 
 	return (
@@ -26,15 +50,15 @@ export default function PersonalReportTabs() {
 					{active === 0 && <PersonalReportFormWrapper />}
 
 					{active === 1 && (
-						<div className="p-4 text-sm text-gray-600">Planning tab — add planning UI here.</div>
+						<div className="p-4 text-sm text-gray-600">{t.planningHint}</div>
 					)}
 
 					{active === 2 && (
-						<div className="p-4 text-sm text-gray-600">Status tab — show aggregated status and metrics here.</div>
+						<div className="p-4 text-sm text-gray-600">{t.statusHint}</div>
 					)}
 
 					{active === 3 && (
-						<div className="p-4 text-sm text-gray-600">Targets tab — manage targets and goals here.</div>
+						<div className="p-4 text-sm text-gray-600">{t.targetsHint}</div>
 					)}
 				</div>
 			</div>
