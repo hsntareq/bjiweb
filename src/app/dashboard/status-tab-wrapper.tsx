@@ -197,19 +197,16 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 
 	useEffect(() => {
 		let isMounted = true;
-		async function fetchSummary() {
+		async function fetchData() {
 			if (!month || status === "loading") return;
 			setLoading(true);
 			try {
 				const token = getAuthToken(session);
-				
-				// Fetch individually so one failure doesn't block the others
-				const fetchSummary = axios.get(`${API_URL}/personal-report/monthly-summary`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }).catch(() => null);
-				const fetchReport = axios.get(`${API_URL}/monthly-report`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }).catch(() => null);
-				const fetchPlan = axios.get(`${API_URL}/monthly-plan`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }).catch(() => null);
-
-				const [summaryRes, reportRes, planRes] = await Promise.all([fetchSummary, fetchReport, fetchPlan]);
-				
+				const [summaryRes, reportRes, planRes] = await Promise.all([
+					axios.get(`${API_URL}/personal-report/monthly-summary`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }).catch(() => null),
+					axios.get(`${API_URL}/monthly-report`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }).catch(() => null),
+					axios.get(`${API_URL}/monthly-plan`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }).catch(() => null),
+				]);
 				if (isMounted) {
 					setSummaryData(summaryRes?.data || null);
 					setReportData(reportRes?.data || {});
@@ -221,9 +218,9 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 				if (isMounted) setLoading(false);
 			}
 		}
-		fetchSummary();
+		fetchData();
 		return () => { isMounted = false; };
-	}, [month]);
+	}, [month, status, session]);
 
 	
 	const handleSave = async () => {
