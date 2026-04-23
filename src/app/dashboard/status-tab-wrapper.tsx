@@ -4,6 +4,7 @@ import axios from "axios";
 import { Loader2, Plus, Trash2, Save } from "lucide-react";
 import { getAuthToken } from "../../lib/getAuthToken";
 import { useLocale } from "../../lib/locale";
+import { useSession } from "next-auth/react";
 import { emptyMonthlyPlan, MonthlyPlanData } from "./monthly-plan-form";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
@@ -182,6 +183,7 @@ function DynamicListField({ items, onChange, t }: any) {
 
 export default function StatusTabWrapper({ month }: { month: string }) {
 	const { locale } = useLocale();
+	const { data: session, status } = useSession();
 	const t = TEXT[locale];
 	const [summaryData, setSummaryData] = useState<any>(null);
 	const [planData, setPlanData] = useState<any>(null);
@@ -196,10 +198,10 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 	useEffect(() => {
 		let isMounted = true;
 		async function fetchSummary() {
-			if (!month) return;
+			if (!month || status === "loading") return;
 			setLoading(true);
 			try {
-				const token = await getAuthToken();
+				const token = getAuthToken(session);
 				
 				// Fetch individually so one failure doesn't block the others
 				const fetchSummary = axios.get(`${API_URL}/personal-report/monthly-summary`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }).catch(() => null);
@@ -225,12 +227,15 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 
 	
 	const handleSave = async () => {
+		if (!month) return;
 		setSaving(true);
 		try {
-			const token = await getAuthToken();
-			await axios.post(`${API_URL}/monthly-report`, { month, ...reportData }, {
-				headers: { Authorization: `Bearer ${token}` }
-			});
+			const token = getAuthToken(session);
+			await axios.post(
+				`${API_URL}/monthly-report`,
+				{ month, ...reportData },
+				{ headers: { Authorization: `Bearer ${token}` } }
+			);
 			// optionally show success toast
 		} catch (error) {
 			console.error("Failed to save report", error);
