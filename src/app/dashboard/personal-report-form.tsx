@@ -592,7 +592,8 @@ export default function PersonalReportForm({
 									value={orgWorkInput}
 									onChange={(e) => handleOrgWorkInputChange(e.target.value)}
 									onBlur={normalizeOrgWorkInput}
-									className="w-full border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 text-center font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm hover:border-gray-300 bg-white/50 focus:bg-white"
+									disabled={timerRunning}
+									className={`w-full border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 text-center font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm ${timerRunning ? 'bg-gray-100 text-gray-500 cursor-not-allowed border-gray-200' : 'hover:border-gray-300 bg-white/50 focus:bg-white'}`}
 									placeholder="hh:mm:ss"
 									aria-label={`${t.orgWork} hh:mm:ss`}
 								/>
