@@ -32,6 +32,7 @@ export default function PersonalReportTabs() {
 	const t = TAB_LABELS[locale];
 	const tabs = [t.daily, t.planning, t.status, t.targets];
 	const [active, setActive] = useState(0);
+	const [planData, setPlanData] = useState<any>(null);
 
 	const [selectedMonth, setSelectedMonth] = useState(() => {
 		const d = new Date();
@@ -46,6 +47,7 @@ export default function PersonalReportTabs() {
 		const y = d.getFullYear();
 		const m = String(d.getMonth() + 1).padStart(2, "0");
 		setSelectedMonth(`${y}-${m}`);
+		setPlanData(null); // reset when month changes
 	};
 
 	return (
@@ -74,7 +76,7 @@ export default function PersonalReportTabs() {
 						<input
 							type="month"
 							value={selectedMonth}
-							onChange={(e) => setSelectedMonth(e.target.value)}
+							onChange={(e) => { setSelectedMonth(e.target.value); setPlanData(null); }}
 							className="px-2 py-1 text-sm font-semibold text-gray-700 focus:outline-none bg-transparent border-none ring-0 max-w-[130px] text-center"
 						/>
 						<button 
@@ -90,11 +92,11 @@ export default function PersonalReportTabs() {
 					{active === 0 && <PersonalReportFormWrapper />}
 
 					{active === 1 && (
-						<MonthlyPlanFormWrapper month={selectedMonth} />
+						<MonthlyPlanFormWrapper month={selectedMonth} onPlanLoaded={setPlanData} />
 					)}
 
 					{active === 2 && (
-						<StatusTabWrapper month={selectedMonth} />
+						<StatusTabWrapper month={selectedMonth} planData={planData} />
 					)}
 
 					{active === 3 && (

@@ -20,7 +20,7 @@ const WRAPPER_TEXT = {
 	}
 };
 
-export default function MonthlyPlanFormWrapper({ month }: { month: string }) {
+export default function MonthlyPlanFormWrapper({ month, onPlanLoaded }: { month: string; onPlanLoaded?: (data: any) => void }) {
 	const [submitting, setSubmitting] = useState(false);
 	const [defaultData, setDefaultData] = useState<any | null | undefined>(undefined);
 	const [fallbackToken, setFallbackToken] = useState<string | null>(null);
@@ -82,6 +82,7 @@ export default function MonthlyPlanFormWrapper({ month }: { month: string }) {
 					data.memorizingHadits = Array.isArray(data.memorizingHadits) ? data.memorizingHadits : [];
 				}
 				setDefaultData(data || null);
+				onPlanLoaded?.(data || null);
 			} catch (err: any) {
 				if (err?.response?.status === 401) {
 					const refreshedToken = await refreshBackendToken();
@@ -100,6 +101,7 @@ export default function MonthlyPlanFormWrapper({ month }: { month: string }) {
 								data.memorizingHadits = Array.isArray(data.memorizingHadits) ? data.memorizingHadits : [];
 							}
 							setDefaultData(data || null);
+							onPlanLoaded?.(data || null);
 							return;
 						} catch {
 							setDefaultData(null);
@@ -156,6 +158,7 @@ export default function MonthlyPlanFormWrapper({ month }: { month: string }) {
 					data.memorizingHadits = Array.isArray(data.memorizingHadits) ? data.memorizingHadits : [];
 				}
 				setDefaultData(data || null);
+				onPlanLoaded?.(data || null);
 			}
 		} catch (error) {
 			console.error("Failed to save plan:", error);

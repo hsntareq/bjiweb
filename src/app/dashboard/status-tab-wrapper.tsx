@@ -181,12 +181,11 @@ function DynamicListField({ items, onChange, t }: any) {
 	);
 }
 
-export default function StatusTabWrapper({ month }: { month: string }) {
+export default function StatusTabWrapper({ month, planData }: { month: string; planData?: any }) {
 	const { locale } = useLocale();
 	const { data: session, status } = useSession();
 	const t = TEXT[locale];
 	const [summaryData, setSummaryData] = useState<any>(null);
-	const [planData, setPlanData] = useState<any>(null);
 	const [reportData, setReportData] = useState<any>({});
 	const [saving, setSaving] = useState(false);
 	const [loading, setLoading] = useState(false);
@@ -202,15 +201,13 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 			setLoading(true);
 			try {
 				const token = getAuthToken(session);
-				const [summaryRes, reportRes, planRes] = await Promise.all([
+				const [summaryRes, reportRes] = await Promise.all([
 					axios.get(`${API_URL}/personal-report/monthly-summary`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }).catch(() => null),
 					axios.get(`${API_URL}/monthly-report`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }).catch(() => null),
-					axios.get(`${API_URL}/monthly-plan`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }).catch(() => null),
 				]);
 				if (isMounted) {
 					setSummaryData(summaryRes?.data || null);
 					setReportData(reportRes?.data || {});
-					setPlanData(planRes?.data || null);
 				}
 			} catch (err) {
 				console.error("Failed to fetch data", err);
