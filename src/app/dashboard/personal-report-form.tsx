@@ -231,6 +231,8 @@ export default function PersonalReportForm({
 	submitting,
 	timerSubmitting,
 	defaultData,
+	minDate,
+	maxDate,
 }: {
 	date: string;
 	onDateChange: (d: string) => void;
@@ -240,6 +242,8 @@ export default function PersonalReportForm({
 	submitting: boolean;
 	timerSubmitting: boolean;
 	defaultData?: Partial<ReportData> | null;
+	minDate?: string;
+	maxDate?: string;
 }) {
 	const { locale } = useLocale();
 	const t = TEXT[locale];
@@ -439,7 +443,10 @@ export default function PersonalReportForm({
 	function shiftDate(days: number) {
 		const d = parseDateStr(date);
 		d.setDate(d.getDate() + days);
-		handleDateSwitch(toDateStr(d));
+		const newDate = toDateStr(d);
+		if (minDate && newDate < minDate) return;
+		if (maxDate && newDate > maxDate) return;
+		handleDateSwitch(newDate);
 	}
 
 	const timerDisplay = formatDurationWithSeconds(liveTimerMs);
@@ -497,7 +504,8 @@ export default function PersonalReportForm({
 								<input
 									type="date"
 									value={date}
-									max={toDateStr(new Date())}
+									min={minDate}
+									max={maxDate || toDateStr(new Date())}
 									onChange={(e) => handleDateSwitch(e.target.value)}
 									className="flex-1 sm:flex-none h-10 text-center text-sm font-medium border border-indigo-200 rounded-xl px-2 py-1 text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white shadow-sm"
 								/>

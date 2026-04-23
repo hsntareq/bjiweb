@@ -192,7 +192,7 @@ export default function PersonalReportTabs() {
 				</div>
 
 				<div className="mt-2">
-					{active === 0 && <PersonalReportFormWrapper onRefresh={triggerRefresh} />}
+					{active === 0 && <PersonalReportFormWrapper onRefresh={triggerRefresh} selectedMonth={selectedMonth} />}
 					{active === 1 && (
 						<MonthlyPlanFormWrapper 
 							month={selectedMonth} 

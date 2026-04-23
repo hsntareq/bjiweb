@@ -36,7 +36,7 @@ function todayStr() {
 	return `${yyyy}-${mm}-${dd}`;
 }
 
-export default function PersonalReportFormWrapper({ onRefresh }: { onRefresh?: () => void }) {
+export default function PersonalReportFormWrapper({ onRefresh, selectedMonth }: { onRefresh?: () => void; selectedMonth?: string }) {
 	const [submitting, setSubmitting] = useState(false);
 	const [timerSubmitting, setTimerSubmitting] = useState(false);
 	const [date, setDate] = useState(todayStr);
@@ -88,6 +88,34 @@ export default function PersonalReportFormWrapper({ onRefresh }: { onRefresh?: (
 		}
 		setIsDateInitialized(true);
 	}, []);
+
+	// Sync date when selectedMonth changes from the parent month picker
+	useEffect(() => {
+		if (!selectedMonth || !isDateInitialized) return;
+		const [year, monthNum] = selectedMonth.split('-').map(Number);
+		// Keep the same day number, clamped to the last day of the new month
+		const currentDay = parseInt(date.split('-')[2] || '1', 10);
+		const lastDay = new Date(year, monthNum, 0).getDate();
+		const clampedDay = Math.min(currentDay, lastDay);
+		const newDate = `${selectedMonth}-${String(clampedDay).padStart(2, '0')}`;
+		if (newDate !== date) {
+			setDate(newDate);
+			setDefaultData(undefined);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [selectedMonth]);
+
+	// Compute min/max dates for the selected month
+	const { minDate, maxDate } = (() => {
+		const today = todayStr();
+		if (!selectedMonth) return { minDate: undefined, maxDate: today };
+		const [year, monthNum] = selectedMonth.split('-').map(Number);
+		const firstDay = `${selectedMonth}-01`;
+		const lastDay = new Date(year, monthNum, 0).getDate();
+		const lastDayStr = `${selectedMonth}-${String(lastDay).padStart(2, '0')}`;
+		const effectiveMax = lastDayStr < today ? lastDayStr : today;
+		return { minDate: firstDay, maxDate: effectiveMax };
+	})();
 
 	useEffect(() => {
 		if (!isDateInitialized || status === "loading") return;
@@ -215,6 +243,8 @@ export default function PersonalReportFormWrapper({ onRefresh }: { onRefresh?: (
 			submitting={submitting}
 			timerSubmitting={timerSubmitting}
 			defaultData={defaultData}
+			minDate={minDate}
+			maxDate={maxDate}
 		/>
 	);
 }
