@@ -200,24 +200,21 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 			setLoading(true);
 			try {
 				const token = await getAuthToken();
-				const [summaryRes, reportRes, planRes] = await Promise.all([
-					axios.get(`${API_URL}/personal-report/monthly-summary`, {
-						params: { month },
-						headers: { Authorization: `Bearer ${token}` },
-					}),
-					axios.get(`${API_URL}/monthly-report`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }),
-					axios.get(`${API_URL}/monthly-plan`, {
-						params: { month },
-						headers: { Authorization: `Bearer ${token}` },
-					}),
-				]);
+				
+				// Fetch individually so one failure doesn't block the others
+				const fetchSummary = axios.get(`${API_URL}/personal-report/monthly-summary`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }).catch(() => null);
+				const fetchReport = axios.get(`${API_URL}/monthly-report`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }).catch(() => null);
+				const fetchPlan = axios.get(`${API_URL}/monthly-plan`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }).catch(() => null);
+
+				const [summaryRes, reportRes, planRes] = await Promise.all([fetchSummary, fetchReport, fetchPlan]);
+				
 				if (isMounted) {
-					setSummaryData(summaryRes.data);
-					setReportData(reportRes.data || {});
-					setPlanData(planRes.data);
+					setSummaryData(summaryRes?.data || null);
+					setReportData(reportRes?.data || {});
+					setPlanData(planRes?.data || null);
 				}
 			} catch (err) {
-				console.error("Failed to fetch summary", err);
+				console.error("Failed to fetch data", err);
 			} finally {
 				if (isMounted) setLoading(false);
 			}
