@@ -20,11 +20,18 @@ const WRAPPER_TEXT = {
 	}
 };
 
-export default function MonthlyPlanFormWrapper({ month, onPlanLoaded }: { month: string; onPlanLoaded?: (data: any) => void }) {
+export default function MonthlyPlanFormWrapper({ 
+	month, 
+	planData, 
+	onRefresh 
+}: { 
+	month: string; 
+	planData?: any; 
+	onRefresh?: () => void 
+}) {
 	const [submitting, setSubmitting] = useState(false);
-	const [defaultData, setDefaultData] = useState<any | null | undefined>(undefined);
 	const [fallbackToken, setFallbackToken] = useState<string | null>(null);
-	const { data: session, status } = useSession();
+	const { data: session } = useSession();
 	const { locale } = useLocale();
 	const t = WRAPPER_TEXT[locale];
 
@@ -47,74 +54,12 @@ export default function MonthlyPlanFormWrapper({ month, onPlanLoaded }: { month:
 
 	const getAuthToken = useCallback(async (): Promise<string | null> => {
 		let token = fallbackToken || ((session as any)?.accessToken as string | undefined) || null;
-		
 		if (session && (!token || isTokenExpired(token))) {
 			const refreshedToken = await refreshBackendToken();
-			if (refreshedToken) {
-				return refreshedToken;
-			}
+			if (refreshedToken) return refreshedToken;
 		}
-
 		return token;
 	}, [fallbackToken, session, refreshBackendToken]);
-
-	useEffect(() => {
-		if (status === "loading") return;
-
-		async function fetchReport() {
-			const token = await getAuthToken();
-			if (!token) {
-				setDefaultData(null);
-				return;
-			}
-			try {
-				setDefaultData(undefined);
-				const res = await axios.get(`${API_URL}/monthly-plan?month=${month}`, {
-					headers: { Authorization: `Bearer ${token}` },
-				});
-				const data = res.data;
-				if (data) {
-					data.increaseAssociate = Array.isArray(data.increaseAssociate) ? data.increaseAssociate : [];
-					data.increaseActivist = Array.isArray(data.increaseActivist) ? data.increaseActivist : [];
-					data.increaseMember = Array.isArray(data.increaseMember) ? data.increaseMember : [];
-					data.memorizingSura = Array.isArray(data.memorizingSura) ? data.memorizingSura : [];
-					data.memorizingAyat = Array.isArray(data.memorizingAyat) ? data.memorizingAyat : [];
-					data.memorizingHadits = Array.isArray(data.memorizingHadits) ? data.memorizingHadits : [];
-				}
-				setDefaultData(data || null);
-				onPlanLoaded?.(data || null);
-			} catch (err: any) {
-				if (err?.response?.status === 401) {
-					const refreshedToken = await refreshBackendToken();
-					if (refreshedToken) {
-						try {
-							const retryRes = await axios.get(`${API_URL}/monthly-plan?month=${month}`, {
-								headers: { Authorization: `Bearer ${refreshedToken}` },
-							});
-							const data = retryRes.data;
-							if (data) {
-								data.increaseAssociate = Array.isArray(data.increaseAssociate) ? data.increaseAssociate : [];
-								data.increaseActivist = Array.isArray(data.increaseActivist) ? data.increaseActivist : [];
-								data.increaseMember = Array.isArray(data.increaseMember) ? data.increaseMember : [];
-								data.memorizingSura = Array.isArray(data.memorizingSura) ? data.memorizingSura : [];
-								data.memorizingAyat = Array.isArray(data.memorizingAyat) ? data.memorizingAyat : [];
-								data.memorizingHadits = Array.isArray(data.memorizingHadits) ? data.memorizingHadits : [];
-							}
-							setDefaultData(data || null);
-							onPlanLoaded?.(data || null);
-							return;
-						} catch {
-							setDefaultData(null);
-							return;
-						}
-					}
-				}
-				setDefaultData(null);
-			}
-		}
-		fetchReport();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [month, status]);
 
 	async function authorizedPost(url: string, data: any) {
 		let token = await getAuthToken();
@@ -143,23 +88,7 @@ export default function MonthlyPlanFormWrapper({ month, onPlanLoaded }: { month:
 		try {
 			await authorizedPost(`${API_URL}/monthly-plan`, data);
 			toast.success(t.saved);
-			const token = await getAuthToken();
-			if (token) {
-				const res = await axios.get(`${API_URL}/monthly-plan?month=${month}`, {
-					headers: { Authorization: `Bearer ${token}` },
-				});
-				const data = res.data;
-				if (data) {
-					data.increaseAssociate = Array.isArray(data.increaseAssociate) ? data.increaseAssociate : [];
-					data.increaseActivist = Array.isArray(data.increaseActivist) ? data.increaseActivist : [];
-					data.increaseMember = Array.isArray(data.increaseMember) ? data.increaseMember : [];
-					data.memorizingSura = Array.isArray(data.memorizingSura) ? data.memorizingSura : [];
-					data.memorizingAyat = Array.isArray(data.memorizingAyat) ? data.memorizingAyat : [];
-					data.memorizingHadits = Array.isArray(data.memorizingHadits) ? data.memorizingHadits : [];
-				}
-				setDefaultData(data || null);
-				onPlanLoaded?.(data || null);
-			}
+			onRefresh?.();
 		} catch (error) {
 			console.error("Failed to save plan:", error);
 			toast.error(t.saveFailed);
@@ -173,7 +102,7 @@ export default function MonthlyPlanFormWrapper({ month, onPlanLoaded }: { month:
 			month={month}
 			onSubmit={handleSubmit}
 			submitting={submitting}
-			defaultData={defaultData}
+			defaultData={planData}
 		/>
 	);
 }

@@ -37,6 +37,7 @@ export default function PersonalReportTabs() {
 	const [summaryData, setSummaryData] = useState<any>(null);
 	const [reportData, setReportData] = useState<any>({});
 	const [fallbackToken, setFallbackToken] = useState<string | null>(null);
+	const [refreshTrigger, setRefreshTrigger] = useState(0);
 
 	const { data: session, status } = useSession();
 
@@ -65,7 +66,6 @@ export default function PersonalReportTabs() {
 
 	const getToken = useCallback(async (): Promise<string | null> => {
 		const token = fallbackToken || ((session as any)?.accessToken as string | undefined) || null;
-		// Only attempt Google token refresh - for email/mobile the token is always valid from session
 		if (!token || isTokenExpired(token)) {
 			const refreshed = await refreshBackendToken();
 			if (refreshed) return refreshed;
@@ -76,14 +76,14 @@ export default function PersonalReportTabs() {
 	useEffect(() => {
 		if (status === "loading") return;
 		let isMounted = true;
-		async function fetchStatusData() {
+		async function fetchData() {
 			const token = await getToken();
 			if (!token) {
-				console.warn("[StatusTab] No auth token available, skipping fetch");
+				console.warn("[PersonalReportTabs] No auth token available, skipping fetch");
 				return;
 			}
 			try {
-				const [summaryRes, reportRes] = await Promise.all([
+				const [summaryRes, reportRes, planRes] = await Promise.all([
 					axios.get(`${API_URL}/personal-report/monthly-summary`, {
 						params: { month: selectedMonth },
 						headers: { Authorization: `Bearer ${token}` },
@@ -92,19 +92,36 @@ export default function PersonalReportTabs() {
 						params: { month: selectedMonth },
 						headers: { Authorization: `Bearer ${token}` },
 					}).catch(() => null),
+					axios.get(`${API_URL}/monthly-plan`, {
+						params: { month: selectedMonth },
+						headers: { Authorization: `Bearer ${token}` },
+					}).catch((e) => { console.error("[StatusTab] plan fetch failed", e?.response?.status); return null; }),
 				]);
 				if (isMounted) {
 					setSummaryData(summaryRes?.data || null);
 					setReportData(reportRes?.data || {});
+					
+					let pData = planRes?.data || null;
+					if (pData) {
+						pData.increaseAssociate = Array.isArray(pData.increaseAssociate) ? pData.increaseAssociate : [];
+						pData.increaseActivist = Array.isArray(pData.increaseActivist) ? pData.increaseActivist : [];
+						pData.increaseMember = Array.isArray(pData.increaseMember) ? pData.increaseMember : [];
+						pData.memorizingSura = Array.isArray(pData.memorizingSura) ? pData.memorizingSura : [];
+						pData.memorizingAyat = Array.isArray(pData.memorizingAyat) ? pData.memorizingAyat : [];
+						pData.memorizingHadits = Array.isArray(pData.memorizingHadits) ? pData.memorizingHadits : [];
+						pData.socialHelp = Array.isArray(pData.socialHelp) ? pData.socialHelp : [];
+						pData.professionalHelp = Array.isArray(pData.professionalHelp) ? pData.professionalHelp : [];
+					}
+					setPlanData(pData);
 				}
 			} catch (err) {
-				console.error("Status data fetch failed", err);
+				console.error("Data fetch failed", err);
 			}
 		}
-		fetchStatusData();
+		fetchData();
 		return () => { isMounted = false; };
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedMonth, status, session]);
+	}, [selectedMonth, status, session, refreshTrigger]);
 
 	const handleMonthChange = (offset: number) => {
 		const [year, month] = selectedMonth.split('-').map(Number);
@@ -166,7 +183,11 @@ export default function PersonalReportTabs() {
 				<div className="mt-2">
 					{active === 0 && <PersonalReportFormWrapper />}
 					{active === 1 && (
-						<MonthlyPlanFormWrapper month={selectedMonth} onPlanLoaded={setPlanData} />
+						<MonthlyPlanFormWrapper 
+							month={selectedMonth} 
+							planData={planData} 
+							onRefresh={() => setRefreshTrigger(prev => prev + 1)}
+						/>
 					)}
 					{active === 2 && (
 						<StatusTabWrapper
