@@ -1,10 +1,15 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLocale } from "../../lib/locale";
+import { useSession } from "next-auth/react";
+import axios from "axios";
 import PersonalReportFormWrapper from "../dashboard/personal-report-form-wrapper";
 import MonthlyPlanFormWrapper from "../dashboard/monthly-plan-form-wrapper";
 import StatusTabWrapper from "../dashboard/status-tab-wrapper";
+import { isTokenExpired } from "../../lib/getAuthToken";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 const TAB_LABELS = {
 	en: {
@@ -12,8 +17,6 @@ const TAB_LABELS = {
 		planning: "Planning",
 		status: "Status",
 		targets: "Targets",
-		planningHint: "Planning tab - add planning UI here.",
-		statusHint: "Status tab - show aggregated status and metrics here.",
 		targetsHint: "Targets tab - manage targets and goals here.",
 	},
 	bn: {
@@ -21,8 +24,6 @@ const TAB_LABELS = {
 		planning: "পরিকল্পনা",
 		status: "অবস্থা",
 		targets: "টার্গেট",
-		planningHint: "পরিকল্পনা ট্যাব - এখানে পরিকল্পনার UI যোগ করুন।",
-		statusHint: "অবস্থা ট্যাব - এখানে সমষ্টিগত অবস্থা ও মেট্রিক দেখান।",
 		targetsHint: "টার্গেট ট্যাব - এখানে লক্ষ্য ও টার্গেট পরিচালনা করুন।",
 	},
 } as const;
@@ -33,6 +34,11 @@ export default function PersonalReportTabs() {
 	const tabs = [t.daily, t.planning, t.status, t.targets];
 	const [active, setActive] = useState(0);
 	const [planData, setPlanData] = useState<any>(null);
+	const [summaryData, setSummaryData] = useState<any>(null);
+	const [reportData, setReportData] = useState<any>({});
+	const [fallbackToken, setFallbackToken] = useState<string | null>(null);
+
+	const { data: session, status } = useSession();
 
 	const [selectedMonth, setSelectedMonth] = useState(() => {
 		const d = new Date();
@@ -41,13 +47,70 @@ export default function PersonalReportTabs() {
 		return `${y}-${m}`;
 	});
 
+	const refreshBackendToken = useCallback(async (): Promise<string | null> => {
+		const provider = (session as any)?.provider;
+		const googleId = (session as any)?.googleId;
+		const email = session?.user?.email;
+		if (provider !== "google" || !googleId || !email) return null;
+		try {
+			const res = await axios.post(`${API_URL}/auth/google`, { googleId, email });
+			const nextToken = res?.data?.access_token as string | undefined;
+			if (!nextToken) return null;
+			setFallbackToken(nextToken);
+			return nextToken;
+		} catch {
+			return null;
+		}
+	}, [session]);
+
+	const getToken = useCallback(async (): Promise<string | null> => {
+		let token = fallbackToken || ((session as any)?.accessToken as string | undefined) || null;
+		if (session && (!token || isTokenExpired(token))) {
+			const refreshed = await refreshBackendToken();
+			if (refreshed) return refreshed;
+		}
+		return token;
+	}, [fallbackToken, session, refreshBackendToken]);
+
+	useEffect(() => {
+		if (status === "loading") return;
+		let isMounted = true;
+		async function fetchStatusData() {
+			const token = await getToken();
+			if (!token) return;
+			try {
+				const [summaryRes, reportRes] = await Promise.all([
+					axios.get(`${API_URL}/personal-report/monthly-summary`, {
+						params: { month: selectedMonth },
+						headers: { Authorization: `Bearer ${token}` },
+					}).catch(() => null),
+					axios.get(`${API_URL}/monthly-report`, {
+						params: { month: selectedMonth },
+						headers: { Authorization: `Bearer ${token}` },
+					}).catch(() => null),
+				]);
+				if (isMounted) {
+					setSummaryData(summaryRes?.data || null);
+					setReportData(reportRes?.data || {});
+				}
+			} catch (err) {
+				console.error("Status data fetch failed", err);
+			}
+		}
+		fetchStatusData();
+		return () => { isMounted = false; };
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [selectedMonth, status]);
+
 	const handleMonthChange = (offset: number) => {
 		const [year, month] = selectedMonth.split('-').map(Number);
 		const d = new Date(year, month - 1 + offset, 1);
 		const y = d.getFullYear();
 		const m = String(d.getMonth() + 1).padStart(2, "0");
 		setSelectedMonth(`${y}-${m}`);
-		setPlanData(null); // reset when month changes
+		setPlanData(null);
+		setSummaryData(null);
+		setReportData({});
 	};
 
 	return (
@@ -59,15 +122,18 @@ export default function PersonalReportTabs() {
 							<button
 								key={t}
 								onClick={() => setActive(i)}
-								className={`px-3 py-2 rounded-xl text-sm font-medium transition ${i === active ? "bg-indigo-50 border border-indigo-200 text-indigo-700" : "bg-white border border-gray-100 text-gray-600 hover:bg-gray-50"
-									}`}
+								className={`px-3 py-2 rounded-xl text-sm font-medium transition ${
+									i === active
+										? "bg-indigo-50 border border-indigo-200 text-indigo-700"
+										: "bg-white border border-gray-100 text-gray-600 hover:bg-gray-50"
+								}`}
 							>
 								{t}
 							</button>
 						))}
 					</div>
 					<div className="flex items-center gap-1 bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
-						<button 
+						<button
 							onClick={() => handleMonthChange(-1)}
 							className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors"
 						>
@@ -76,10 +142,15 @@ export default function PersonalReportTabs() {
 						<input
 							type="month"
 							value={selectedMonth}
-							onChange={(e) => { setSelectedMonth(e.target.value); setPlanData(null); }}
+							onChange={(e) => {
+								setSelectedMonth(e.target.value);
+								setPlanData(null);
+								setSummaryData(null);
+								setReportData({});
+							}}
 							className="px-2 py-1 text-sm font-semibold text-gray-700 focus:outline-none bg-transparent border-none ring-0 max-w-[130px] text-center"
 						/>
-						<button 
+						<button
 							onClick={() => handleMonthChange(1)}
 							className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors"
 						>
@@ -90,15 +161,18 @@ export default function PersonalReportTabs() {
 
 				<div className="mt-2">
 					{active === 0 && <PersonalReportFormWrapper />}
-
 					{active === 1 && (
 						<MonthlyPlanFormWrapper month={selectedMonth} onPlanLoaded={setPlanData} />
 					)}
-
 					{active === 2 && (
-						<StatusTabWrapper month={selectedMonth} planData={planData} />
+						<StatusTabWrapper
+							month={selectedMonth}
+							planData={planData}
+							summaryData={summaryData}
+							reportData={reportData}
+							onReportDataChange={setReportData}
+						/>
 					)}
-
 					{active === 3 && (
 						<div className="p-4 text-sm text-gray-600">{t.targetsHint}</div>
 					)}

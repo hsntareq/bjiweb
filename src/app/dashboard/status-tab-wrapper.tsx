@@ -181,43 +181,42 @@ function DynamicListField({ items, onChange, t }: any) {
 	);
 }
 
-export default function StatusTabWrapper({ month, planData }: { month: string; planData?: any }) {
+export default function StatusTabWrapper({
+	month,
+	planData,
+	summaryData,
+	reportData: reportDataProp,
+	onReportDataChange,
+}: {
+	month: string;
+	planData?: any;
+	summaryData?: any;
+	reportData?: any;
+	onReportDataChange?: (data: any) => void;
+}) {
 	const { locale } = useLocale();
-	const { data: session, status } = useSession();
+	const { data: session } = useSession();
 	const t = TEXT[locale];
-	const [summaryData, setSummaryData] = useState<any>(null);
-	const [reportData, setReportData] = useState<any>({});
+	const [reportData, setReportData] = useState<any>(reportDataProp || {});
 	const [saving, setSaving] = useState(false);
-	const [loading, setLoading] = useState(false);
+	const [loading] = useState(false);
+
+	// Sync external reportData prop into local state
+	useEffect(() => {
+		setReportData(reportDataProp || {});
+	}, [reportDataProp]);
+
+	const setReportDataAndNotify = (updater: any) => {
+		setReportData((prev: any) => {
+			const next = typeof updater === "function" ? updater(prev) : updater;
+			onReportDataChange?.(next);
+			return next;
+		});
+	};
 
 	const daysInMonth = month ? new Date(parseInt(month.split("-")[0]), parseInt(month.split("-")[1]), 0).getDate() : 30;
 	const fallbackPlan = emptyMonthlyPlan(month);
-	const thresholds = calculateThresholds(daysInMonth, fallbackPlan);
-
-	useEffect(() => {
-		let isMounted = true;
-		async function fetchData() {
-			if (!month || status === "loading") return;
-			setLoading(true);
-			try {
-				const token = getAuthToken(session);
-				const [summaryRes, reportRes] = await Promise.all([
-					axios.get(`${API_URL}/personal-report/monthly-summary`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }).catch(() => null),
-					axios.get(`${API_URL}/monthly-report`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }).catch(() => null),
-				]);
-				if (isMounted) {
-					setSummaryData(summaryRes?.data || null);
-					setReportData(reportRes?.data || {});
-				}
-			} catch (err) {
-				console.error("Failed to fetch data", err);
-			} finally {
-				if (isMounted) setLoading(false);
-			}
-		}
-		fetchData();
-		return () => { isMounted = false; };
-	}, [month, status, session]);
+	const thresholds = calculateThresholds(daysInMonth, planData ? { ...fallbackPlan, ...planData } : fallbackPlan);
 
 	
 	const handleSave = async () => {
@@ -356,7 +355,7 @@ export default function StatusTabWrapper({ month, planData }: { month: string; p
 													<div className="flex justify-center">
 														<DynamicListField 
 															items={reportData[th.key] || []} 
-															onChange={(items: string[]) => setReportData((prev: any) => ({ ...prev, [th.key]: items }))} 
+															onChange={(items: string[]) => setReportDataAndNotify((prev: any) => ({ ...prev, [th.key]: items }))} 
 															t={t} 
 														/>
 													</div>
@@ -367,7 +366,7 @@ export default function StatusTabWrapper({ month, planData }: { month: string; p
 															min={0}
 															className="w-full max-w-[120px] text-center border-2 border-gray-100 rounded-xl px-3 py-2 text-sm font-semibold text-indigo-900 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all shadow-sm bg-gray-50/50 hover:bg-white focus:bg-white"
 															value={reportData[th.key] || 0}
-															onChange={(e) => setReportData((prev: any) => ({ ...prev, [th.key]: parseInt(e.target.value) || 0 }))}
+															onChange={(e) => setReportDataAndNotify((prev: any) => ({ ...prev, [th.key]: parseInt(e.target.value) || 0 }))}
 														/>
 													</div>
 												)
