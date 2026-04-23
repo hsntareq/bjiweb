@@ -46,7 +46,7 @@ const TEXT = {
 		save: "Save Status",
 		saving: "Saving...",
 		add: "+ Add",
-
+		noPlanNotice: "⚠️ You have not saved a personalized plan for this month. Using general standard targets.",
 	},
 	bn: {
 		status: "মাসিক অবস্থা",
@@ -86,7 +86,7 @@ const TEXT = {
 		save: "অবস্থা সংরক্ষণ করুন",
 		saving: "সংরক্ষণ করা হচ্ছে...",
 		add: "+ যোগ করুন",
-
+		noPlanNotice: "⚠️ আপনি এই মাসের জন্য কোনো পরিকল্পনা সংরক্ষণ করেননি। সাধারণ মান ব্যবহার করা হচ্ছে।",
 	},
 } as const;
 
@@ -259,8 +259,10 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 		return summaryData[summaryKey] || 0;
 	};
 
-	const getPlanValue = (planKey: string, isArray?: boolean) => {
-		if (!planData) return 0;
+	const getPlanValue = (planKey: string, isArray?: boolean, standard?: number) => {
+		if (!planData || planData[planKey] === undefined) {
+			return standard || 0;
+		}
 		if (isArray) {
 			return Array.isArray(planData[planKey]) ? planData[planKey].length : 0;
 		}
@@ -310,6 +312,14 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 					)}
 				</div>
 
+				{!loading && !planData && (
+					<div className="bg-orange-50 border-b border-orange-100 px-4 sm:px-6 py-3 flex items-center justify-center text-center">
+						<p className="text-sm font-medium text-orange-800">
+							{t.noPlanNotice}
+						</p>
+					</div>
+				)}
+
 				<div className="overflow-x-auto px-4 sm:px-6 pb-6 pt-2 bg-slate-50/30">
 					<table className="w-full text-left border-separate border-spacing-y-2.5 min-w-[600px]">
 						<thead>
@@ -323,7 +333,7 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 						<tbody className="divide-y divide-gray-50">
 							{thresholds.map((th) => {
 								const achievedVal = getAchievedValue(th.key, th.summaryKey!, th.editable, th.isArray);
-								const planVal = getPlanValue(th.planKey!, th.isArray);
+								const planVal = getPlanValue(th.planKey!, th.isArray, th.standard);
 								
 								// Remaining based on Plan
 								const remaining = Math.max(0, planVal - achievedVal);
