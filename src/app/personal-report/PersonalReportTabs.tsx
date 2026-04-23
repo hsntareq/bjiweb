@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLocale } from "../../lib/locale";
 import PersonalReportFormWrapper from "../dashboard/personal-report-form-wrapper";
 import MonthlyPlanFormWrapper from "../dashboard/monthly-plan-form-wrapper";
@@ -34,11 +35,18 @@ export default function PersonalReportTabs() {
 
 	const [selectedMonth, setSelectedMonth] = useState(() => {
 		const d = new Date();
-		d.setMonth(d.getMonth() + 1);
 		const y = d.getFullYear();
 		const m = String(d.getMonth() + 1).padStart(2, "0");
 		return `${y}-${m}`;
 	});
+
+	const handleMonthChange = (offset: number) => {
+		const [year, month] = selectedMonth.split('-').map(Number);
+		const d = new Date(year, month - 1 + offset, 1);
+		const y = d.getFullYear();
+		const m = String(d.getMonth() + 1).padStart(2, "0");
+		setSelectedMonth(`${y}-${m}`);
+	};
 
 	return (
 		<div className="max-w-4xl mx-auto my-8">
@@ -56,13 +64,25 @@ export default function PersonalReportTabs() {
 							</button>
 						))}
 					</div>
-					<div>
+					<div className="flex items-center gap-1 bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
+						<button 
+							onClick={() => handleMonthChange(-1)}
+							className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors"
+						>
+							<ChevronLeft className="w-4 h-4" />
+						</button>
 						<input
 							type="month"
 							value={selectedMonth}
 							onChange={(e) => setSelectedMonth(e.target.value)}
-							className="px-3 py-2 rounded-xl text-sm font-medium border border-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+							className="px-2 py-1 text-sm font-semibold text-gray-700 focus:outline-none bg-transparent border-none ring-0 max-w-[130px] text-center"
 						/>
+						<button 
+							onClick={() => handleMonthChange(1)}
+							className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors"
+						>
+							<ChevronRight className="w-4 h-4" />
+						</button>
 					</div>
 				</div>
 
