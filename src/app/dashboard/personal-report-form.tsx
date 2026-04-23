@@ -1,6 +1,6 @@
 "use client";
-import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Check, Loader2, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useLocale } from "../../lib/locale";
 
 type ReportData = {
@@ -161,20 +161,19 @@ function Toggle({ checked, onChange, label, isEdited }: { checked: boolean; onCh
 		<button
 			type="button"
 			onClick={onChange}
-			className={`relative flex items-center justify-between w-full px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border transition-all duration-300 text-xs sm:text-sm font-medium shadow-sm hover:shadow-md hover:-translate-y-0.5 ${checked
+			className={`w-full relative flex items-center justify-between px-2.5 py-1.5 sm:px-3 rounded-lg border transition-all duration-300 text-xs sm:text-sm font-medium shadow-sm hover:shadow-md hover:-translate-y-0.5 ${checked
 				? "bg-gradient-to-r from-indigo-50 to-violet-50 border-indigo-200 text-indigo-700"
 				: "bg-white border-gray-200 text-gray-600 hover:border-gray-300"
 				}`}
 		>
-			{isEdited && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>}
-			<span>{label}</span>
-			<span
-				className={`w-8 h-4 sm:w-10 sm:h-5 rounded-full relative transition-colors flex-shrink-0 ${checked ? "bg-indigo-500" : "bg-gray-200"}`}
-			>
-				<span
-					className={`absolute top-0.5 left-0.5 w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-white shadow transition-transform ${checked ? "translate-x-4 sm:translate-x-5" : "translate-x-0"
-						}`}
-				/>
+			{isEdited && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>}
+			<span className="flex-1 text-left whitespace-nowrap">{label}</span>
+			<span className="flex-shrink-0 ml-1.5">
+				{checked ? (
+					<Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600" />
+				) : (
+					<X className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />
+				)}
 			</span>
 		</button>
 	);
@@ -195,31 +194,82 @@ function NumberField({
 	max?: number;
 	isEdited?: boolean;
 }) {
+	const inputRef = useRef<HTMLInputElement>(null);
 	return (
-		<div className="flex flex-col gap-0.5 relative">
-			<label className="text-xs font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5">
+		<div
+			className="relative flex items-center justify-between gap-1 border border-gray-200 rounded-lg px-2 py-1.5 shadow-sm hover:border-gray-300 transition-all bg-white/50 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 hover:cursor-pointer"
+			onClick={() => inputRef.current?.focus()}
+		>
+			<label htmlFor={`field-${name}`} className="text-xs font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap flex items-center gap-1 pointer-events-none">
 				{label}
-				{isEdited && <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>}
+				{isEdited && <span className="w-1 h-1 bg-red-500 rounded-full flex-shrink-0"></span>}
 			</label>
 			<input
+				ref={inputRef}
+				id={`field-${name}`}
 				type="number"
 				name={name}
 				min={0}
 				max={max}
+				maxLength={3}
 				value={value}
 				onChange={(e) => {
-					const numericValue = Number(e.target.value);
+					let inputValue = e.target.value.slice(0, 3);
+					const numericValue = Number(inputValue);
 					const clampedValue = Number.isFinite(numericValue) ? Math.max(0, numericValue) : 0;
 					onChange(name, typeof max === "number" ? Math.min(max, clampedValue) : clampedValue);
 				}}
-				className="w-full border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm hover:border-gray-300 bg-white/50 focus:bg-white"
+				className="flex-shrink-0 w-12 sm:w-14 border-0 bg-transparent text-xs sm:text-sm text-gray-800 text-right focus:outline-none font-medium"
+			/>
+		</div>
+	);
+}
+
+function OrgWorkField({
+	value,
+	onChange,
+	onBlur,
+	disabled,
+	isEdited,
+	t,
+}: {
+	value: string;
+	onChange: (value: string) => void;
+	onBlur: () => void;
+	disabled: boolean;
+	isEdited: boolean;
+	t: any;
+}) {
+	const inputRef = useRef<HTMLInputElement>(null);
+	return (
+		<div
+			className={`relative flex items-center justify-between gap-1 border rounded-lg px-2 py-1.5 shadow-sm transition-all font-mono hover:cursor-pointer ${disabled ? 'bg-gray-100 text-gray-500 border-gray-200 cursor-not-allowed' : 'border-gray-200 hover:border-gray-300 bg-white/50 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500'}`}
+			onClick={() => !disabled && inputRef.current?.focus()}
+		>
+			<label htmlFor="field-orgWork" className="text-xs font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap flex items-center gap-1 pointer-events-none">
+				{t.orgWork}
+				{isEdited && <span className="w-1 h-1 bg-red-500 rounded-full flex-shrink-0"></span>}
+			</label>
+			<input
+				ref={inputRef}
+				id="field-orgWork"
+				type="text"
+				inputMode="numeric"
+				maxLength={8}
+				value={value}
+				onChange={(e) => onChange(e.target.value)}
+				onBlur={onBlur}
+				disabled={disabled}
+				className="flex-shrink-0 w-20 sm:w-24 border-0 bg-transparent text-xs sm:text-sm text-gray-800 text-right focus:outline-none font-medium font-mono"
+				placeholder="hh:mm:ss"
+				aria-label={`${t.orgWork} hh:mm:ss`}
 			/>
 		</div>
 	);
 }
 
 function SectionTitle({ title }: { title: string }) {
-	return <h3 className="text-xs font-bold uppercase tracking-widest text-indigo-400/80 mt-3 mb-3 flex items-center gap-2"><span className="w-4 h-px bg-indigo-200"></span>{title}<span className="flex-1 h-px bg-indigo-100/50"></span></h3>;
+	return <h3 className="text-xs font-bold uppercase tracking-widest text-indigo-400/80 mt-1.5 mb-2 flex items-center gap-2"><span className="w-4 h-px bg-indigo-200"></span>{title}<span className="flex-1 h-px bg-indigo-100/50"></span></h3>;
 }
 
 export default function PersonalReportForm({
@@ -293,7 +343,7 @@ export default function PersonalReportForm({
 				Math.max(0, nextForm.orgWorkHours * 3600 + nextForm.orgWorkMinutes * 60 + nextForm.orgWorkSeconds),
 			);
 			setManualOrgWorkSeconds(baseSeconds);
-			
+
 			const newLiveTimerMs = newTimerStartedAt ? Math.max(0, Date.now() - newTimerStartedAt) : 0;
 			const newTimerSeconds = Math.floor(newLiveTimerMs / 1000);
 			const mergedSeconds = Math.min(23 * 3600 + 59 * 60 + 59, baseSeconds + newTimerSeconds);
@@ -476,7 +526,7 @@ export default function PersonalReportForm({
 	}
 
 	return (
-		<div className="max-w-2xl mx-auto my-8 sm:my-12">
+		<div className="w-full">
 			<form onSubmit={handleSubmit} className="relative bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/50 overflow-hidden ring-1 ring-black/5 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
 				{/* Overlay Loader */}
 				{(defaultData === undefined || submitting) && (
@@ -490,9 +540,9 @@ export default function PersonalReportForm({
 						<p className="text-[11px] text-indigo-500/80 font-bold uppercase tracking-widest mb-1">{t.dailyReport}</p>
 						<p className="text-lg sm:text-xl font-black text-gray-800 tracking-tight">{formatDisplayDate(date)}</p>
 					</div>
-					<div className="grid grid-cols-1 sm:grid-cols-2 items-center gap-3 sm:gap-4">
+					<div className="grid grid-cols-1 sm:grid-cols-2 items-start gap-3 sm:gap-4">
 						<div className="flex flex-col items-center sm:items-start gap-1 w-full">
-							<div className="flex items-center gap-1.5 sm:gap-2 justify-center sm:justify-start w-full">
+							<div className="flex flex-wrap items-center gap-1.5 sm:gap-2 justify-center sm:justify-start w-full">
 								<button
 									type="button"
 									onClick={() => shiftDate(-1)}
@@ -507,7 +557,7 @@ export default function PersonalReportForm({
 									min={minDate}
 									max={maxDate || toDateStr(new Date())}
 									onChange={(e) => handleDateSwitch(e.target.value)}
-									className="flex-1 sm:flex-none h-10 text-center text-sm font-medium border border-indigo-200 rounded-xl px-2 py-1 text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white shadow-sm"
+									className="flex-1 sm:flex-none h-10 text-center text-sm font-medium border border-indigo-200 rounded-xl px-2 py-1.5 text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white shadow-sm"
 								/>
 								<button
 									type="button"
@@ -522,14 +572,14 @@ export default function PersonalReportForm({
 									type="button"
 									onClick={() => handleDateSwitch(toDateStr(new Date()))}
 									disabled={isToday}
-									className="text-[11px] px-3 h-10 rounded-xl border border-indigo-200 text-indigo-700 bg-white hover:bg-indigo-50 disabled:opacity-40 disabled:cursor-not-allowed font-semibold tracking-wide uppercase transition-all shadow-sm flex items-center justify-center"
+									className="basis-full sm:basis-auto text-[11px] px-3 h-10 rounded-xl border border-indigo-200 text-indigo-700 bg-white hover:bg-indigo-50 disabled:opacity-40 disabled:cursor-not-allowed font-semibold tracking-wide uppercase transition-all shadow-sm flex items-center justify-center"
 								>
 									{t.today}
 								</button>
 							</div>
 						</div>
-						<div className="flex items-center justify-center sm:justify-end gap-3 w-full">
-							{!isToday && <p className="text-[11px] text-gray-400 text-right leading-tight max-w-[100px] sm:max-w-none">{t.timerForTodayOnly}</p>}
+						<div className="flex flex-col-reverse md:flex-row items-center md:justify-end gap-3 w-full justify-center">
+							{!isToday && <p className="text-[11px] text-gray-400 text-center md:text-right leading-tight">{t.timerForTodayOnly}</p>}
 							<button
 								type="button"
 								onClick={timerRunning ? pauseOrgWorkTimer : startOrgWorkTimer}
@@ -548,54 +598,46 @@ export default function PersonalReportForm({
 					</div>
 				</div>
 
-				<div className="px-4 sm:px-6 py-4 sm:py-5 grid gap-4 sm:gap-5">
+				<div className="px-4 sm:px-6 py-4 sm:py-5 flex flex-col gap-3 sm:gap-4">
 					{/* Religious */}
 					<div>
 						<SectionTitle title={t.religiousPractice} />
-						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-							<Toggle checked={form.quranStudy} onChange={() => handleToggle("quranStudy")} label={t.quranStudy} isEdited={isFieldEdited("quranStudy")} />
-							<NumberField label={t.salahInJamaat} name="salahJamaat" value={form.salahJamaat} onChange={handleNumber} max={MAX_SALAH_JAMAAT} isEdited={isFieldEdited("salahJamaat")} />
-							<NumberField label={t.haditsRead} name="haditsRead" value={form.haditsRead} onChange={handleNumber} isEdited={isFieldEdited("haditsRead")} />
-							<NumberField label={t.literaturePages} name="literature" value={form.literature} onChange={handleNumber} isEdited={isFieldEdited("literature")} />
+						<div className="flex flex-wrap gap-3">
+							<div className="flex-1"><Toggle checked={form.quranStudy} onChange={() => handleToggle("quranStudy")} label={t.quranStudy} isEdited={isFieldEdited("quranStudy")} /></div>
+							<div className="flex-1"><NumberField label={t.salahInJamaat} name="salahJamaat" value={form.salahJamaat} onChange={handleNumber} max={MAX_SALAH_JAMAAT} isEdited={isFieldEdited("salahJamaat")} /></div>
+							<div className="flex-1"><NumberField label={t.haditsRead} name="haditsRead" value={form.haditsRead} onChange={handleNumber} isEdited={isFieldEdited("haditsRead")} /></div>
+							<div className="flex-1"><NumberField label={t.literaturePages} name="literature" value={form.literature} onChange={handleNumber} isEdited={isFieldEdited("literature")} /></div>
 						</div>
 					</div>
 
 					{/* Dawah & Contacts */}
 					<div>
 						<SectionTitle title={t.dawahAndContacts} />
-						<div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-							<NumberField label={t.targetDawah} name="targetContactDawah" value={form.targetContactDawah} onChange={handleNumber} isEdited={isFieldEdited("targetContactDawah")} />
-							<NumberField label={t.targetWorker} name="targetContactWorker" value={form.targetContactWorker} onChange={handleNumber} isEdited={isFieldEdited("targetContactWorker")} />
-							<NumberField label={t.targetMember} name="targetContactMember" value={form.targetContactMember} onChange={handleNumber} isEdited={isFieldEdited("targetContactMember")} />
-							<NumberField label={t.workerContact} name="workerContact" value={form.workerContact} onChange={handleNumber} isEdited={isFieldEdited("workerContact")} />
-							<NumberField label={t.bookDistribution} name="bookDistribution" value={form.bookDistribution} onChange={handleNumber} isEdited={isFieldEdited("bookDistribution")} />
+						<div className="flex flex-wrap gap-3">
+							<div className="flex-1"><NumberField label={t.targetDawah} name="targetContactDawah" value={form.targetContactDawah} onChange={handleNumber} isEdited={isFieldEdited("targetContactDawah")} /></div>
+							<div className="flex-1"><NumberField label={t.targetWorker} name="targetContactWorker" value={form.targetContactWorker} onChange={handleNumber} isEdited={isFieldEdited("targetContactWorker")} /></div>
+							<div className="flex-1"><NumberField label={t.targetMember} name="targetContactMember" value={form.targetContactMember} onChange={handleNumber} isEdited={isFieldEdited("targetContactMember")} /></div>
+							<div className="flex-1"><NumberField label={t.workerContact} name="workerContact" value={form.workerContact} onChange={handleNumber} isEdited={isFieldEdited("workerContact")} /></div>
+							<div className="flex-1"><NumberField label={t.bookDistribution} name="bookDistribution" value={form.bookDistribution} onChange={handleNumber} isEdited={isFieldEdited("bookDistribution")} /></div>
 						</div>
 					</div>
 
 					{/* Activities */}
 					<div>
 						<SectionTitle title={t.activities} />
-						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-							<Toggle checked={form.familyMeeting} onChange={() => handleToggle("familyMeeting")} label={t.familyMeeting} isEdited={isFieldEdited("familyMeeting")} />
-							<Toggle checked={form.socialWork} onChange={() => handleToggle("socialWork")} label={t.socialWork} isEdited={isFieldEdited("socialWork")} />
-							<Toggle checked={form.safar} onChange={() => handleToggle("safar")} label={t.safarTravel} isEdited={isFieldEdited("safar")} />
-							{/* Org Work */}
-							<div className="flex flex-col gap-0.5 relative">
-								<label className="text-xs font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5">
-									{t.orgWork}
-									{isManualOrgWorkEdited() && <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>}
-								</label>
-								<input
-									type="text"
-									inputMode="numeric"
-									maxLength={8}
+						<div className="flex flex-wrap gap-3">
+							<div className="flex-1"><Toggle checked={form.familyMeeting} onChange={() => handleToggle("familyMeeting")} label={t.familyMeeting} isEdited={isFieldEdited("familyMeeting")} /></div>
+							<div className="flex-1"><Toggle checked={form.socialWork} onChange={() => handleToggle("socialWork")} label={t.socialWork} isEdited={isFieldEdited("socialWork")} /></div>
+							<div className="flex-1"><Toggle checked={form.safar} onChange={() => handleToggle("safar")} label={t.safarTravel} isEdited={isFieldEdited("safar")} /></div>
+							<div className="flex-1">
+								{/* Org Work */}
+								<OrgWorkField
 									value={orgWorkInput}
-									onChange={(e) => handleOrgWorkInputChange(e.target.value)}
+									onChange={handleOrgWorkInputChange}
 									onBlur={normalizeOrgWorkInput}
 									disabled={timerRunning}
-									className={`w-full border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-800 text-center font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm ${timerRunning ? 'bg-gray-100 text-gray-500 cursor-not-allowed border-gray-200' : 'hover:border-gray-300 bg-white/50 focus:bg-white'}`}
-									placeholder="hh:mm:ss"
-									aria-label={`${t.orgWork} hh:mm:ss`}
+									isEdited={isManualOrgWorkEdited()}
+									t={t}
 								/>
 							</div>
 						</div>
@@ -604,9 +646,9 @@ export default function PersonalReportForm({
 					{/* Self Assessment */}
 					<div>
 						<SectionTitle title={t.selfAssessment} />
-						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-							<Toggle checked={form.reportKeeping} onChange={() => handleToggle("reportKeeping")} label={t.reportKeeping} isEdited={isFieldEdited("reportKeeping")} />
-							<Toggle checked={form.selfCriticism} onChange={() => handleToggle("selfCriticism")} label={t.selfCriticism} isEdited={isFieldEdited("selfCriticism")} />
+						<div className="flex flex-wrap gap-3">
+							<div className="flex-1"><Toggle checked={form.reportKeeping} onChange={() => handleToggle("reportKeeping")} label={t.reportKeeping} isEdited={isFieldEdited("reportKeeping")} /></div>
+							<div className="flex-1"><Toggle checked={form.selfCriticism} onChange={() => handleToggle("selfCriticism")} label={t.selfCriticism} isEdited={isFieldEdited("selfCriticism")} /></div>
 						</div>
 					</div>
 				</div>

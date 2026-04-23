@@ -1,14 +1,13 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useLocale } from "../../lib/locale";
-import { useSession } from "next-auth/react";
 import axios from "axios";
-import PersonalReportFormWrapper from "../dashboard/personal-report-form-wrapper";
-import MonthlyPlanFormWrapper from "../dashboard/monthly-plan-form-wrapper";
-import StatusTabWrapper from "../dashboard/status-tab-wrapper";
-import YearlyTargetsForm from "../dashboard/yearly-targets-form";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useCallback, useEffect, useState } from "react";
 import { isTokenExpired } from "../../lib/getAuthToken";
+import { useLocale } from "../../lib/locale";
+import MonthlyPlanFormWrapper from "../dashboard/monthly-plan-form-wrapper";
+import PersonalReportFormWrapper from "../dashboard/personal-report-form-wrapper";
+import StatusTabWrapper from "../dashboard/status-tab-wrapper";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -17,22 +16,37 @@ const TAB_LABELS = {
 		daily: "Daily Report",
 		planning: "Planning",
 		status: "Status",
-		targets: "Targets",
-		targetsHint: "Targets tab - manage targets and goals here.",
+		monthPickerLabel: "Select month",
 	},
 	bn: {
 		daily: "দৈনিক রিপোর্ট",
 		planning: "পরিকল্পনা",
 		status: "অবস্থা",
-		targets: "টার্গেট",
-		targetsHint: "টার্গেট ট্যাব - এখানে লক্ষ্য ও টার্গেট পরিচালনা করুন।",
+		monthPickerLabel: "মাস নির্বাচন করুন",
 	},
 } as const;
+
+function formatMonthYear(month: string) {
+	if (!month) return "";
+	const [year, monthNumber] = month.split("-").map(Number);
+	if (!year || !monthNumber) return month;
+	return new Date(year, monthNumber - 1, 1).toLocaleDateString("en-US", {
+		month: "long",
+		year: "numeric",
+	});
+}
+
+function normalizeStringList(value: unknown): string[] {
+	if (!Array.isArray(value)) return [];
+	return value
+		.map((item) => (typeof item === "string" ? item.trim() : ""))
+		.filter(Boolean);
+}
 
 export default function PersonalReportTabs() {
 	const { locale } = useLocale();
 	const t = TAB_LABELS[locale];
-	const tabs = [t.daily, t.planning, t.status, t.targets];
+	const tabs = [t.daily, t.planning, t.status];
 	const [active, setActive] = useState(0);
 	const [planData, setPlanData] = useState<any>(null);
 	const [summaryData, setSummaryData] = useState<any>(null);
@@ -78,6 +92,14 @@ export default function PersonalReportTabs() {
 		setRefreshTrigger(prev => prev + 1);
 	}, []);
 
+	const syncSelectedMonth = useCallback((month: string) => {
+		if (!month || month === selectedMonth) return;
+		setSelectedMonth(month);
+		setPlanData(null);
+		setSummaryData(null);
+		setReportData({});
+	}, [selectedMonth]);
+
 	useEffect(() => {
 		if (status === "loading") return;
 		let isMounted = true;
@@ -104,18 +126,31 @@ export default function PersonalReportTabs() {
 				]);
 				if (isMounted) {
 					setSummaryData(summaryRes?.data || null);
-					setReportData(reportRes?.data || {});
-					
+					const nextReportData = reportRes?.data
+						? {
+							...reportRes.data,
+							increaseAssociate: normalizeStringList(reportRes.data.increaseAssociate),
+							increaseActivist: normalizeStringList(reportRes.data.increaseActivist),
+							increaseMember: normalizeStringList(reportRes.data.increaseMember),
+							memorizingSura: normalizeStringList(reportRes.data.memorizingSura),
+							memorizingAyat: normalizeStringList(reportRes.data.memorizingAyat),
+							memorizingHadits: normalizeStringList(reportRes.data.memorizingHadits),
+							socialHelp: normalizeStringList(reportRes.data.socialHelp),
+							professionalHelp: normalizeStringList(reportRes.data.professionalHelp),
+						}
+						: {};
+					setReportData(nextReportData);
+
 					let pData = planRes?.data || null;
 					if (pData) {
-						pData.increaseAssociate = Array.isArray(pData.increaseAssociate) ? pData.increaseAssociate : [];
-						pData.increaseActivist = Array.isArray(pData.increaseActivist) ? pData.increaseActivist : [];
-						pData.increaseMember = Array.isArray(pData.increaseMember) ? pData.increaseMember : [];
-						pData.memorizingSura = Array.isArray(pData.memorizingSura) ? pData.memorizingSura : [];
-						pData.memorizingAyat = Array.isArray(pData.memorizingAyat) ? pData.memorizingAyat : [];
-						pData.memorizingHadits = Array.isArray(pData.memorizingHadits) ? pData.memorizingHadits : [];
-						pData.socialHelp = Array.isArray(pData.socialHelp) ? pData.socialHelp : [];
-						pData.professionalHelp = Array.isArray(pData.professionalHelp) ? pData.professionalHelp : [];
+						pData.increaseAssociate = normalizeStringList(pData.increaseAssociate);
+						pData.increaseActivist = normalizeStringList(pData.increaseActivist);
+						pData.increaseMember = normalizeStringList(pData.increaseMember);
+						pData.memorizingSura = normalizeStringList(pData.memorizingSura);
+						pData.memorizingAyat = normalizeStringList(pData.memorizingAyat);
+						pData.memorizingHadits = normalizeStringList(pData.memorizingHadits);
+						pData.socialHelp = normalizeStringList(pData.socialHelp);
+						pData.professionalHelp = normalizeStringList(pData.professionalHelp);
 					}
 					setPlanData(pData);
 				}
@@ -147,42 +182,105 @@ export default function PersonalReportTabs() {
 	};
 
 	return (
-		<div className="max-w-4xl mx-auto my-8">
-			<div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
-				<div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
-					<div className="flex flex-wrap gap-2">
-						{tabs.map((t, i) => (
-							<button
-								key={t}
-								onClick={() => setActive(i)}
-								className={`px-3 py-2 rounded-xl text-sm font-medium transition ${
-									i === active
+		<div className="w-full">
+			{/* Mobile: Sticky tabs navigation */}
+			<div className="sticky top-16 z-9 bg-white border-b border-gray-100 shadow-sm sm:hidden">
+				<div className="px-4 py-3 flex flex-wrap gap-2 justify-center sm:justify-start">
+					{tabs.map((t, i) => (
+						<button
+							key={t}
+							onClick={() => setActive(i)}
+							className={`px-3 py-2 rounded-xl text-sm font-medium transition ${i === active
+								? "bg-indigo-50 border border-indigo-200 text-indigo-700"
+								: "bg-white border border-gray-100 text-gray-600 hover:bg-gray-50"
+								}`}
+						>
+							{t}
+						</button>
+					))}
+				</div>
+			</div>
+
+			<div className="max-w-4xl mx-auto my-8">
+				<div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
+					{/* Desktop: Tabs and month picker in card */}
+					<div className="hidden sm:flex items-center justify-between gap-4 mb-4">
+						<div className="flex flex-wrap gap-2">
+							{tabs.map((t, i) => (
+								<button
+									key={t}
+									onClick={() => setActive(i)}
+									className={`px-3 py-2 rounded-xl text-sm font-medium transition ${i === active
 										? "bg-indigo-50 border border-indigo-200 text-indigo-700"
 										: "bg-white border border-gray-100 text-gray-600 hover:bg-gray-50"
-								}`}
+										}`}
+								>
+									{t}
+								</button>
+							))}
+						</div>
+						<div className="relative flex items-center gap-1 bg-white border border-gray-200 rounded-xl p-1 shadow-sm min-w-[160px] justify-between">
+							<button
+								onClick={() => handleMonthChange(-1)}
+								className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors"
 							>
-								{t}
+								<ChevronLeft className="w-4 h-4" />
 							</button>
-						))}
+							<div className="flex-1">
+								<label className="sr-only" htmlFor="personal-report-month">
+									{t.monthPickerLabel}
+								</label>
+								<input
+									id="personal-report-month"
+									type="month"
+									value={selectedMonth}
+									onChange={(e) => {
+										setSelectedMonth(e.target.value);
+										setPlanData(null);
+										setSummaryData(null);
+										setReportData({});
+									}}
+									aria-label={t.monthPickerLabel}
+									title={formatMonthYear(selectedMonth)}
+									className="w-full rounded-lg border border-transparent bg-transparent py-1 text-center text-sm font-semibold text-gray-700 focus:border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+								/>
+							</div>
+							<button
+								onClick={() => handleMonthChange(1)}
+								className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors"
+							>
+								<ChevronRight className="w-4 h-4" />
+							</button>
+						</div>
 					</div>
-					<div className="flex items-center gap-1 bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
+
+					{/* Mobile: Month picker only in card */}
+					<div className="flex sm:hidden items-center justify-center gap-1 bg-white border border-gray-200 rounded-xl p-1 shadow-sm min-w-[160px] mx-auto mb-4">
 						<button
 							onClick={() => handleMonthChange(-1)}
 							className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors"
 						>
 							<ChevronLeft className="w-4 h-4" />
 						</button>
-						<input
-							type="month"
-							value={selectedMonth}
-							onChange={(e) => {
-								setSelectedMonth(e.target.value);
-								setPlanData(null);
-								setSummaryData(null);
-								setReportData({});
-							}}
-							className="px-2 py-1 text-sm font-semibold text-gray-700 focus:outline-none bg-transparent border-none ring-0 max-w-[130px] text-center"
-						/>
+						<div className="flex-1">
+							<label className="sr-only" htmlFor="personal-report-month">
+								{t.monthPickerLabel}
+							</label>
+							<input
+								id="personal-report-month"
+								type="month"
+								value={selectedMonth}
+								onChange={(e) => {
+									setSelectedMonth(e.target.value);
+									setPlanData(null);
+									setSummaryData(null);
+									setReportData({});
+								}}
+								aria-label={t.monthPickerLabel}
+								title={formatMonthYear(selectedMonth)}
+								className="w-full rounded-lg border border-transparent bg-transparent py-1 text-center text-sm font-semibold text-gray-700 focus:border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+							/>
+						</div>
 						<button
 							onClick={() => handleMonthChange(1)}
 							className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors"
@@ -190,29 +288,33 @@ export default function PersonalReportTabs() {
 							<ChevronRight className="w-4 h-4" />
 						</button>
 					</div>
-				</div>
 
-				<div className="mt-2">
-					{active === 0 && <PersonalReportFormWrapper onRefresh={triggerRefresh} selectedMonth={selectedMonth} />}
-					{active === 1 && (
-						<MonthlyPlanFormWrapper 
-							month={selectedMonth} 
-							planData={planData} 
-							onRefresh={triggerRefresh}
-						/>
-					)}
-					{active === 2 && (
-						<StatusTabWrapper
-							month={selectedMonth}
-							planData={planData}
-							summaryData={summaryData}
-							reportData={reportData}
-							onReportDataChange={setReportData}
-						/>
-					)}
-					{active === 3 && (
-						<YearlyTargetsForm selectedYear={selectedMonth.split('-')[0]} />
-					)}
+					<div className="mt-2">
+						{active === 0 && (
+							<PersonalReportFormWrapper
+								onRefresh={triggerRefresh}
+								selectedMonth={selectedMonth}
+								onSelectedMonthChange={syncSelectedMonth}
+							/>
+						)}
+						{active === 1 && (
+							<MonthlyPlanFormWrapper
+								month={selectedMonth}
+								planData={planData}
+								onRefresh={triggerRefresh}
+							/>
+						)}
+						{active === 2 && (
+							<StatusTabWrapper
+								month={selectedMonth}
+								planData={planData}
+								summaryData={summaryData}
+								reportData={reportData}
+								onReportDataChange={setReportData}
+								onPlanDataChange={setPlanData}
+							/>
+						)}
+					</div>
 				</div>
 			</div>
 		</div>

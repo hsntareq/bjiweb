@@ -36,7 +36,15 @@ function todayStr() {
 	return `${yyyy}-${mm}-${dd}`;
 }
 
-export default function PersonalReportFormWrapper({ onRefresh, selectedMonth }: { onRefresh?: () => void; selectedMonth?: string }) {
+export default function PersonalReportFormWrapper({
+	onRefresh,
+	selectedMonth,
+	onSelectedMonthChange,
+}: {
+	onRefresh?: () => void;
+	selectedMonth?: string;
+	onSelectedMonthChange?: (month: string) => void;
+}) {
 	const [submitting, setSubmitting] = useState(false);
 	const [timerSubmitting, setTimerSubmitting] = useState(false);
 	const [date, setDate] = useState(todayStr);
@@ -105,17 +113,9 @@ export default function PersonalReportFormWrapper({ onRefresh, selectedMonth }: 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedMonth]);
 
-	// Compute min/max dates for the selected month
-	const { minDate, maxDate } = (() => {
-		const today = todayStr();
-		if (!selectedMonth) return { minDate: undefined, maxDate: today };
-		const [year, monthNum] = selectedMonth.split('-').map(Number);
-		const firstDay = `${selectedMonth}-01`;
-		const lastDay = new Date(year, monthNum, 0).getDate();
-		const lastDayStr = `${selectedMonth}-${String(lastDay).padStart(2, '0')}`;
-		const effectiveMax = lastDayStr < today ? lastDayStr : today;
-		return { minDate: firstDay, maxDate: effectiveMax };
-	})();
+	// Allow browsing reports across all past months/years while still blocking future dates.
+	const minDate = undefined;
+	const maxDate = todayStr();
 
 	useEffect(() => {
 		if (!isDateInitialized || status === "loading") return;
@@ -226,6 +226,10 @@ export default function PersonalReportFormWrapper({ onRefresh, selectedMonth }: 
 	function handleDateChange(newDate: string) {
 		setDate(newDate);
 		setDefaultData(undefined);
+		const nextMonth = newDate.slice(0, 7);
+		if (nextMonth && nextMonth !== selectedMonth) {
+			onSelectedMonthChange?.(nextMonth);
+		}
 		try {
 			sessionStorage.setItem("dashboard_date", newDate);
 		} catch (e) {

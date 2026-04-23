@@ -1,7 +1,8 @@
+import { authOptions } from "@/lib/auth-options";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import LanguageToggle from "../../components/LanguageToggle";
-import { authOptions } from "@/lib/auth-options";
+import ModuleSwitcher from "../../components/ModuleSwitcher";
 import SignOutButton from "../dashboard/sign-out-button";
 import PersonalReportTabs from "./PersonalReportTabs";
 
@@ -19,8 +20,7 @@ export default async function PersonalReportPage() {
 						</div>
 						<span className="font-bold text-gray-900 text-lg">Personal Reports</span>
 					</div>
-					<div className="flex items-center gap-4">
-						<LanguageToggle />
+					<div className="flex items-center gap-4">					<ModuleSwitcher />						<LanguageToggle />
 						<div className="hidden sm:flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-3 py-1.5">
 							<div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xs font-bold">
 								{(session.user?.email || session.user?.name || "U")[0].toUpperCase()}
@@ -32,7 +32,7 @@ export default async function PersonalReportPage() {
 				</div>
 			</header>
 
-			<main className="max-w-6xl mx-auto px-6 py-10">
+			<main className="max-w-6xl mx-auto px-0 sm:px-6 py-10">
 				<PersonalReportTabs />
 			</main>
 		</div>

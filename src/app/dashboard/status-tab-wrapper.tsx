@@ -1,10 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
 import axios from "axios";
-import { Loader2, Plus, Trash2, Save } from "lucide-react";
-import { getAuthToken } from "../../lib/getAuthToken";
-import { useLocale } from "../../lib/locale";
+import { Loader2, Plus, Save, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useCallback, useEffect, useState } from "react";
+import { isTokenExpired } from "../../lib/getAuthToken";
+import { useLocale } from "../../lib/locale";
 import { emptyMonthlyPlan, MonthlyPlanData } from "./monthly-plan-form";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
@@ -47,7 +47,7 @@ const TEXT = {
 
 		save: "Save Status",
 		saving: "Saving...",
-		add: "+ Add",
+		add: "Add",
 		noPlanNotice: "⚠️ You have not saved a personalized plan for this month. Using general standard targets.",
 	},
 	bn: {
@@ -87,10 +87,27 @@ const TEXT = {
 
 		save: "অবস্থা সংরক্ষণ করুন",
 		saving: "সংরক্ষণ করা হচ্ছে...",
-		add: "+ যোগ করুন",
+		add: "যোগ করুন",
 		noPlanNotice: "⚠️ আপনি এই মাসের জন্য কোনো পরিকল্পনা সংরক্ষণ করেননি। সাধারণ মান ব্যবহার করা হচ্ছে।",
 	},
 } as const;
+
+function normalizeStringList(value: unknown): string[] {
+	if (!Array.isArray(value)) return [];
+	return value
+		.map((item) => (typeof item === "string" ? item.trim() : ""))
+		.filter(Boolean);
+}
+
+function formatMonthYear(month: string) {
+	if (!month) return "";
+	const [year, monthNumber] = month.split("-").map(Number);
+	if (!year || !monthNumber) return month;
+	return new Date(year, monthNumber - 1, 1).toLocaleDateString("en-US", {
+		month: "long",
+		year: "numeric",
+	});
+}
 
 function calculateThresholds(daysInMonth: number, fallback: MonthlyPlanData) {
 	return [
@@ -141,14 +158,15 @@ import React from 'react';
 
 function DynamicListField({ items, onChange, t }: any) {
 	const [input, setInput] = React.useState("");
+	const normalizedItems = normalizeStringList(items);
 	const handleAdd = () => {
-		if (input.trim()) {
-			onChange([...items, input.trim()]);
-			setInput("");
-		}
+		const nextItem = input.trim();
+		if (!nextItem) return;
+		onChange([...normalizedItems, nextItem]);
+		setInput("");
 	};
 	const handleRemove = (index: number) => {
-		onChange(items.filter((_: any, i: number) => i !== index));
+		onChange(normalizedItems.filter((_: string, i: number) => i !== index));
 	};
 	return (
 		<div className="flex flex-col gap-1.5 w-full max-w-xs">
@@ -165,9 +183,9 @@ function DynamicListField({ items, onChange, t }: any) {
 					<Plus className="w-3.5 h-3.5" /> {t.add}
 				</button>
 			</div>
-			{items.length > 0 && (
+			{normalizedItems.length > 0 && (
 				<ul className="mt-1.5 space-y-1">
-					{items.map((item: string, i: number) => (
+					{normalizedItems.map((item: string, i: number) => (
 						<li key={i} className="flex items-center justify-between border border-gray-100 rounded-md px-2 py-1.5 shadow-sm text-xs bg-white">
 							<span className="text-gray-700 truncate">{item}</span>
 							<button type="button" onClick={() => handleRemove(i)} className="text-red-400 hover:text-red-600 ml-2">
@@ -187,24 +205,33 @@ export default function StatusTabWrapper({
 	summaryData,
 	reportData: reportDataProp,
 	onReportDataChange,
+	onPlanDataChange,
 }: {
 	month: string;
 	planData?: any;
 	summaryData?: any;
 	reportData?: any;
 	onReportDataChange?: (data: any) => void;
+	onPlanDataChange?: (data: any) => void;
 }) {
 	const { locale } = useLocale();
 	const { data: session } = useSession();
 	const t = TEXT[locale];
 	const [reportData, setReportData] = useState<any>(reportDataProp || {});
+	const [localPlanData, setLocalPlanData] = useState<any>(planData || {});
 	const [saving, setSaving] = useState(false);
 	const [loading] = useState(false);
+	const [fallbackToken, setFallbackToken] = useState<string | null>(null);
 
 	// Sync external reportData prop into local state
 	useEffect(() => {
 		setReportData(reportDataProp || {});
 	}, [reportDataProp]);
+
+	// Sync external planData prop into local state
+	useEffect(() => {
+		setLocalPlanData(planData || {});
+	}, [planData]);
 
 	const setReportDataAndNotify = (updater: any) => {
 		setReportData((prev: any) => {
@@ -214,24 +241,101 @@ export default function StatusTabWrapper({
 		});
 	};
 
+	const setPlanDataAndNotify = (updater: any) => {
+		setLocalPlanData((prev: any) => {
+			const next = typeof updater === "function" ? updater(prev) : updater;
+			onPlanDataChange?.(next);
+			return next;
+		});
+	};
+
+	const refreshBackendToken = useCallback(async (): Promise<string | null> => {
+		const provider = (session as any)?.provider;
+		const googleId = (session as any)?.googleId;
+		const email = session?.user?.email;
+		if (provider !== "google" || !googleId || !email) return null;
+
+		try {
+			const res = await axios.post(`${API_URL}/auth/google`, { googleId, email });
+			const nextToken = res?.data?.access_token as string | undefined;
+			if (!nextToken) return null;
+			setFallbackToken(nextToken);
+			return nextToken;
+		} catch {
+			return null;
+		}
+	}, [session]);
+
+	const getAuthToken = useCallback(async (): Promise<string | null> => {
+		let token = fallbackToken || ((session as any)?.accessToken as string | undefined) || null;
+		if (session && (!token || isTokenExpired(token))) {
+			const refreshedToken = await refreshBackendToken();
+			if (refreshedToken) return refreshedToken;
+		}
+		return token;
+	}, [fallbackToken, session, refreshBackendToken]);
+
+	const authorizedPost = useCallback(async (url: string, data: any) => {
+		let token = await getAuthToken();
+		if (!token) throw new Error("Not authenticated");
+
+		try {
+			return await axios.post(url, data, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
+		} catch (err: any) {
+			if (err?.response?.status === 401) {
+				const refreshedToken = await refreshBackendToken();
+				if (refreshedToken) {
+					return await axios.post(url, data, {
+						headers: { Authorization: `Bearer ${refreshedToken}` },
+					});
+				}
+			}
+			throw err;
+		}
+	}, [getAuthToken, refreshBackendToken]);
+
 	const daysInMonth = month ? new Date(parseInt(month.split("-")[0]), parseInt(month.split("-")[1]), 0).getDate() : 30;
 	const fallbackPlan = emptyMonthlyPlan(month);
 	const thresholds = calculateThresholds(daysInMonth, planData ? { ...fallbackPlan, ...planData } : fallbackPlan);
 
-	
+
 	const handleSave = async () => {
 		if (!month) return;
 		setSaving(true);
 		try {
-			const token = getAuthToken(session);
-			await axios.post(
+			// Save plan data if it has plan fields
+			const hasPlanChanges = Object.keys(localPlanData).some(key =>
+				['increaseAssociate', 'increaseActivist', 'increaseMember', 'memorizingSura', 'memorizingAyat', 'memorizingHadits', 'baitulmalIncreaseAmount', 'sellBooksNumber', 'socialHelp', 'professionalHelp'].includes(key)
+			);
+
+			if (hasPlanChanges) {
+				const planDataToSave = {
+					month,
+					increaseAssociate: localPlanData.increaseAssociate || [],
+					increaseActivist: localPlanData.increaseActivist || [],
+					increaseMember: localPlanData.increaseMember || [],
+					memorizingSura: localPlanData.memorizingSura || [],
+					memorizingAyat: localPlanData.memorizingAyat || [],
+					memorizingHadits: localPlanData.memorizingHadits || [],
+					baitulmalIncreaseAmount: localPlanData.baitulmalIncreaseAmount || 0,
+					sellBooksNumber: localPlanData.sellBooksNumber || 0,
+					socialHelp: localPlanData.socialHelp || [],
+					professionalHelp: localPlanData.professionalHelp || [],
+				};
+				await authorizedPost(`${API_URL}/monthly-plan`, planDataToSave);
+			}
+
+			// Save report data - filter out non-editable fields
+			const { id, createdAt, updatedAt, userId, user, month: existingMonth, ...cleanReportData } = reportData as any;
+			await authorizedPost(
 				`${API_URL}/monthly-report`,
-				{ month, ...reportData },
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ month, ...cleanReportData }
 			);
 			// optionally show success toast
 		} catch (error) {
-			console.error("Failed to save report", error);
+			console.error("Failed to save", error);
 		} finally {
 			setSaving(false);
 		}
@@ -295,14 +399,14 @@ export default function StatusTabWrapper({
 	};
 
 	return (
-		<div className="max-w-2xl mx-auto my-8 sm:my-12">
+		<div className="w-full">
 			<div className="relative bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/50 overflow-hidden ring-1 ring-black/5 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
 				{/* Header */}
 				<div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-indigo-100/50 bg-gradient-to-r from-indigo-50/50 to-violet-50/50 relative">
 					<div className="text-center">
 						<p className="text-[11px] text-indigo-500/80 font-bold uppercase tracking-widest mb-1">{t.status}</p>
 						<p className="text-lg sm:text-xl font-black text-gray-800 tracking-tight">
-							{month ? new Date(month + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : ''}
+							{formatMonthYear(month)}
 						</p>
 					</div>
 					{loading && (
@@ -320,77 +424,164 @@ export default function StatusTabWrapper({
 					</div>
 				)}
 
-				<div className="overflow-x-auto px-4 sm:px-6 pb-6 pt-4">
-					<table className="w-full text-left border-separate border-spacing-y-2 min-w-[480px]">
-						<thead>
-							<tr className="text-indigo-900/50 text-[10px] uppercase tracking-widest font-bold">
-								<th className="pb-2 px-3 whitespace-nowrap">{t.subject}</th>
-								<th className="pb-2 px-3 whitespace-nowrap text-center">{t.plan}</th>
-								<th className="pb-2 px-3 whitespace-nowrap text-center">{t.achieved}</th>
-								<th className="pb-2 px-3 whitespace-nowrap text-right">{t.remaining}</th>
-							</tr>
-						</thead>
-						<tbody>
-							{thresholds.map((th) => {
-								const achievedVal = getAchievedValue(th.key, th.summaryKey!, th.editable, th.isArray);
-								const planVal = getPlanValue(th.planKey!, th.isArray, th.standard);
-								const remaining = Math.max(0, planVal - achievedVal);
-								const hasStandard = th.standard !== undefined && th.standard > 0;
-								const colorClass = hasStandard ? getStatusColor(achievedVal, th) : "bg-gray-100 text-gray-800 border-gray-200";
-								const dotColor = getDotColor(achievedVal, th);
+				<div className="px-4 sm:px-6 pb-6 pt-4">
+					{/* Desktop Table View */}
+					<div className="hidden sm:block overflow-x-auto">
+						<table className="w-full text-left border-separate border-spacing-y-2">
+							<thead>
+								<tr className="text-indigo-900/50 text-[10px] uppercase tracking-widest font-bold">
+									<th className="pb-2 px-3 whitespace-nowrap">{t.subject}</th>
+									<th className="pb-2 px-3 whitespace-nowrap text-center">{t.plan}</th>
+									<th className="pb-2 px-3 whitespace-nowrap text-center">{t.achieved}</th>
+									<th className="pb-2 px-3 whitespace-nowrap text-right">{t.remaining}</th>
+								</tr>
+							</thead>
+							<tbody>
+								{thresholds.map((th) => {
+									const achievedVal = getAchievedValue(th.key, th.summaryKey!, th.editable, th.isArray);
+									const planVal = getPlanValue(th.planKey!, th.isArray, th.standard);
+									const remaining = Math.max(0, planVal - achievedVal);
+									const hasStandard = th.standard !== undefined && th.standard > 0;
+									const colorClass = hasStandard ? getStatusColor(achievedVal, th) : "bg-gray-100 text-gray-800 border-gray-200";
+									const dotColor = getDotColor(achievedVal, th);
 
-								return (
-									<tr key={th.key} className="bg-white hover:bg-indigo-50/30 transition-colors rounded-xl shadow-sm ring-1 ring-gray-100">
-										<td className="py-3 px-3 text-xs sm:text-sm font-semibold text-gray-700 rounded-l-xl">
-											<div className="flex items-center gap-2">
-												<span className={`w-2 h-2 rounded-full flex-shrink-0 ${dotColor}`} />
-												<span>{labels[th.key]}</span>
-											</div>
-										</td>
-										<td className="py-3 px-3 text-sm text-center text-gray-400 font-bold">
-											{formatValue(th.key, planVal)}
-										</td>
-										<td className="py-3 px-3">
-											{th.editable ? (
-												th.isArray ? (
-													<div className="flex justify-center">
-														<DynamicListField
-															items={reportData[th.key] || []}
-															onChange={(items: string[]) => setReportDataAndNotify((prev: any) => ({ ...prev, [th.key]: items }))}
-															t={t}
-														/>
-													</div>
+									return (
+										<tr key={th.key} className="bg-white hover:bg-indigo-50/30 transition-colors rounded-xl shadow-sm ring-1 ring-gray-100">
+											<td className="py-3 px-3 text-xs sm:text-sm font-semibold text-gray-700 rounded-l-xl">
+												<div className="flex items-center gap-2">
+													<span className={`w-2 h-2 rounded-full flex-shrink-0 ${dotColor}`} />
+													<span>{labels[th.key]}</span>
+												</div>
+											</td>
+											<td className="py-3 px-3 text-sm text-center text-gray-400 font-bold">
+												{formatValue(th.key, planVal)}
+											</td>
+											<td className="py-3 px-3">
+												{th.editable ? (
+													th.isArray ? (
+														<div className="flex justify-center">
+															<DynamicListField
+																items={reportData[th.key] || []}
+																onChange={(items: string[]) => setReportDataAndNotify((prev: any) => ({ ...prev, [th.key]: items }))}
+																t={t}
+															/>
+														</div>
+													) : (
+														<div className="flex justify-center">
+															<input
+																type="number"
+																min={0}
+																className="w-full max-w-[100px] text-center border border-gray-200 rounded-xl px-2.5 py-1.5 text-sm font-semibold text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm bg-white/50 hover:border-gray-300"
+																value={reportData[th.key] || 0}
+																onChange={(e) => setReportDataAndNotify((prev: any) => ({ ...prev, [th.key]: parseInt(e.target.value) || 0 }))}
+															/>
+														</div>
+													)
 												) : (
-													<div className="flex justify-center">
+													<div className="text-center">
+														<span className={`inline-flex items-center justify-center px-2.5 py-1 text-xs font-bold rounded-lg border ${colorClass}`}>
+															{formatValue(th.key, achievedVal)}
+														</span>
+													</div>
+												)}
+											</td>
+											<td className="py-3 px-3 text-right rounded-r-xl">
+												{remaining > 0 ? (
+													<span className="text-xs font-bold text-gray-400">{formatValue(th.key, remaining)}</span>
+												) : (
+													<span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-600 font-bold text-xs">✓</span>
+												)}
+											</td>
+										</tr>
+									);
+								})}
+							</tbody>
+						</table>
+					</div>
+
+					{/* Mobile Card View */}
+					<div className="sm:hidden space-y-2">
+						{thresholds.map((th) => {
+							const achievedVal = getAchievedValue(th.key, th.summaryKey!, th.editable, th.isArray);
+							const planVal = getPlanValue(th.planKey!, th.isArray, th.standard);
+							const remaining = Math.max(0, planVal - achievedVal);
+							const hasStandard = th.standard !== undefined && th.standard > 0;
+							const colorClass = hasStandard ? getStatusColor(achievedVal, th) : "bg-gray-100 text-gray-800 border-gray-200";
+							const dotColor = getDotColor(achievedVal, th);
+
+							return (
+								<div key={th.key} className="bg-white hover:bg-indigo-50/30 transition-colors rounded-xl shadow-sm ring-1 ring-gray-100 p-3">
+									{/* Label */}
+									<div className="flex items-center gap-2 mb-2">
+										<span className={`w-2 h-2 rounded-full flex-shrink-0 ${dotColor}`} />
+										<span className="text-xs font-semibold text-gray-700">{labels[th.key]}</span>
+									</div>
+
+									{/* Plan, Achieved, Remaining */}
+									<div className="grid grid-cols-3 gap-2">
+										{/* Plan */}
+										<div className="text-center">
+											<div className="text-[10px] uppercase tracking-widest font-bold text-indigo-900/50 mb-1">{t.plan}</div>
+											<div className="text-sm text-gray-400 font-bold">
+												{formatValue(th.key, planVal)}
+											</div>
+										</div>
+
+										{/* Achieved */}
+										<div className="text-center">
+											<div className="text-[10px] uppercase tracking-widest font-bold text-indigo-900/50 mb-1">{t.achieved}</div>
+											<div>
+												{th.editable ? (
+													th.isArray ? (
+														<div className="flex justify-center">
+															<span className="text-sm font-bold text-indigo-900">
+																{(reportData[th.key] || []).length}
+															</span>
+														</div>
+													) : (
 														<input
 															type="number"
 															min={0}
-															className="w-full max-w-[100px] text-center border border-gray-200 rounded-xl px-2.5 py-1.5 text-sm font-semibold text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm bg-white/50 hover:border-gray-300"
-															value={reportData[th.key] || 0}
-															onChange={(e) => setReportDataAndNotify((prev: any) => ({ ...prev, [th.key]: parseInt(e.target.value) || 0 }))}
+															className="w-full text-center border border-gray-200 rounded-lg px-1.5 py-1 text-sm font-semibold text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm bg-white/50"
+															value={localPlanData[th.key] || 0}
+															onChange={(e) => setPlanDataAndNotify((prev: any) => ({ ...prev, [th.key]: parseInt(e.target.value) || 0 }))}
 														/>
-													</div>
-												)
-											) : (
-												<div className="text-center">
-													<span className={`inline-flex items-center justify-center px-2.5 py-1 text-xs font-bold rounded-lg border ${colorClass}`}>
+													)
+												) : (
+													<span className={`inline-flex items-center justify-center px-2 py-1 text-xs font-bold rounded-lg border ${colorClass}`}>
 														{formatValue(th.key, achievedVal)}
 													</span>
-												</div>
-											)}
-										</td>
-										<td className="py-3 px-3 text-right rounded-r-xl">
-											{remaining > 0 ? (
-												<span className="text-xs font-bold text-gray-400">{formatValue(th.key, remaining)}</span>
-											) : (
-												<span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-600 font-bold text-xs">✓</span>
-											)}
-										</td>
-									</tr>
-								);
-							})}
-						</tbody>
-					</table>
+												)}
+											</div>
+										</div>
+
+										{/* Remaining */}
+										<div className="text-center">
+											<div className="text-[10px] uppercase tracking-widest font-bold text-indigo-900/50 mb-1">{t.remaining}</div>
+											<div>
+												{remaining > 0 ? (
+													<span className="text-xs font-bold text-gray-400">{formatValue(th.key, remaining)}</span>
+												) : (
+													<span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-600 font-bold text-xs mx-auto">✓</span>
+												)}
+											</div>
+										</div>
+									</div>
+
+									{/* Expandable list field for array fields on mobile */}
+									{th.editable && th.isArray && (
+										<div className="mt-3 pt-3 border-t border-gray-100">
+											<DynamicListField
+												items={reportData[th.key] || []}
+												onChange={(items: string[]) => setReportDataAndNotify((prev: any) => ({ ...prev, [th.key]: items }))}
+												t={t}
+											/>
+										</div>
+									)}
+								</div>
+							);
+						})}
+					</div>
 				</div>
 
 				<div className="px-4 sm:px-6 py-4 border-t border-gray-100 flex justify-end">
