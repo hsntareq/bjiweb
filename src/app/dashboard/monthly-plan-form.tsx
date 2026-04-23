@@ -283,8 +283,8 @@ export default function MonthlyPlanForm({
 	}
 
 	return (
-		<div className="max-w-xl mx-auto mb-10 mt-6 px-4 sm:px-0">
-			<form onSubmit={handleSubmit} className="relative bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/50 overflow-hidden ring-1 ring-black/5 transition-all duration-300">
+		<div className="max-w-2xl mx-auto my-8 sm:my-12">
+			<form onSubmit={handleSubmit} className="relative bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/50 overflow-hidden ring-1 ring-black/5 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
 				{(defaultData === undefined || submitting) && (
 					<div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[2px] flex items-center justify-center">
 						<Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
