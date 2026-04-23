@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useLocale } from "../../lib/locale";
 import PersonalReportFormWrapper from "../dashboard/personal-report-form-wrapper";
 import MonthlyPlanFormWrapper from "../dashboard/monthly-plan-form-wrapper";
+import StatusTabWrapper from "../dashboard/status-tab-wrapper";
 
 const TAB_LABELS = {
 	en: {
@@ -73,7 +74,7 @@ export default function PersonalReportTabs() {
 					)}
 
 					{active === 2 && (
-						<div className="p-4 text-sm text-gray-600">{t.statusHint}</div>
+						<StatusTabWrapper month={selectedMonth} />
 					)}
 
 					{active === 3 && (
