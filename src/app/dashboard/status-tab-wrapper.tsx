@@ -4,6 +4,7 @@ import axios from "axios";
 import { Loader2, Plus, Trash2, Save } from "lucide-react";
 import { getAuthToken } from "../../lib/getAuthToken";
 import { useLocale } from "../../lib/locale";
+import { emptyMonthlyPlan, MonthlyPlanData } from "./monthly-plan-form";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -90,23 +91,23 @@ const TEXT = {
 	},
 } as const;
 
-function calculateThresholds(daysInMonth: number) {
+function calculateThresholds(daysInMonth: number, fallback: MonthlyPlanData) {
 	return [
-		{ key: "quranStudy", summaryKey: "quranStudy", planKey: "quranStudyDays", isDays: true, isFixed: false, standard: daysInMonth, general: daysInMonth - 5, danger: daysInMonth - 10 },
-		{ key: "haditsRead", summaryKey: "haditsRead", planKey: "haditsRead", isDays: false, isFixed: false, standard: daysInMonth, general: daysInMonth - 5, danger: daysInMonth - 10 },
-		{ key: "literature", summaryKey: "literature", planKey: "literature", isDays: false, isFixed: false, standard: 10 * daysInMonth, general: Math.ceil(6.66 * daysInMonth), danger: Math.ceil(3.33 * daysInMonth) },
-		{ key: "salahJamaat", summaryKey: "salahJamaat", planKey: "salahJamaat", isDays: false, isFixed: false, standard: 5 * daysInMonth, general: Math.ceil(4.16 * daysInMonth), danger: Math.ceil(3.33 * daysInMonth) },
-		{ key: "targetContactDawah", summaryKey: "targetContactDawah", planKey: "targetContactDawah", isDays: false, isFixed: true, standard: 5, general: 3, danger: 2 },
-		{ key: "targetContactWorker", summaryKey: "targetContactWorker", planKey: "targetContactWorker", isDays: false, isFixed: true, standard: 4, general: 3, danger: 2 },
-		{ key: "targetContactMember", summaryKey: "targetContactMember", planKey: "targetContactMember", isDays: false, isFixed: true, standard: 6, general: 3, danger: 2 },
-		{ key: "workerContact", summaryKey: "workerContact", planKey: "workerContact", isDays: false, isFixed: true, standard: 3, general: 2, danger: 1 },
-		{ key: "bookDistribution", summaryKey: "bookDistribution", planKey: "bookDistribution", isDays: false, isFixed: true, standard: 0, general: 0, danger: 0, editable: false },
-		{ key: "familyMeeting", summaryKey: "familyMeeting", planKey: "familyMeetingDays", isDays: false, isFixed: true, standard: 4, general: 2, danger: 1 },
-		{ key: "socialWork", summaryKey: "socialWork", planKey: "socialWorkDays", isDays: true, isFixed: false, standard: daysInMonth, general: Math.ceil(daysInMonth * (20 / 30)), danger: Math.ceil(daysInMonth * (10 / 30)) },
-		{ key: "safarDays", summaryKey: "safar", planKey: "safarDays", isDays: true, isFixed: false, standard: 0, general: 0, danger: 0 },
-		{ key: "orgWorkHours", summaryKey: "orgWorkHours", planKey: "orgWorkHours", isDays: false, isFixed: false, standard: 3 * daysInMonth, general: Math.ceil(2.5 * daysInMonth), danger: 2 * daysInMonth },
-		{ key: "reportKeeping", summaryKey: "reportKeeping", planKey: "reportKeepingDays", isDays: true, isFixed: false, standard: daysInMonth, general: daysInMonth - 5, danger: daysInMonth - 10 },
-		{ key: "selfCriticism", summaryKey: "selfCriticism", planKey: "selfCriticismDays", isDays: true, isFixed: false, standard: daysInMonth, general: daysInMonth - 5, danger: daysInMonth - 10 },
+		{ key: "quranStudy", summaryKey: "quranStudy", planKey: "quranStudyDays", isDays: true, isFixed: false, standard: fallback.quranStudyDays, general: daysInMonth - 5, danger: daysInMonth - 10 },
+		{ key: "haditsRead", summaryKey: "haditsRead", planKey: "haditsRead", isDays: false, isFixed: false, standard: fallback.haditsRead, general: Math.ceil(fallback.haditsRead * 0.8), danger: Math.ceil(fallback.haditsRead * 0.5) },
+		{ key: "literature", summaryKey: "literature", planKey: "literature", isDays: false, isFixed: false, standard: fallback.literature, general: Math.ceil(fallback.literature * 0.8), danger: Math.ceil(fallback.literature * 0.5) },
+		{ key: "salahJamaat", summaryKey: "salahJamaat", planKey: "salahJamaat", isDays: false, isFixed: false, standard: fallback.salahJamaat, general: Math.ceil(fallback.salahJamaat * 0.8), danger: Math.ceil(fallback.salahJamaat * 0.5) },
+		{ key: "targetContactDawah", summaryKey: "targetContactDawah", planKey: "targetContactDawah", isDays: false, isFixed: true, standard: fallback.targetContactDawah, general: Math.ceil(fallback.targetContactDawah * 0.6), danger: Math.ceil(fallback.targetContactDawah * 0.4) },
+		{ key: "targetContactWorker", summaryKey: "targetContactWorker", planKey: "targetContactWorker", isDays: false, isFixed: true, standard: fallback.targetContactWorker, general: Math.ceil(fallback.targetContactWorker * 0.75), danger: Math.ceil(fallback.targetContactWorker * 0.5) },
+		{ key: "targetContactMember", summaryKey: "targetContactMember", planKey: "targetContactMember", isDays: false, isFixed: true, standard: fallback.targetContactMember, general: Math.ceil(fallback.targetContactMember * 0.75), danger: Math.ceil(fallback.targetContactMember * 0.5) },
+		{ key: "workerContact", summaryKey: "workerContact", planKey: "workerContact", isDays: false, isFixed: true, standard: fallback.workerContact, general: Math.ceil(fallback.workerContact * 0.66), danger: Math.ceil(fallback.workerContact * 0.33) },
+		{ key: "bookDistribution", summaryKey: "bookDistribution", planKey: "bookDistribution", isDays: false, isFixed: true, standard: fallback.bookDistribution, general: Math.ceil(fallback.bookDistribution * 0.5), danger: 0, editable: false },
+		{ key: "familyMeeting", summaryKey: "familyMeeting", planKey: "familyMeetingDays", isDays: false, isFixed: true, standard: fallback.familyMeetingDays, general: Math.ceil(fallback.familyMeetingDays * 0.5), danger: 1 },
+		{ key: "socialWork", summaryKey: "socialWork", planKey: "socialWorkDays", isDays: true, isFixed: false, standard: fallback.socialWorkDays, general: Math.ceil(daysInMonth * (20 / 30)), danger: Math.ceil(daysInMonth * (10 / 30)) },
+		{ key: "safarDays", summaryKey: "safar", planKey: "safarDays", isDays: true, isFixed: false, standard: fallback.safarDays, general: 0, danger: 0 },
+		{ key: "orgWorkHours", summaryKey: "orgWorkHours", planKey: "orgWorkHours", isDays: false, isFixed: false, standard: fallback.orgWorkHours, general: Math.ceil(fallback.orgWorkHours * 0.8), danger: Math.ceil(fallback.orgWorkHours * 0.6) },
+		{ key: "reportKeeping", summaryKey: "reportKeeping", planKey: "reportKeepingDays", isDays: true, isFixed: false, standard: fallback.reportKeepingDays, general: daysInMonth - 5, danger: daysInMonth - 10 },
+		{ key: "selfCriticism", summaryKey: "selfCriticism", planKey: "selfCriticismDays", isDays: true, isFixed: false, standard: fallback.selfCriticismDays, general: daysInMonth - 5, danger: daysInMonth - 10 },
 		{ key: "increaseAssociate", summaryKey: "increaseAssociate", planKey: "increaseAssociate", isArray: true, editable: true },
 		{ key: "increaseActivist", summaryKey: "increaseActivist", planKey: "increaseActivist", isArray: true, editable: true },
 		{ key: "increaseMember", summaryKey: "increaseMember", planKey: "increaseMember", isArray: true, editable: true },
@@ -189,7 +190,8 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 	const [loading, setLoading] = useState(false);
 
 	const daysInMonth = month ? new Date(parseInt(month.split("-")[0]), parseInt(month.split("-")[1]), 0).getDate() : 30;
-	const thresholds = calculateThresholds(daysInMonth);
+	const fallbackPlan = emptyMonthlyPlan(month);
+	const thresholds = calculateThresholds(daysInMonth, fallbackPlan);
 
 	useEffect(() => {
 		let isMounted = true;
@@ -260,7 +262,7 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 	};
 
 	const getPlanValue = (planKey: string, isArray?: boolean, standard?: number) => {
-		if (!planData || planData[planKey] === undefined) {
+		if (!planData || planData[planKey] === undefined || planData[planKey] === null) {
 			return standard || 0;
 		}
 		if (isArray) {
