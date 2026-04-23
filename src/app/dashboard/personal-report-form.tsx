@@ -380,15 +380,7 @@ export default function PersonalReportForm({
 		return isOrgWorkEdited();
 	})();
 
-	useEffect(() => {
-		if (!isDirty) return;
-		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-			e.preventDefault();
-			e.returnValue = "";
-		};
-		window.addEventListener("beforeunload", handleBeforeUnload);
-		return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-	}, [isDirty]);
+	// removed beforeunload handler
 
 	function handleNumber(name: string, value: number) {
 		setForm((prev) => ({
@@ -433,14 +425,6 @@ export default function PersonalReportForm({
 	}
 
 	function handleDateSwitch(newDate: string) {
-		if (isDirty) {
-			const warningText = locale === "bn"
-				? "আপনার কিছু অসংরক্ষিত ডেটা আছে। আপনি কি নিশ্চিত যে আপনি তারিখ পরিবর্তন করতে চান? আপনার পরিবর্তনগুলো মুছে যাবে।"
-				: "You have unsaved changes. Are you sure you want to switch dates? Your changes will be lost.";
-			if (!window.confirm(warningText)) {
-				return;
-			}
-		}
 		onDateChange(newDate);
 	}
 
