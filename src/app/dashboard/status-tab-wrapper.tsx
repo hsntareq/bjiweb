@@ -156,10 +156,11 @@ function DynamicListField({ items, onChange, t }: any) {
 					value={input}
 					onChange={(e) => setInput(e.target.value)}
 					onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAdd())}
-					className="flex-1 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+					className="flex-1 border-2 border-gray-100 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-medium focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all shadow-sm bg-gray-50/50 hover:bg-white focus:bg-white"
+					placeholder="..."
 				/>
-				<button type="button" onClick={handleAdd} className="px-2 py-1.5 rounded-lg border flex items-center gap-1 shadow-sm font-medium text-xs bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100 whitespace-nowrap">
-					<Plus className="w-3 h-3" /> {t.add}
+				<button type="button" onClick={handleAdd} className="px-3 py-1.5 rounded-xl border-2 flex items-center gap-1.5 shadow-sm font-bold text-xs bg-indigo-50 text-indigo-600 border-indigo-100 hover:bg-indigo-100 hover:border-indigo-200 transition-colors whitespace-nowrap">
+					<Plus className="w-3.5 h-3.5" /> {t.add}
 				</button>
 			</div>
 			{items.length > 0 && (
@@ -309,14 +310,14 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 					)}
 				</div>
 
-				<div className="overflow-x-auto">
-					<table className="w-full text-left border-collapse">
+				<div className="overflow-x-auto px-4 sm:px-6 pb-6 pt-2 bg-slate-50/30">
+					<table className="w-full text-left border-separate border-spacing-y-2.5 min-w-[600px]">
 						<thead>
-							<tr className="bg-gray-50/80 text-gray-500 text-xs uppercase tracking-wider font-semibold border-b border-gray-100">
-								<th className="py-3 px-4 sm:px-6 whitespace-nowrap">{t.subject}</th>
-								<th className="py-3 px-4 whitespace-nowrap text-center">{t.plan}</th>
-								<th className="py-3 px-4 whitespace-nowrap text-center">{t.achieved}</th>
-								<th className="py-3 px-4 sm:px-6 whitespace-nowrap text-right">{t.remaining}</th>
+							<tr className="text-indigo-900/60 text-xs uppercase tracking-widest font-bold">
+								<th className="pb-3 px-4 sm:px-6 whitespace-nowrap">{t.subject}</th>
+								<th className="pb-3 px-4 whitespace-nowrap text-center">{t.plan}</th>
+								<th className="pb-3 px-4 whitespace-nowrap text-center">{t.achieved}</th>
+								<th className="pb-3 px-4 sm:px-6 whitespace-nowrap text-right">{t.remaining}</th>
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-gray-50">
@@ -333,44 +334,48 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 								const dotColor = getDotColor(achievedVal, th);
 
 								return (
-									<tr key={th.key} className="hover:bg-indigo-50/30 transition-colors group">
-										<td className="py-3.5 px-4 sm:px-6 text-sm font-medium text-gray-700 flex items-center gap-2">
-											<span className={`w-2 h-2 rounded-full ${dotColor}`}></span>
+									<tr key={th.key} className="bg-white hover:bg-indigo-50/40 transition-all duration-300 group shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] ring-1 ring-gray-100/80 hover:ring-indigo-100 hover:shadow-md rounded-2xl">
+										<td className="py-4 px-4 sm:px-6 text-sm font-semibold text-gray-700 flex items-center gap-3 rounded-l-2xl">
+											<span className={`w-2.5 h-2.5 rounded-full shadow-sm ${dotColor}`}></span>
 											<span className="whitespace-nowrap">{labels[th.key]}</span>
 										</td>
-										<td className="py-3.5 px-4 text-sm text-center text-gray-500 font-medium">
+										<td className="py-4 px-4 text-sm text-center text-gray-400 font-bold">
 											{formatValue(th.key, planVal)}
 										</td>
-										<td className="py-3.5 px-4">
+										<td className="py-4 px-4">
 											{th.editable ? (
 												th.isArray ? (
-													<DynamicListField 
-														items={reportData[th.key] || []} 
-														onChange={(items: string[]) => setReportData((prev: any) => ({ ...prev, [th.key]: items }))} 
-														t={t} 
-													/>
+													<div className="flex justify-center">
+														<DynamicListField 
+															items={reportData[th.key] || []} 
+															onChange={(items: string[]) => setReportData((prev: any) => ({ ...prev, [th.key]: items }))} 
+															t={t} 
+														/>
+													</div>
 												) : (
-													<input 
-														type="number" 
-														min={0}
-														className="w-full max-w-[100px] border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
-														value={reportData[th.key] || 0}
-														onChange={(e) => setReportData((prev: any) => ({ ...prev, [th.key]: parseInt(e.target.value) || 0 }))}
-													/>
+													<div className="flex justify-center">
+														<input 
+															type="number" 
+															min={0}
+															className="w-full max-w-[120px] text-center border-2 border-gray-100 rounded-xl px-3 py-2 text-sm font-semibold text-indigo-900 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all shadow-sm bg-gray-50/50 hover:bg-white focus:bg-white"
+															value={reportData[th.key] || 0}
+															onChange={(e) => setReportData((prev: any) => ({ ...prev, [th.key]: parseInt(e.target.value) || 0 }))}
+														/>
+													</div>
 												)
 											) : (
 												<div className="text-center">
-													<span className={`inline-flex items-center justify-center px-2.5 py-1 text-xs font-bold rounded-lg border ${colorClass}`}>
+													<span className={`inline-flex items-center justify-center px-3 py-1.5 text-xs font-black tracking-wide rounded-xl border-2 shadow-sm ${colorClass}`}>
 														{formatValue(th.key, achievedVal)}
 													</span>
 												</div>
 											)}
 										</td>
-										<td className="py-3.5 px-4 sm:px-6 text-right">
+										<td className="py-4 px-4 sm:px-6 text-right rounded-r-2xl">
 											{remaining > 0 ? (
-												<span className="text-sm font-semibold text-gray-600">{formatValue(th.key, remaining)}</span>
+												<span className="text-sm font-black text-gray-300">{formatValue(th.key, remaining)}</span>
 											) : (
-												<span className="text-xs font-bold text-green-500 uppercase tracking-wider">✓</span>
+												<span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 font-bold text-sm shadow-sm">✓</span>
 											)}
 										</td>
 									</tr>
