@@ -7,6 +7,7 @@ import axios from "axios";
 import PersonalReportFormWrapper from "../dashboard/personal-report-form-wrapper";
 import MonthlyPlanFormWrapper from "../dashboard/monthly-plan-form-wrapper";
 import StatusTabWrapper from "../dashboard/status-tab-wrapper";
+import YearlyTargetsForm from "../dashboard/yearly-targets-form";
 import { isTokenExpired } from "../../lib/getAuthToken";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
@@ -210,7 +211,7 @@ export default function PersonalReportTabs() {
 						/>
 					)}
 					{active === 3 && (
-						<div className="p-4 text-sm text-gray-600">{t.targetsHint}</div>
+						<YearlyTargetsForm selectedYear={selectedMonth.split('-')[0]} />
 					)}
 				</div>
 			</div>

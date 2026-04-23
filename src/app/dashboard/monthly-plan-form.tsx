@@ -294,7 +294,9 @@ export default function MonthlyPlanForm({
 				<div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-indigo-100/50 bg-gradient-to-r from-indigo-50/50 to-violet-50/50">
 					<div className="text-center">
 						<p className="text-[11px] text-indigo-500/80 font-bold uppercase tracking-widest mb-1">{t.monthlyPlan}</p>
-						<p className="text-lg sm:text-xl font-black text-gray-800 tracking-tight">{month}</p>
+						<p className="text-lg sm:text-xl font-black text-gray-800 tracking-tight">
+						{month ? new Date(month + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : ''}
+					</p>
 						{isLocked && (
 							<p className="mt-2 text-sm text-amber-600 bg-amber-50 py-1.5 px-3 rounded-lg inline-block border border-amber-200/50">
 								{t.lockedNotice}

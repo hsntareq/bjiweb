@@ -295,12 +295,15 @@ export default function StatusTabWrapper({
 	};
 
 	return (
-		<div className="max-w-4xl mx-auto my-8 sm:my-12 px-4 sm:px-0">
-			<div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden ring-1 ring-black/[0.03] transition-all">
+		<div className="max-w-2xl mx-auto my-8 sm:my-12">
+			<div className="relative bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/50 overflow-hidden ring-1 ring-black/5 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+				{/* Header */}
 				<div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-indigo-100/50 bg-gradient-to-r from-indigo-50/50 to-violet-50/50 relative">
 					<div className="text-center">
 						<p className="text-[11px] text-indigo-500/80 font-bold uppercase tracking-widest mb-1">{t.status}</p>
-						<p className="text-lg sm:text-xl font-black text-gray-800 tracking-tight">{month}</p>
+						<p className="text-lg sm:text-xl font-black text-gray-800 tracking-tight">
+							{month ? new Date(month + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : ''}
+						</p>
 					</div>
 					{loading && (
 						<div className="absolute top-1/2 right-6 -translate-y-1/2">
@@ -317,54 +320,52 @@ export default function StatusTabWrapper({
 					</div>
 				)}
 
-				<div className="overflow-x-auto px-4 sm:px-6 pb-6 pt-2 bg-slate-50/30">
-					<table className="w-full text-left border-separate border-spacing-y-2.5 min-w-[600px]">
+				<div className="overflow-x-auto px-4 sm:px-6 pb-6 pt-4">
+					<table className="w-full text-left border-separate border-spacing-y-2 min-w-[480px]">
 						<thead>
-							<tr className="text-indigo-900/60 text-xs uppercase tracking-widest font-bold">
-								<th className="pb-3 px-4 sm:px-6 whitespace-nowrap">{t.subject}</th>
-								<th className="pb-3 px-4 whitespace-nowrap text-center">{t.plan}</th>
-								<th className="pb-3 px-4 whitespace-nowrap text-center">{t.achieved}</th>
-								<th className="pb-3 px-4 sm:px-6 whitespace-nowrap text-right">{t.remaining}</th>
+							<tr className="text-indigo-900/50 text-[10px] uppercase tracking-widest font-bold">
+								<th className="pb-2 px-3 whitespace-nowrap">{t.subject}</th>
+								<th className="pb-2 px-3 whitespace-nowrap text-center">{t.plan}</th>
+								<th className="pb-2 px-3 whitespace-nowrap text-center">{t.achieved}</th>
+								<th className="pb-2 px-3 whitespace-nowrap text-right">{t.remaining}</th>
 							</tr>
 						</thead>
-						<tbody className="divide-y divide-gray-50">
+						<tbody>
 							{thresholds.map((th) => {
 								const achievedVal = getAchievedValue(th.key, th.summaryKey!, th.editable, th.isArray);
 								const planVal = getPlanValue(th.planKey!, th.isArray, th.standard);
-								
-								// Remaining based on Plan
 								const remaining = Math.max(0, planVal - achievedVal);
-								
-								// Color logic based on background standards, if no standard exists, default to simple style
 								const hasStandard = th.standard !== undefined && th.standard > 0;
 								const colorClass = hasStandard ? getStatusColor(achievedVal, th) : "bg-gray-100 text-gray-800 border-gray-200";
 								const dotColor = getDotColor(achievedVal, th);
 
 								return (
-									<tr key={th.key} className="bg-white hover:bg-indigo-50/40 transition-all duration-300 group shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] ring-1 ring-gray-100/80 hover:ring-indigo-100 hover:shadow-md rounded-2xl">
-										<td className="py-4 px-4 sm:px-6 text-sm font-semibold text-gray-700 flex items-center gap-3 rounded-l-2xl">
-											<span className={`w-2.5 h-2.5 rounded-full shadow-sm ${dotColor}`}></span>
-											<span className="whitespace-nowrap">{labels[th.key]}</span>
+									<tr key={th.key} className="bg-white hover:bg-indigo-50/30 transition-colors rounded-xl shadow-sm ring-1 ring-gray-100">
+										<td className="py-3 px-3 text-xs sm:text-sm font-semibold text-gray-700 rounded-l-xl">
+											<div className="flex items-center gap-2">
+												<span className={`w-2 h-2 rounded-full flex-shrink-0 ${dotColor}`} />
+												<span>{labels[th.key]}</span>
+											</div>
 										</td>
-										<td className="py-4 px-4 text-sm text-center text-gray-400 font-bold">
+										<td className="py-3 px-3 text-sm text-center text-gray-400 font-bold">
 											{formatValue(th.key, planVal)}
 										</td>
-										<td className="py-4 px-4">
+										<td className="py-3 px-3">
 											{th.editable ? (
 												th.isArray ? (
 													<div className="flex justify-center">
-														<DynamicListField 
-															items={reportData[th.key] || []} 
-															onChange={(items: string[]) => setReportDataAndNotify((prev: any) => ({ ...prev, [th.key]: items }))} 
-															t={t} 
+														<DynamicListField
+															items={reportData[th.key] || []}
+															onChange={(items: string[]) => setReportDataAndNotify((prev: any) => ({ ...prev, [th.key]: items }))}
+															t={t}
 														/>
 													</div>
 												) : (
 													<div className="flex justify-center">
-														<input 
-															type="number" 
+														<input
+															type="number"
 															min={0}
-															className="w-full max-w-[120px] text-center border-2 border-gray-100 rounded-xl px-3 py-2 text-sm font-semibold text-indigo-900 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all shadow-sm bg-gray-50/50 hover:bg-white focus:bg-white"
+															className="w-full max-w-[100px] text-center border border-gray-200 rounded-xl px-2.5 py-1.5 text-sm font-semibold text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm bg-white/50 hover:border-gray-300"
 															value={reportData[th.key] || 0}
 															onChange={(e) => setReportDataAndNotify((prev: any) => ({ ...prev, [th.key]: parseInt(e.target.value) || 0 }))}
 														/>
@@ -372,17 +373,17 @@ export default function StatusTabWrapper({
 												)
 											) : (
 												<div className="text-center">
-													<span className={`inline-flex items-center justify-center px-3 py-1.5 text-xs font-black tracking-wide rounded-xl border-2 shadow-sm ${colorClass}`}>
+													<span className={`inline-flex items-center justify-center px-2.5 py-1 text-xs font-bold rounded-lg border ${colorClass}`}>
 														{formatValue(th.key, achievedVal)}
 													</span>
 												</div>
 											)}
 										</td>
-										<td className="py-4 px-4 sm:px-6 text-right rounded-r-2xl">
+										<td className="py-3 px-3 text-right rounded-r-xl">
 											{remaining > 0 ? (
-												<span className="text-sm font-black text-gray-300">{formatValue(th.key, remaining)}</span>
+												<span className="text-xs font-bold text-gray-400">{formatValue(th.key, remaining)}</span>
 											) : (
-												<span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 font-bold text-sm shadow-sm">✓</span>
+												<span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-600 font-bold text-xs">✓</span>
 											)}
 										</td>
 									</tr>
@@ -392,17 +393,16 @@ export default function StatusTabWrapper({
 					</table>
 				</div>
 
-				<div className="px-6 py-5 border-t border-gray-100 bg-gray-50 flex justify-end">
+				<div className="px-4 sm:px-6 py-4 border-t border-gray-100 flex justify-end">
 					<button
 						onClick={handleSave}
 						disabled={saving}
-						className="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl shadow-sm hover:bg-indigo-700 hover:shadow disabled:opacity-70 disabled:cursor-not-allowed transition-all"
+						className="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl shadow-sm hover:bg-indigo-700 disabled:opacity-70 disabled:cursor-not-allowed transition-all"
 					>
 						{saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
 						{saving ? t.saving : t.save}
 					</button>
 				</div>
-
 			</div>
 		</div>
 	);
