@@ -377,7 +377,7 @@ export default function PersonalReportForm({
 			}
 			if (form[key] !== originalForm[key]) return true;
 		}
-		return isOrgWorkEdited();
+		return false;
 	})();
 
 	// removed beforeunload handler
@@ -425,6 +425,14 @@ export default function PersonalReportForm({
 	}
 
 	function handleDateSwitch(newDate: string) {
+		if (isDirty) {
+			const warningText = locale === "bn"
+				? "আপনার কিছু অসংরক্ষিত ডেটা আছে। আপনি কি নিশ্চিত যে আপনি তারিখ পরিবর্তন করতে চান? আপনার পরিবর্তনগুলো মুছে যাবে।"
+				: "You have unsaved changes. Are you sure you want to switch dates? Your changes will be lost.";
+			if (!window.confirm(warningText)) {
+				return;
+			}
+		}
 		onDateChange(newDate);
 	}
 
@@ -567,7 +575,6 @@ export default function PersonalReportForm({
 							<div className="flex flex-col gap-0.5 relative">
 								<label className="text-xs font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5">
 									{t.orgWork}
-									{isOrgWorkEdited() && <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>}
 								</label>
 								<input
 									type="text"
