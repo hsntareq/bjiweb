@@ -64,8 +64,9 @@ export default function PersonalReportTabs() {
 	}, [session]);
 
 	const getToken = useCallback(async (): Promise<string | null> => {
-		let token = fallbackToken || ((session as any)?.accessToken as string | undefined) || null;
-		if (session && (!token || isTokenExpired(token))) {
+		const token = fallbackToken || ((session as any)?.accessToken as string | undefined) || null;
+		// Only attempt Google token refresh - for email/mobile the token is always valid from session
+		if (!token || isTokenExpired(token)) {
 			const refreshed = await refreshBackendToken();
 			if (refreshed) return refreshed;
 		}
@@ -77,13 +78,16 @@ export default function PersonalReportTabs() {
 		let isMounted = true;
 		async function fetchStatusData() {
 			const token = await getToken();
-			if (!token) return;
+			if (!token) {
+				console.warn("[StatusTab] No auth token available, skipping fetch");
+				return;
+			}
 			try {
 				const [summaryRes, reportRes] = await Promise.all([
 					axios.get(`${API_URL}/personal-report/monthly-summary`, {
 						params: { month: selectedMonth },
 						headers: { Authorization: `Bearer ${token}` },
-					}).catch(() => null),
+					}).catch((e) => { console.error("[StatusTab] summary fetch failed", e?.response?.status); return null; }),
 					axios.get(`${API_URL}/monthly-report`, {
 						params: { month: selectedMonth },
 						headers: { Authorization: `Bearer ${token}` },
@@ -100,7 +104,7 @@ export default function PersonalReportTabs() {
 		fetchStatusData();
 		return () => { isMounted = false; };
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedMonth, status]);
+	}, [selectedMonth, status, session]);
 
 	const handleMonthChange = (offset: number) => {
 		const [year, month] = selectedMonth.split('-').map(Number);
