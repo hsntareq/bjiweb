@@ -360,13 +360,13 @@ export default function PersonalReportForm({
 		return form[field] !== originalForm[field];
 	};
 
-	const isOrgWorkEdited = () => {
+	const isManualOrgWorkEdited = () => {
 		if (!originalForm) return false;
 		const originalBaseSeconds = Math.min(
 			23 * 3600 + 59 * 60 + 59,
 			Math.max(0, originalForm.orgWorkHours * 3600 + originalForm.orgWorkMinutes * 60 + originalForm.orgWorkSeconds)
 		);
-		return totalOrgWorkSeconds !== originalBaseSeconds;
+		return manualOrgWorkSeconds !== originalBaseSeconds;
 	};
 
 	const isDirty = (() => {
@@ -377,7 +377,7 @@ export default function PersonalReportForm({
 			}
 			if (form[key] !== originalForm[key]) return true;
 		}
-		return false;
+		return isManualOrgWorkEdited();
 	})();
 
 	// removed beforeunload handler
@@ -575,6 +575,7 @@ export default function PersonalReportForm({
 							<div className="flex flex-col gap-0.5 relative">
 								<label className="text-xs font-medium text-gray-500 uppercase tracking-wide flex items-center gap-1.5">
 									{t.orgWork}
+									{isManualOrgWorkEdited() && <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>}
 								</label>
 								<input
 									type="text"
