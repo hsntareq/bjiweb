@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useLocale } from "../../lib/locale";
-import { getAuthToken, isTokenExpired } from "../../lib/getAuthToken";
+import { isTokenExpired } from "../../lib/getAuthToken";
 import PersonalReportForm from "./personal-report-form";
 
 const WRAPPER_TEXT = {
@@ -36,7 +36,7 @@ function todayStr() {
 	return `${yyyy}-${mm}-${dd}`;
 }
 
-export default function PersonalReportFormWrapper() {
+export default function PersonalReportFormWrapper({ onRefresh }: { onRefresh?: () => void }) {
 	const [submitting, setSubmitting] = useState(false);
 	const [timerSubmitting, setTimerSubmitting] = useState(false);
 	const [date, setDate] = useState(todayStr);
@@ -156,6 +156,7 @@ export default function PersonalReportFormWrapper() {
 			const res = await authorizedPost(`${API_URL}/personal-report`, data);
 			setDefaultData(res.data || null);
 			toast.success(t.saved);
+			onRefresh?.();
 		} catch (err: any) {
 			console.error("Failed to submit report", err);
 			toast.error(t.saveFailed);
@@ -170,6 +171,7 @@ export default function PersonalReportFormWrapper() {
 			const res = await authorizedPost(`${API_URL}/personal-report/timer/start`, { date: targetDate });
 			setDefaultData(res.data || null);
 			toast.success(t.timerStarted);
+			onRefresh?.();
 		} catch (err) {
 			console.error("Failed to start org work timer", err);
 			toast.error(t.timerStartFailed);
@@ -184,6 +186,7 @@ export default function PersonalReportFormWrapper() {
 			const res = await authorizedPost(`${API_URL}/personal-report/timer/pause`, { date: targetDate });
 			setDefaultData(res.data || null);
 			toast.success(t.timerPaused);
+			onRefresh?.();
 		} catch (err) {
 			console.error("Failed to pause org work timer", err);
 			toast.error(t.timerPauseFailed);

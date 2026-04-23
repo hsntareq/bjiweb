@@ -73,6 +73,10 @@ export default function PersonalReportTabs() {
 		return token;
 	}, [fallbackToken, session, refreshBackendToken]);
 
+	const triggerRefresh = useCallback(() => {
+		setRefreshTrigger(prev => prev + 1);
+	}, []);
+
 	useEffect(() => {
 		if (status === "loading") return;
 		let isMounted = true;
@@ -122,6 +126,13 @@ export default function PersonalReportTabs() {
 		return () => { isMounted = false; };
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedMonth, status, session, refreshTrigger]);
+
+	// Auto-refresh when visiting the Status tab
+	useEffect(() => {
+		if (active === 2) {
+			triggerRefresh();
+		}
+	}, [active, triggerRefresh]);
 
 	const handleMonthChange = (offset: number) => {
 		const [year, month] = selectedMonth.split('-').map(Number);
@@ -181,12 +192,12 @@ export default function PersonalReportTabs() {
 				</div>
 
 				<div className="mt-2">
-					{active === 0 && <PersonalReportFormWrapper />}
+					{active === 0 && <PersonalReportFormWrapper onRefresh={triggerRefresh} />}
 					{active === 1 && (
 						<MonthlyPlanFormWrapper 
 							month={selectedMonth} 
 							planData={planData} 
-							onRefresh={() => setRefreshTrigger(prev => prev + 1)}
+							onRefresh={triggerRefresh}
 						/>
 					)}
 					{active === 2 && (
