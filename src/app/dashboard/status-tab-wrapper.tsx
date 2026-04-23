@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Loader2 } from "lucide-react";
+import { Loader2, Plus, Trash2, Save } from "lucide-react";
 import { getAuthToken } from "../../lib/getAuthToken";
 import { useLocale } from "../../lib/locale";
 
@@ -42,6 +42,11 @@ const TEXT = {
 		sellBooksNumber: "Sell Books (Number)",
 		socialHelp: "Social Help",
 		professionalHelp: "Professional Help",
+
+		save: "Save Status",
+		saving: "Saving...",
+		add: "+ Add",
+
 	},
 	bn: {
 		status: "মাসিক অবস্থা",
@@ -77,6 +82,11 @@ const TEXT = {
 		sellBooksNumber: "বই বিক্রি (সংখ্যা)",
 		socialHelp: "সামাজিক সাহায্য",
 		professionalHelp: "পেশাগত সাহায্য",
+
+		save: "অবস্থা সংরক্ষণ করুন",
+		saving: "সংরক্ষণ করা হচ্ছে...",
+		add: "+ যোগ করুন",
+
 	},
 } as const;
 
@@ -90,23 +100,23 @@ function calculateThresholds(daysInMonth: number) {
 		{ key: "targetContactWorker", summaryKey: "targetContactWorker", planKey: "targetContactWorker", isDays: false, isFixed: true, standard: 4, general: 3, danger: 2 },
 		{ key: "targetContactMember", summaryKey: "targetContactMember", planKey: "targetContactMember", isDays: false, isFixed: true, standard: 6, general: 3, danger: 2 },
 		{ key: "workerContact", summaryKey: "workerContact", planKey: "workerContact", isDays: false, isFixed: true, standard: 3, general: 2, danger: 1 },
-		{ key: "bookDistribution", summaryKey: "bookDistribution", planKey: "bookDistribution", isDays: false, isFixed: true, standard: 0, general: 0, danger: 0 },
+		{ key: "bookDistribution", summaryKey: "bookDistribution", planKey: "bookDistribution", isDays: false, isFixed: true, standard: 0, general: 0, danger: 0, editable: false },
 		{ key: "familyMeeting", summaryKey: "familyMeeting", planKey: "familyMeetingDays", isDays: false, isFixed: true, standard: 4, general: 2, danger: 1 },
 		{ key: "socialWork", summaryKey: "socialWork", planKey: "socialWorkDays", isDays: true, isFixed: false, standard: daysInMonth, general: Math.ceil(daysInMonth * (20 / 30)), danger: Math.ceil(daysInMonth * (10 / 30)) },
 		{ key: "safarDays", summaryKey: "safar", planKey: "safarDays", isDays: true, isFixed: false, standard: 0, general: 0, danger: 0 },
 		{ key: "orgWorkHours", summaryKey: "orgWorkHours", planKey: "orgWorkHours", isDays: false, isFixed: false, standard: 3 * daysInMonth, general: Math.ceil(2.5 * daysInMonth), danger: 2 * daysInMonth },
 		{ key: "reportKeeping", summaryKey: "reportKeeping", planKey: "reportKeepingDays", isDays: true, isFixed: false, standard: daysInMonth, general: daysInMonth - 5, danger: daysInMonth - 10 },
 		{ key: "selfCriticism", summaryKey: "selfCriticism", planKey: "selfCriticismDays", isDays: true, isFixed: false, standard: daysInMonth, general: daysInMonth - 5, danger: daysInMonth - 10 },
-		{ key: "increaseAssociate", summaryKey: "increaseAssociate", planKey: "increaseAssociate", isArray: true },
-		{ key: "increaseActivist", summaryKey: "increaseActivist", planKey: "increaseActivist", isArray: true },
-		{ key: "increaseMember", summaryKey: "increaseMember", planKey: "increaseMember", isArray: true },
-		{ key: "memorizingSura", summaryKey: "memorizingSura", planKey: "memorizingSura", isArray: true },
-		{ key: "memorizingAyat", summaryKey: "memorizingAyat", planKey: "memorizingAyat", isArray: true },
-		{ key: "memorizingHadits", summaryKey: "memorizingHadits", planKey: "memorizingHadits", isArray: true },
-		{ key: "baitulmalIncreaseAmount", summaryKey: "baitulmalIncreaseAmount", planKey: "baitulmalIncreaseAmount" },
-		{ key: "sellBooksNumber", summaryKey: "sellBooksNumber", planKey: "sellBooksNumber" },
-		{ key: "socialHelp", summaryKey: "socialHelp", planKey: "socialHelp", isArray: true },
-		{ key: "professionalHelp", summaryKey: "professionalHelp", planKey: "professionalHelp", isArray: true },
+		{ key: "increaseAssociate", summaryKey: "increaseAssociate", planKey: "increaseAssociate", isArray: true, editable: true },
+		{ key: "increaseActivist", summaryKey: "increaseActivist", planKey: "increaseActivist", isArray: true, editable: true },
+		{ key: "increaseMember", summaryKey: "increaseMember", planKey: "increaseMember", isArray: true, editable: true },
+		{ key: "memorizingSura", summaryKey: "memorizingSura", planKey: "memorizingSura", isArray: true, editable: true },
+		{ key: "memorizingAyat", summaryKey: "memorizingAyat", planKey: "memorizingAyat", isArray: true, editable: true },
+		{ key: "memorizingHadits", summaryKey: "memorizingHadits", planKey: "memorizingHadits", isArray: true, editable: true },
+		{ key: "baitulmalIncreaseAmount", summaryKey: "baitulmalIncreaseAmount", planKey: "baitulmalIncreaseAmount", editable: true },
+		{ key: "sellBooksNumber", summaryKey: "sellBooksNumber", planKey: "sellBooksNumber", editable: true },
+		{ key: "socialHelp", summaryKey: "socialHelp", planKey: "socialHelp", isArray: true, editable: true },
+		{ key: "professionalHelp", summaryKey: "professionalHelp", planKey: "professionalHelp", isArray: true, editable: true },
 	];
 }
 
@@ -125,11 +135,56 @@ function getDotColor(value: number, thresholds: any) {
 	return "bg-red-500";
 }
 
+import React from 'react';
+
+function DynamicListField({ items, onChange, t }: any) {
+	const [input, setInput] = React.useState("");
+	const handleAdd = () => {
+		if (input.trim()) {
+			onChange([...items, input.trim()]);
+			setInput("");
+		}
+	};
+	const handleRemove = (index: number) => {
+		onChange(items.filter((_: any, i: number) => i !== index));
+	};
+	return (
+		<div className="flex flex-col gap-1.5 w-full max-w-xs">
+			<div className="flex gap-2">
+				<input
+					type="text"
+					value={input}
+					onChange={(e) => setInput(e.target.value)}
+					onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAdd())}
+					className="flex-1 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+				/>
+				<button type="button" onClick={handleAdd} className="px-2 py-1.5 rounded-lg border flex items-center gap-1 shadow-sm font-medium text-xs bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100 whitespace-nowrap">
+					<Plus className="w-3 h-3" /> {t.add}
+				</button>
+			</div>
+			{items.length > 0 && (
+				<ul className="mt-1.5 space-y-1">
+					{items.map((item: string, i: number) => (
+						<li key={i} className="flex items-center justify-between border border-gray-100 rounded-md px-2 py-1.5 shadow-sm text-xs bg-white">
+							<span className="text-gray-700 truncate">{item}</span>
+							<button type="button" onClick={() => handleRemove(i)} className="text-red-400 hover:text-red-600 ml-2">
+								<Trash2 className="w-3.5 h-3.5" />
+							</button>
+						</li>
+					))}
+				</ul>
+			)}
+		</div>
+	);
+}
+
 export default function StatusTabWrapper({ month }: { month: string }) {
 	const { locale } = useLocale();
 	const t = TEXT[locale];
 	const [summaryData, setSummaryData] = useState<any>(null);
 	const [planData, setPlanData] = useState<any>(null);
+	const [reportData, setReportData] = useState<any>({});
+	const [saving, setSaving] = useState(false);
 	const [loading, setLoading] = useState(false);
 
 	const daysInMonth = month ? new Date(parseInt(month.split("-")[0]), parseInt(month.split("-")[1]), 0).getDate() : 30;
@@ -142,11 +197,12 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 			setLoading(true);
 			try {
 				const token = await getAuthToken();
-				const [summaryRes, planRes] = await Promise.all([
+				const [summaryRes, reportRes, planRes] = await Promise.all([
 					axios.get(`${API_URL}/personal-report/monthly-summary`, {
 						params: { month },
 						headers: { Authorization: `Bearer ${token}` },
 					}),
+					axios.get(`${API_URL}/monthly-report`, { params: { month }, headers: { Authorization: `Bearer ${token}` } }),
 					axios.get(`${API_URL}/monthly-plan`, {
 						params: { month },
 						headers: { Authorization: `Bearer ${token}` },
@@ -154,6 +210,7 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 				]);
 				if (isMounted) {
 					setSummaryData(summaryRes.data);
+					setReportData(reportRes.data || {});
 					setPlanData(planRes.data);
 				}
 			} catch (err) {
@@ -166,6 +223,22 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 		return () => { isMounted = false; };
 	}, [month]);
 
+	
+	const handleSave = async () => {
+		setSaving(true);
+		try {
+			const token = await getAuthToken();
+			await axios.post(`${API_URL}/monthly-report`, { month, ...reportData }, {
+				headers: { Authorization: `Bearer ${token}` }
+			});
+			// optionally show success toast
+		} catch (error) {
+			console.error("Failed to save report", error);
+		} finally {
+			setSaving(false);
+		}
+	};
+
 	const formatValue = (key: string, val: number) => {
 		if (key === "orgWorkHours" && val > 0) {
 			return val.toFixed(1);
@@ -173,7 +246,11 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 		return val;
 	};
 
-	const getAchievedValue = (key: string, summaryKey: string) => {
+	const getAchievedValue = (key: string, summaryKey: string, editable?: boolean, isArray?: boolean) => {
+		if (editable) {
+			if (isArray) return reportData[key] ? reportData[key].length : 0;
+			return reportData[key] || 0;
+		}
 		if (!summaryData) return 0;
 		if (key === "orgWorkHours") {
 			return summaryData.orgWorkTotalSeconds / 3600 || 0;
@@ -244,7 +321,7 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 						</thead>
 						<tbody className="divide-y divide-gray-50">
 							{thresholds.map((th) => {
-								const achievedVal = getAchievedValue(th.key, th.summaryKey!);
+								const achievedVal = getAchievedValue(th.key, th.summaryKey!, th.editable, th.isArray);
 								const planVal = getPlanValue(th.planKey!, th.isArray);
 								
 								// Remaining based on Plan
@@ -264,10 +341,30 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 										<td className="py-3.5 px-4 text-sm text-center text-gray-500 font-medium">
 											{formatValue(th.key, planVal)}
 										</td>
-										<td className="py-3.5 px-4 text-center">
-											<span className={`inline-flex items-center justify-center px-2.5 py-1 text-xs font-bold rounded-lg border ${colorClass}`}>
-												{formatValue(th.key, achievedVal)}
-											</span>
+										<td className="py-3.5 px-4">
+											{th.editable ? (
+												th.isArray ? (
+													<DynamicListField 
+														items={reportData[th.key] || []} 
+														onChange={(items: string[]) => setReportData((prev: any) => ({ ...prev, [th.key]: items }))} 
+														t={t} 
+													/>
+												) : (
+													<input 
+														type="number" 
+														min={0}
+														className="w-full max-w-[100px] border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+														value={reportData[th.key] || 0}
+														onChange={(e) => setReportData((prev: any) => ({ ...prev, [th.key]: parseInt(e.target.value) || 0 }))}
+													/>
+												)
+											) : (
+												<div className="text-center">
+													<span className={`inline-flex items-center justify-center px-2.5 py-1 text-xs font-bold rounded-lg border ${colorClass}`}>
+														{formatValue(th.key, achievedVal)}
+													</span>
+												</div>
+											)}
 										</td>
 										<td className="py-3.5 px-4 sm:px-6 text-right">
 											{remaining > 0 ? (
@@ -282,6 +379,18 @@ export default function StatusTabWrapper({ month }: { month: string }) {
 						</tbody>
 					</table>
 				</div>
+
+				<div className="px-6 py-5 border-t border-gray-100 bg-gray-50 flex justify-end">
+					<button
+						onClick={handleSave}
+						disabled={saving}
+						className="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl shadow-sm hover:bg-indigo-700 hover:shadow disabled:opacity-70 disabled:cursor-not-allowed transition-all"
+					>
+						{saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+						{saving ? t.saving : t.save}
+					</button>
+				</div>
+
 			</div>
 		</div>
 	);
