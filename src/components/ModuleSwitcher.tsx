@@ -31,6 +31,14 @@ const MODULES = [
 		color: "from-purple-500 to-pink-600",
 	},
 	{
+		id: "organization-management",
+		name: "Organization Management",
+		description: "Hierarchy & Structure",
+		href: "/organization",
+		icon: "🗂️",
+		color: "from-sky-500 to-cyan-600",
+	},
+	{
 		id: "my-learning",
 		name: "My Learning",
 		description: "Educational Resources",
