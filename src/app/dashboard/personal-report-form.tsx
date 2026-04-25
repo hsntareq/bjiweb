@@ -526,7 +526,7 @@ export default function PersonalReportForm({
 	}
 
 	return (
-		<div className="w-full">
+		<div className="w-full px-0 sm:px-8 py-0 sm:py-4">
 			<form onSubmit={handleSubmit} className="relative bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/50 overflow-hidden ring-1 ring-black/5 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
 				{/* Overlay Loader */}
 				{(defaultData === undefined || submitting) && (

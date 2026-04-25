@@ -4,6 +4,7 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import LanguageToggle from "../../components/LanguageToggle";
 
 export default function LoginPage() {
 	const [email, setEmail] = useState("");
@@ -65,6 +66,9 @@ export default function LoginPage() {
 
 			{/* Right panel */}
 			<div className="flex-1 flex items-center justify-center bg-white px-6 py-12">
+				<div className="absolute top-6 right-6 sm:hidden">
+					<LanguageToggle />
+				</div>
 				<div className="w-full max-w-sm">
 					{/* Mobile logo */}
 					<Link href="/" className="lg:hidden flex items-center gap-2 mb-8 w-fit">

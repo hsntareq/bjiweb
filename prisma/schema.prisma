@@ -11,13 +11,112 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
-// User model for authentication
-model User {
+
+// ============================================================================
+// ORGANIZATIONAL HIERARCHY
+// ============================================================================
+
+model Organization {
   id        String   @id @default(uuid())
-  email     String   @unique
-  password  String?
-  name      String?
-  phone     String?  @unique
+  name      String   @unique
+  type      String   // CENTRAL, CITY, THANA, WARD, UNIT
+  parentId  String?
+  parent    Organization? @relation("OrganizationHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children  Organization[] @relation("OrganizationHierarchy")
+
+  // Additional fields for Bangladeshi structure
+  wardNumber    Int?
+  city          String?
+  thana         String?
+  division      String?
+
+  users     User[]
+  roles     Role[]
+  activities Activity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================================================
+// ROLES & PERMISSIONS
+// ============================================================================
+
+model Role {
+  id              String   @id @default(uuid())
+  name            String
+  description     String?
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  permissions     Permission[]
+  users           User[]
+
+  @@unique([name, organizationId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Permission {
+  id              String   @id @default(uuid())
+  name            String
+  description     String?
+  resource        String   // e.g., 'users', 'activities', 'reports'
+  action          String   // e.g., 'create', 'read', 'update', 'delete'
+
+  roles           Role[]
+
+  @@unique([resource, action])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================================================
+// USER & AUTHENTICATION
+// ============================================================================
+
+model User {
+  id                String   @id @default(uuid())
+  email             String   @unique
+  password          String?
+  name              String?
+  phone             String?  @unique
+  isActive          Boolean  @default(true)
+
+  roleId            String?
+  role              Role?    @relation(fields: [roleId], references: [id], onDelete: SetNull)
+
+  organizationId    String?
+  organization      Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  canCreateUsers    Boolean  @default(false)
+  createdByUserId   String?
+  createdBy         User?    @relation("UserCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  createdUsers      User[]   @relation("UserCreatedBy")
+
+  activities        Activity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================================================
+// ACTIVITIES
+// ============================================================================
+
+model Activity {
+  id              String   @id @default(uuid())
+  name            String
+  description     String?
+  status          String   @default("active") // active, inactive
+  category        String?  // e.g., 'training', 'event', 'meeting'
+
+  organizationId  String?
+  organization    Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

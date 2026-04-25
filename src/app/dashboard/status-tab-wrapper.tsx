@@ -399,7 +399,7 @@ export default function StatusTabWrapper({
 	};
 
 	return (
-		<div className="w-full">
+		<div className="w-full px-0 sm:px-8 py-0 sm:py-4">
 			<div className="relative bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/50 overflow-hidden ring-1 ring-black/5 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
 				{/* Header */}
 				<div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-indigo-100/50 bg-gradient-to-r from-indigo-50/50 to-violet-50/50 relative">

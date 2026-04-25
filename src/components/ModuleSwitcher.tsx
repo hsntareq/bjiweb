@@ -1,5 +1,6 @@
 "use client";
-import { Grid3x3 } from "lucide-react";
+import { Grid3x3, LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -83,33 +84,28 @@ export default function ModuleSwitcher() {
 
 			{/* Dropdown Menu */}
 			{isOpen && (
-				<div className="fixed inset-x-0 top-16 mx-auto bg-white border-b border-gray-100 shadow-lg z-[999] overflow-hidden">
-					{/* Header */}
-					<div className="max-w-6xl mx-auto px-4 py-2.5 border-b border-gray-100 bg-gradient-to-r from-indigo-50 to-violet-50">
-						<p className="text-xs font-semibold text-indigo-600 uppercase tracking-wider">Modules</p>
-					</div>
-
+				<div className="absolute right-0 top-full mt-3 w-72 bg-white border border-gray-100 shadow-xl rounded-2xl z-[999] overflow-hidden animate-in fade-in zoom-in duration-200">
 					{/* Module Grid */}
-					<div className="max-w-6xl mx-auto px-6 py-3 max-h-72 overflow-y-auto">
-						<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-							{MODULES.map((module) => {
+					<div className="max-h-[70vh] overflow-y-auto">
+						<div className="grid grid-cols-2">
+							{MODULES.map((module, index) => {
 								const isActive = currentModule?.id === module.id;
 								return (
 									<Link
 										key={module.id}
 										href={module.href}
 										onClick={() => setIsOpen(false)}
-										className={`flex flex-col items-center p-3 rounded-lg transition-all border-2 ${isActive
-											? "bg-indigo-50 border-indigo-400 shadow-sm"
-											: "bg-white border-gray-100 hover:border-gray-200 hover:shadow-sm"
-											}`}
+										className={`flex flex-col items-center p-5 transition-all border-b border-r border-gray-100 ${isActive
+											? "bg-indigo-50/50"
+											: "bg-white hover:bg-gray-50"
+											} ${index % 2 === 1 ? "border-r-0" : ""}`}
 									>
-										<span className="text-xl mb-1.5">{module.icon}</span>
-										<p className={`text-xs font-semibold text-center line-clamp-1 ${isActive ? "text-indigo-900" : "text-gray-900"}`}>
+										<span className="text-2xl mb-2">{module.icon}</span>
+										<p className={`text-xs font-bold text-center line-clamp-1 ${isActive ? "text-indigo-900" : "text-gray-700"}`}>
 											{module.name}
 										</p>
 										{isActive && (
-											<div className="mt-1 w-1.5 h-1.5 rounded-full bg-indigo-600" />
+											<div className="mt-2 w-1.5 h-1.5 rounded-full bg-indigo-600" />
 										)}
 									</Link>
 								);
@@ -117,11 +113,15 @@ export default function ModuleSwitcher() {
 						</div>
 					</div>
 
-					{/* Footer */}
-					<div className="max-w-6xl mx-auto px-6 py-2 border-t border-gray-100 bg-gray-50">
-						<p className="text-xs text-gray-500 text-center">
-							Quick access
-						</p>
+					{/* Sign Out Action */}
+					<div className="bg-gray-50/50">
+						<button
+							onClick={() => signOut({ callbackUrl: "/login" })}
+							className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 hover:text-red-700 transition-all"
+						>
+							<LogOut className="w-4 h-4" />
+							Sign Out
+						</button>
 					</div>
 				</div>
 			)}

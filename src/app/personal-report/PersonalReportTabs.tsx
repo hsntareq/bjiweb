@@ -2,7 +2,8 @@
 import axios from "axios";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useCallback, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { isTokenExpired } from "../../lib/getAuthToken";
 import { useLocale } from "../../lib/locale";
 import MonthlyPlanFormWrapper from "../dashboard/monthly-plan-form-wrapper";
@@ -45,9 +46,41 @@ function normalizeStringList(value: unknown): string[] {
 
 export default function PersonalReportTabs() {
 	const { locale } = useLocale();
+	const router = useRouter();
+	const searchParams = useSearchParams();
 	const t = TAB_LABELS[locale];
 	const tabs = [t.daily, t.planning, t.status];
-	const [active, setActive] = useState(0);
+	const tabNames = ["daily", "planning", "status"];
+
+	// Sync active tab with URL
+	const activeTabName = searchParams.get("tab") || "daily";
+	const active = useMemo(() => {
+		const idx = tabNames.indexOf(activeTabName);
+		return idx !== -1 ? idx : 0;
+	}, [activeTabName]);
+
+	const setActive = useCallback((index: number) => {
+		const params = new URLSearchParams(searchParams.toString());
+		params.set("tab", tabNames[index]);
+		router.push(`?${params.toString()}`, { scroll: false });
+	}, [searchParams, router]);
+
+	// Sync month with URL
+	const urlMonth = searchParams.get("month");
+	const selectedMonth = useMemo(() => {
+		if (urlMonth && /^\d{4}-\d{2}$/.test(urlMonth)) return urlMonth;
+		const d = new Date();
+		const y = d.getFullYear();
+		const m = String(d.getMonth() + 1).padStart(2, "0");
+		return `${y}-${m}`;
+	}, [urlMonth]);
+
+	const setSelectedMonth = useCallback((month: string) => {
+		const params = new URLSearchParams(searchParams.toString());
+		params.set("month", month);
+		router.push(`?${params.toString()}`, { scroll: false });
+	}, [searchParams, router]);
+
 	const [planData, setPlanData] = useState<any>(null);
 	const [summaryData, setSummaryData] = useState<any>(null);
 	const [reportData, setReportData] = useState<any>({});
@@ -56,12 +89,16 @@ export default function PersonalReportTabs() {
 
 	const { data: session, status } = useSession();
 
-	const [selectedMonth, setSelectedMonth] = useState(() => {
-		const d = new Date();
-		const y = d.getFullYear();
-		const m = String(d.getMonth() + 1).padStart(2, "0");
-		return `${y}-${m}`;
-	});
+	const getUserIdFromToken = useCallback((token: string | null): number | undefined => {
+		if (!token) return undefined;
+		try {
+			const decoded = JSON.parse(atob(token.split('.')[1]));
+			return decoded.sub;
+		} catch {
+			return undefined;
+		}
+	}, []);
+
 
 	const refreshBackendToken = useCallback(async (): Promise<string | null> => {
 		const provider = (session as any)?.provider;
@@ -105,23 +142,20 @@ export default function PersonalReportTabs() {
 		let isMounted = true;
 		async function fetchData() {
 			const token = await getToken();
-			if (!token) {
-				console.warn("[PersonalReportTabs] No auth token available, skipping fetch");
-				return;
-			}
+			const userId = getUserIdFromToken(token) ?? (session as any)?.userId;
 			try {
 				const [summaryRes, reportRes, planRes] = await Promise.all([
 					axios.get(`${API_URL}/personal-report/monthly-summary`, {
-						params: { month: selectedMonth },
-						headers: { Authorization: `Bearer ${token}` },
+						params: { month: selectedMonth, userId },
+						headers: token ? { Authorization: `Bearer ${token}` } : {},
 					}).catch((e) => { console.error("[StatusTab] summary fetch failed", e?.response?.status); return null; }),
 					axios.get(`${API_URL}/monthly-report`, {
-						params: { month: selectedMonth },
-						headers: { Authorization: `Bearer ${token}` },
+						params: { month: selectedMonth, userId },
+						headers: token ? { Authorization: `Bearer ${token}` } : {},
 					}).catch(() => null),
 					axios.get(`${API_URL}/monthly-plan`, {
-						params: { month: selectedMonth },
-						headers: { Authorization: `Bearer ${token}` },
+						params: { month: selectedMonth, userId },
+						headers: token ? { Authorization: `Bearer ${token}` } : {},
 					}).catch((e) => { console.error("[StatusTab] plan fetch failed", e?.response?.status); return null; }),
 				]);
 				if (isMounted) {
@@ -161,7 +195,7 @@ export default function PersonalReportTabs() {
 		fetchData();
 		return () => { isMounted = false; };
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedMonth, status, session, refreshTrigger]);
+	}, [selectedMonth, status, session, refreshTrigger, getToken, getUserIdFromToken]);
 
 	// Auto-refresh when visiting the Status tab
 	useEffect(() => {
@@ -184,7 +218,7 @@ export default function PersonalReportTabs() {
 	return (
 		<div className="w-full">
 			{/* Mobile: Sticky tabs navigation */}
-			<div className="sticky top-16 z-9 bg-white border-b border-gray-100 shadow-sm sm:hidden">
+			<div className="sticky top-16 z-30 bg-white border-b border-gray-100 shadow-sm sm:hidden">
 				<div className="px-4 py-3 flex flex-wrap gap-2 justify-center sm:justify-start">
 					{tabs.map((t, i) => (
 						<button
@@ -200,62 +234,24 @@ export default function PersonalReportTabs() {
 					))}
 				</div>
 			</div>
-
-			<div className="max-w-4xl mx-auto my-8">
-				<div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
-					{/* Desktop: Tabs and month picker in card */}
-					<div className="hidden sm:flex items-center justify-between gap-4 mb-4">
-						<div className="flex flex-wrap gap-2">
-							{tabs.map((t, i) => (
-								<button
-									key={t}
-									onClick={() => setActive(i)}
-									className={`px-3 py-2 rounded-xl text-sm font-medium transition ${i === active
-										? "bg-indigo-50 border border-indigo-200 text-indigo-700"
-										: "bg-white border border-gray-100 text-gray-600 hover:bg-gray-50"
-										}`}
-								>
-									{t}
-								</button>
-							))}
-						</div>
-						<div className="relative flex items-center gap-1 bg-white border border-gray-200 rounded-xl p-1 shadow-sm min-w-[160px] justify-between">
+			<div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
+				{/* Desktop: Tabs and month picker in card */}
+				<div className="hidden sm:flex items-center justify-between gap-4 mb-4">
+					<div className="flex flex-wrap gap-2">
+						{tabs.map((t, i) => (
 							<button
-								onClick={() => handleMonthChange(-1)}
-								className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors"
+								key={t}
+								onClick={() => setActive(i)}
+								className={`px-3 py-2 rounded-xl text-sm font-medium transition ${i === active
+									? "bg-indigo-50 border border-indigo-200 text-indigo-700"
+									: "bg-white border border-gray-100 text-gray-600 hover:bg-gray-50"
+									}`}
 							>
-								<ChevronLeft className="w-4 h-4" />
+								{t}
 							</button>
-							<div className="flex-1">
-								<label className="sr-only" htmlFor="personal-report-month">
-									{t.monthPickerLabel}
-								</label>
-								<input
-									id="personal-report-month"
-									type="month"
-									value={selectedMonth}
-									onChange={(e) => {
-										setSelectedMonth(e.target.value);
-										setPlanData(null);
-										setSummaryData(null);
-										setReportData({});
-									}}
-									aria-label={t.monthPickerLabel}
-									title={formatMonthYear(selectedMonth)}
-									className="w-full rounded-lg border border-transparent bg-transparent py-1 text-center text-sm font-semibold text-gray-700 focus:border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-								/>
-							</div>
-							<button
-								onClick={() => handleMonthChange(1)}
-								className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors"
-							>
-								<ChevronRight className="w-4 h-4" />
-							</button>
-						</div>
+						))}
 					</div>
-
-					{/* Mobile: Month picker only in card */}
-					<div className="flex sm:hidden items-center justify-center gap-1 bg-white border border-gray-200 rounded-xl p-1 shadow-sm min-w-[160px] mx-auto mb-4">
+					<div className="relative flex items-center gap-1 bg-white border border-gray-200 rounded-xl p-1 shadow-sm min-w-[160px] justify-between">
 						<button
 							onClick={() => handleMonthChange(-1)}
 							className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors"
@@ -288,33 +284,68 @@ export default function PersonalReportTabs() {
 							<ChevronRight className="w-4 h-4" />
 						</button>
 					</div>
+				</div>
 
-					<div className="mt-2">
-						{active === 0 && (
-							<PersonalReportFormWrapper
-								onRefresh={triggerRefresh}
-								selectedMonth={selectedMonth}
-								onSelectedMonthChange={syncSelectedMonth}
-							/>
-						)}
-						{active === 1 && (
-							<MonthlyPlanFormWrapper
-								month={selectedMonth}
-								planData={planData}
-								onRefresh={triggerRefresh}
-							/>
-						)}
-						{active === 2 && (
-							<StatusTabWrapper
-								month={selectedMonth}
-								planData={planData}
-								summaryData={summaryData}
-								reportData={reportData}
-								onReportDataChange={setReportData}
-								onPlanDataChange={setPlanData}
-							/>
-						)}
+				{/* Mobile: Month picker only in card */}
+				<div className="flex sm:hidden items-center justify-center gap-1 bg-white border border-gray-200 rounded-xl p-1 shadow-sm min-w-[160px] mx-auto mb-4">
+					<button
+						onClick={() => handleMonthChange(-1)}
+						className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors"
+					>
+						<ChevronLeft className="w-4 h-4" />
+					</button>
+					<div className="flex-1">
+						<label className="sr-only" htmlFor="personal-report-month">
+							{t.monthPickerLabel}
+						</label>
+						<input
+							id="personal-report-month"
+							type="month"
+							value={selectedMonth}
+							onChange={(e) => {
+								setSelectedMonth(e.target.value);
+								setPlanData(null);
+								setSummaryData(null);
+								setReportData({});
+							}}
+							aria-label={t.monthPickerLabel}
+							title={formatMonthYear(selectedMonth)}
+							className="w-full rounded-lg border border-transparent bg-transparent py-1 text-center text-sm font-semibold text-gray-700 focus:border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+						/>
 					</div>
+					<button
+						onClick={() => handleMonthChange(1)}
+						className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors"
+					>
+						<ChevronRight className="w-4 h-4" />
+					</button>
+				</div>
+
+				<div className="mt-2">
+					{active === 0 && (
+						<PersonalReportFormWrapper
+							onRefresh={triggerRefresh}
+							selectedMonth={selectedMonth}
+							onSelectedMonthChange={syncSelectedMonth}
+						/>
+					)}
+					{active === 1 && (
+						<MonthlyPlanFormWrapper
+							month={selectedMonth}
+							planData={planData}
+							onRefresh={triggerRefresh}
+						/>
+					)}
+					{active === 2 && (
+						<StatusTabWrapper
+							month={selectedMonth}
+							planData={planData}
+							summaryData={summaryData}
+							reportData={reportData}
+							onReportDataChange={setReportData}
+							onPlanDataChange={setPlanData}
+						/>
+					)}
 				</div>
 			</div>
 		</div>

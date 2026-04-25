@@ -91,6 +91,15 @@ export const authOptions: NextAuthOptions = {
 						if (res.ok) {
 							const data = await res.json();
 							token.accessToken = data.access_token;
+							// Extract userId from JWT token
+							if (data.access_token) {
+								try {
+									const decoded = JSON.parse(Buffer.from(data.access_token.split('.')[1], 'base64').toString());
+									(token as any).userId = decoded.sub;
+								} catch {
+									// If decoding fails, continue without userId
+								}
+							}
 						}
 					} catch {
 						// Keep the existing token if the refresh request fails.
@@ -98,6 +107,16 @@ export const authOptions: NextAuthOptions = {
 				}
 			} else if (user) {
 				token.accessToken = (user as any).accessToken;
+				// Extract userId from JWT token
+				if ((user as any).accessToken) {
+					try {
+						const decoded = JSON.parse(Buffer.from((user as any).accessToken.split('.')[1], 'base64').toString());
+						(token as any).userId = decoded.sub;
+					} catch {
+						// If decoding fails, use email as fallback
+						(token as any).userId = (user as any).id;
+					}
+				}
 			}
 
 			return token;
@@ -106,6 +125,7 @@ export const authOptions: NextAuthOptions = {
 			(session as any).accessToken = token.accessToken;
 			(session as any).provider = (token as any).provider;
 			(session as any).googleId = (token as any).googleId;
+			(session as any).userId = (token as any).userId;
 			return session;
 		},
 	},
