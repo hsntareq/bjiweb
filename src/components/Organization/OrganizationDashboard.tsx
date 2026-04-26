@@ -89,53 +89,53 @@ export function OrganizationDashboard() {
 
 			{/* KPI Cards */}
 			<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-				<div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+				<div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
 					<div className="flex items-center justify-between">
 						<div>
-							<p className="text-sm text-gray-600 font-medium">Total Members</p>
+							<p className="text-sm font-medium text-gray-500">Total Members</p>
 							<p className="text-3xl font-bold text-gray-900 mt-1">{performance.totalMembers}</p>
 						</div>
-						<Users className="w-10 h-10 text-blue-500 opacity-20" />
+						<Users className="w-9 h-9 text-gray-300" />
 					</div>
 				</div>
 
-				<div className="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+				<div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
 					<div className="flex items-center justify-between">
 						<div>
-							<p className="text-sm text-gray-600 font-medium">Active Members</p>
+							<p className="text-sm font-medium text-gray-500">Active Members</p>
 							<p className="text-3xl font-bold text-gray-900 mt-1">{performance.activeMembers}</p>
 						</div>
-						<Activity className="w-10 h-10 text-green-500 opacity-20" />
+						<Activity className="w-9 h-9 text-gray-300" />
 					</div>
 				</div>
 
-				<div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+				<div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
 					<div className="flex items-center justify-between">
 						<div>
-							<p className="text-sm text-gray-600 font-medium">Report Rate</p>
+							<p className="text-sm font-medium text-gray-500">Report Rate</p>
 							<p className="text-3xl font-bold text-gray-900 mt-1">
 								{performance.reportSubmissionRate.toFixed(1)}%
 							</p>
 						</div>
-						<BarChart3 className="w-10 h-10 text-purple-500 opacity-20" />
+						<BarChart3 className="w-9 h-9 text-gray-300" />
 					</div>
 				</div>
 
-				<div className="bg-white rounded-lg shadow p-6 border-l-4 border-orange-500">
+				<div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
 					<div className="flex items-center justify-between">
 						<div>
-							<p className="text-sm text-gray-600 font-medium">Engagement</p>
+							<p className="text-sm font-medium text-gray-500">Engagement</p>
 							<p className="text-3xl font-bold text-gray-900 mt-1">
 								{performance.averageEngagementScore.toFixed(0)}/100
 							</p>
 						</div>
-						<TrendingUp className="w-10 h-10 text-orange-500 opacity-20" />
+						<TrendingUp className="w-9 h-9 text-gray-300" />
 					</div>
 				</div>
 			</div>
 
 			{/* Team Activity Summary */}
-			<div className="bg-white rounded-lg shadow p-6">
+			<div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
 				<h2 className="text-lg font-semibold text-gray-900 mb-4">Team Activity Summary</h2>
 				<div className="grid grid-cols-2 md:grid-cols-3 gap-6">
 					<div>
@@ -189,8 +189,8 @@ export function OrganizationDashboard() {
 			</div>
 
 			{/* Info Box */}
-			<div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-				<p className="text-sm text-blue-900">
+			<div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+				<p className="text-sm text-gray-500">
 					💡 Dashboard shows aggregated metrics for your organization and team members. Refresh the page to see latest updates.
 				</p>
 			</div>

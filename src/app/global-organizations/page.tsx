@@ -5,23 +5,22 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import LanguageToggle from "../../components/LanguageToggle";
 import ModuleSwitcher from "../../components/ModuleSwitcher";
-import OrganizationClient from './OrganizationClient';
+import OrganizationClient from '../organization/OrganizationClient';
 
-export default async function OrganizationPage() {
+export default async function GlobalOrganizationPage() {
 const session = await getServerSession(authOptions);
-console.log("SESSION in organization page:", session);
 if (!session) redirect("/login");
 
 return (
 <div className="min-h-screen bg-white">
 <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
 <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-<div className="flex items-center gap-3">
+<Link href="/organization" className="flex items-center gap-3">
 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center shadow-md shadow-indigo-400/20">
 <Package className="w-4 h-4 text-white" />
 </div>
 <span className="font-bold text-gray-900 text-lg">BJI OMS</span>
-</div>
+</Link>
 <div className="flex items-center gap-4">
 <Link href="/global-organizations" className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-full transition-colors text-sm font-medium text-gray-700">
 <Globe className="w-4 h-4" />
@@ -46,12 +45,12 @@ return (
 <main className="max-w-6xl mx-auto px-6 py-10">
 <div className="mb-8">
 <h1 className="text-2xl font-extrabold text-gray-900">
-Organization <span className="text-gray-600">Management</span> 🏢
+Global Organization <span className="text-gray-600">Management</span> 🌍
 </h1>
-<p className="text-gray-400 text-sm mt-1">Manage the organizational hierarchy (Central, City, Thana, Ward, Unit)</p>
+<p className="text-gray-400 text-sm mt-1">Manage the complete organizational hierarchy across all divisions.</p>
 </div>
 
-<OrganizationClient userEmail={session.user?.email || 'default'} accessToken={(session as any)?.accessToken || ''} />
+<OrganizationClient userEmail={session.user?.email || 'default'} accessToken={(session as any)?.accessToken || ''} isGlobal={true} />
 </main>
 </div>
 );

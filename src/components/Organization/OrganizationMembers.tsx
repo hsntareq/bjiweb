@@ -23,11 +23,13 @@ interface TeamStats {
 interface OrganizationMembersProps {
   organizationId: number;
   organizationType: string;
+  accessToken?: string;
 }
 
 export function OrganizationMembers({
   organizationId,
   organizationType,
+  accessToken = '',
 }: OrganizationMembersProps) {
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [stats, setStats] = useState<TeamStats | null>(null);
@@ -43,11 +45,10 @@ export function OrganizationMembers({
 
   const fetchMembers = async () => {
     try {
-      const token = localStorage.getItem('auth_token');
       const response = await fetch(
         `http://localhost:3001/organization/${organizationId}/members`,
         {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
         }
       );
 
@@ -64,11 +65,10 @@ export function OrganizationMembers({
 
   const fetchStats = async () => {
     try {
-      const token = localStorage.getItem('auth_token');
       const response = await fetch(
         `http://localhost:3001/organization/${organizationId}/team-stats`,
         {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
         }
       );
 
@@ -96,31 +96,31 @@ export function OrganizationMembers({
       {/* Stats Cards */}
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+          <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Members</p>
-                <p className="text-2xl font-bold text-blue-600">{stats.totalMembers}</p>
+                <p className="text-sm font-medium text-gray-500">Total Members</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalMembers}</p>
               </div>
               <Users className="w-8 h-8 text-blue-400" />
             </div>
           </div>
 
-          <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+          <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Active Users</p>
-                <p className="text-2xl font-bold text-green-600">{stats.activeUsers}</p>
+                <p className="text-sm font-medium text-gray-500">Active Users</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.activeUsers}</p>
               </div>
               <UserCheck className="w-8 h-8 text-green-400" />
             </div>
           </div>
 
-          <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+          <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Can Create Users</p>
-                <p className="text-2xl font-bold text-purple-600">
+                <p className="text-sm font-medium text-gray-500">Can Create Users</p>
+                <p className="text-2xl font-bold text-gray-900">
                   {Object.values(stats.membersByRole).reduce((sum, val) => sum + (val || 0), 0)}
                 </p>
               </div>
@@ -131,11 +131,11 @@ export function OrganizationMembers({
       )}
 
       {/* Members Table */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
         <div className="p-4 border-b border-gray-200">
-          <h3 className="font-semibold text-gray-900">Organization Members</h3>
+          <h3 className="font-semibold text-gray-900">Persons (Members, Activists, Associates)</h3>
           <p className="text-sm text-gray-600 mt-1">
-            {organizationType} level members ({members.length})
+            {organizationType} level persons ({members.length})
           </p>
         </div>
 
@@ -186,7 +186,7 @@ export function OrganizationMembers({
           </div>
         ) : (
           <div className="p-8 text-center text-gray-500">
-            <p>No members in this organization yet</p>
+            <p>No persons listed in this organization yet</p>
           </div>
         )}
       </div>

@@ -208,7 +208,7 @@ export const OrganizationForm: React.FC<OrganizationFormProps> = ({
 
 					{/* Parent Organization Info */}
 					{parentOrganization && (
-						<div className="bg-blue-50 p-3 rounded border border-blue-200">
+						<div className="bg-gray-50 p-3 rounded border border-gray-200">
 							<p className="text-sm text-gray-600">
 								<span className="font-semibold">Parent:</span> {parentOrganization.name}
 							</p>

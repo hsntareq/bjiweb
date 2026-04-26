@@ -19,14 +19,15 @@ interface OrganizationTreeProps {
 	onSelect?: (org: Organization) => void;
 	selectedId?: number;
 	visibleTypes?: Set<string>;
+	isCompact?: boolean;
 }
 
-const typeGradients = {
-	CENTRAL: { gradient: 'from-blue-500 to-blue-600', icon: Landmark },
-	CITY: { gradient: 'from-emerald-500 to-emerald-600', icon: MapPin },
-	THANA: { gradient: 'from-amber-500 to-amber-600', icon: Building2 },
-	WARD: { gradient: 'from-violet-500 to-violet-600', icon: Users },
-	UNIT: { gradient: 'from-rose-500 to-rose-600', icon: Building2 },
+const typeStyles = {
+	CENTRAL: { style: 'bg-blue-50 text-blue-600', icon: Landmark },
+	CITY: { style: 'bg-emerald-50 text-emerald-600', icon: MapPin },
+	THANA: { style: 'bg-amber-50 text-amber-600', icon: Building2 },
+	WARD: { style: 'bg-violet-50 text-violet-600', icon: Users },
+	UNIT: { style: 'bg-rose-50 text-rose-600', icon: Building2 },
 };
 
 const TreeNode: React.FC<{
@@ -35,10 +36,11 @@ const TreeNode: React.FC<{
 	selectedId?: number;
 	level: number;
 	visibleTypes?: Set<string>;
-}> = ({ node, onSelect, selectedId, level, visibleTypes }) => {
+	isCompact?: boolean;
+}> = ({ node, onSelect, selectedId, level, visibleTypes, isCompact }) => {
 	const [isExpanded, setIsExpanded] = useState(level < 2);
 	const hasChildren = node.children && node.children.length > 0;
-	const config = typeGradients[node.type as keyof typeof typeGradients] || typeGradients.UNIT;
+	const config = typeStyles[node.type as keyof typeof typeStyles] || typeStyles.UNIT;
 	const IconComponent = config.icon;
 	const isSelected = selectedId === node.id;
 	const isVisible = !visibleTypes || visibleTypes.has(node.type);
@@ -75,10 +77,10 @@ const TreeNode: React.FC<{
 	const stats = calculateChildStats(node);
 
 	const rowClass = isSelected
-		? 'bg-indigo-50 border border-indigo-300 shadow-sm'
+		? 'bg-blue-50 border border-blue-200 shadow-sm'
 		: 'border border-transparent hover:bg-gray-50 hover:border-gray-200';
 
-	const iconBgClass = `flex-shrink-0 p-1.5 rounded-md bg-gradient-to-br ${config.gradient}`;
+	const iconBgClass = `flex-shrink-0 p-1.5 rounded-md ${config.style}`;
 
 	if (!isVisible) {
 		return null;
@@ -87,7 +89,7 @@ const TreeNode: React.FC<{
 	return (
 		<div>
 			<div
-				className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all duration-200 ${rowClass}`}
+				className={`flex items-center gap-2 ${isCompact ? 'p-1' : 'p-2'} rounded-lg cursor-pointer transition-all duration-200 ${rowClass}`}
 				onClick={() => {
 					onSelect?.(node);
 					if (hasChildren) {
@@ -115,16 +117,21 @@ const TreeNode: React.FC<{
 				)}
 
 				<div className={iconBgClass}>
-					<IconComponent className="w-4 h-4 text-white" />
+					<IconComponent className="w-4 h-4" />
 				</div>
 
 				<div className="flex-1 min-w-0">
-					<p className="font-semibold text-sm text-gray-900 truncate">{node.name}</p>
-					<div className="flex gap-1.5 mt-1 flex-wrap">
-						<span className="text-[10px] px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded-full font-medium">M {stats.members}</span>
-						<span className="text-[10px] px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full font-medium">A {stats.activists}</span>
-						<span className="text-[10px] px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded-full font-medium">S {stats.associates}</span>
+					<div className="flex items-center gap-2">
+						<p className={`font-semibold ${isCompact ? 'text-xs' : 'text-sm'} text-gray-900 truncate`}>{node.name}</p>
+						{node.division && <span className="text-[9px] text-gray-500 bg-gray-100 px-1 rounded border border-gray-200 truncate max-w-[80px]">{node.division}</span>}
 					</div>
+					{!isCompact && (
+						<div className="flex gap-1.5 mt-1 flex-wrap">
+						<span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">M {stats.members}</span>
+						<span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">A {stats.activists}</span>
+						<span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">S {stats.associates}</span>
+					</div>
+					)}
 				</div>
 
 				{hasChildren && (
@@ -144,6 +151,7 @@ const TreeNode: React.FC<{
 							selectedId={selectedId}
 							level={level + 1}
 							visibleTypes={visibleTypes}
+							isCompact={isCompact}
 						/>
 					))}
 				</div>
@@ -157,6 +165,7 @@ export const OrganizationTree: React.FC<OrganizationTreeProps> = ({
 	onSelect,
 	selectedId,
 	visibleTypes,
+	isCompact,
 }) => {
 	if (!data || data.length === 0) {
 		return (
@@ -177,6 +186,7 @@ export const OrganizationTree: React.FC<OrganizationTreeProps> = ({
 					selectedId={selectedId}
 					level={0}
 					visibleTypes={visibleTypes}
+					isCompact={isCompact}
 				/>
 			))}
 		</div>
