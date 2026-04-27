@@ -1,5 +1,5 @@
 import { authOptions } from "@/lib/auth-options";
-import { Package, Users, Globe } from "lucide-react";
+import { Package, Users, Globe, BarChart2 } from "lucide-react";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
@@ -30,6 +30,10 @@ return (
 <Link href="/users" className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-full transition-colors text-sm font-medium text-gray-700">
 <Users className="w-4 h-4" />
 <span className="hidden sm:inline">Users</span>
+</Link>
+<Link href="/planning-reporting" className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-full transition-colors text-sm font-medium text-gray-700">
+<BarChart2 className="w-4 h-4" />
+<span className="hidden sm:inline">Planning & Reporting</span>
 </Link>
 <LanguageToggle />
 <div className="hidden sm:flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-3 py-1.5">
