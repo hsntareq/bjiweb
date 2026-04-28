@@ -122,19 +122,6 @@ export default function ReportPrintPage() {
           font-family: 'Tiro Bangla', serif !important;
         }
 
-        @media print {
-          @page {
-            margin: 0in;
-            size: A4;
-          }
-          body {
-            background: white !important;
-            margin: 0 !important;
-            padding: 0 !important;
-          }
-          .no-print { display: none !important; }
-        }
-
         .report-wrapper {
           width: 100%;
           max-width: 8.27in;
@@ -146,7 +133,10 @@ export default function ReportPrintPage() {
 
         @media print {
           @page {
-            margin: 60px;
+            margin-top: 20mm;
+            margin-bottom: 25mm;
+            margin-left: 20mm;
+            margin-right: 20mm;
             size: A4;
           }
           body {
