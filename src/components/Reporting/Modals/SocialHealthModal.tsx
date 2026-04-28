@@ -37,11 +37,11 @@ export const SocialHealthModal: React.FC<SocialHealthModalProps> = ({
           </div>
           <div className="grid grid-cols-2 gap-4">
              <div className="bg-white p-4 border rounded shadow-sm">
-                <label className="block text-[10px] font-bold text-gray-500 uppercase mb-2">কতজন স্বাস্থ্যসেবা কাজে অংশগ্রহণ করেছেন:</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">কতজন স্বাস্থ্যসেবা কাজে অংশগ্রহণ করেছেন:</label>
                 <input type="number" value={data.serviceParticipantCount || 0} onChange={(e) => handleChange('serviceParticipantCount', parseInt(e.target.value) || 0)} className="w-full border rounded p-2 text-lg font-bold" />
              </div>
              <div className="bg-white p-4 border rounded shadow-sm">
-                <label className="block text-[10px] font-bold text-gray-500 uppercase mb-2">সেবাপ্রাপ্ত সংখ্যা:</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">সেবাপ্রাপ্ত সংখ্যা:</label>
                 <input type="number" value={data.beneficiaryCount || 0} onChange={(e) => handleChange('beneficiaryCount', parseInt(e.target.value) || 0)} className="w-full border rounded p-2 text-lg font-bold" />
              </div>
           </div>

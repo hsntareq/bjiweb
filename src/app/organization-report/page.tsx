@@ -1,7 +1,8 @@
 import { authOptions } from "@/lib/auth-options";
-import { BarChart3, Package, Target, TrendingUp, Users } from "lucide-react";
+import { BarChart3, FileText, Package, Target, TrendingUp, Users } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import LanguageToggle from "../../components/LanguageToggle";
 import ModuleSwitcher from "../../components/ModuleSwitcher";
 
@@ -19,7 +20,7 @@ export default async function OrganizationReportPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gray-50">
+		<div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 p-4">
 			{/* Header */}
 			<header className="bg-white border-b border-gray-100 sticky top-0 z-50">
 				<div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -55,12 +56,12 @@ export default async function OrganizationReportPage() {
 				{/* Stats */}
 				<div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
 					{stats.map((s) => (
-						<div key={s.label} className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
-							<div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center mb-3 shadow-md`}>
-								<s.icon className="w-5 h-5 text-white" />
+						<div key={s.label} className="bg-white/70 backdrop-blur-lg border border-white/30 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+							<div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center mb-3 shadow-md`}>
+								<s.icon className="w-6 h-6 text-white" />
 							</div>
 							<p className="text-2xl font-extrabold text-gray-900">{s.value}</p>
-							<p className="text-xs text-gray-400 mt-0.5 font-medium">{s.label}</p>
+							<p className="text-xs text-gray-500 mt-0.5 font-medium">{s.label}</p>
 						</div>
 					))}
 				</div>
@@ -108,14 +109,17 @@ export default async function OrganizationReportPage() {
 
 				{/* Reports Grid */}
 				<div className="grid md:grid-cols-3 gap-4">
-					<div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-						<div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center mb-3">
-							<TrendingUp className="w-5 h-5 text-indigo-600" />
+					<Link 
+						href="/organization-report/comprehensive"
+						className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer border-l-4 border-l-indigo-600 block group"
+					>
+						<div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+							<FileText className="w-5 h-5 text-indigo-600" />
 						</div>
-						<h3 className="text-sm font-bold text-gray-900 mb-1">Performance Report</h3>
-						<p className="text-xs text-gray-500 mb-4">Team performance metrics and KPIs</p>
-						<button className="text-xs font-semibold text-indigo-600 hover:text-indigo-700">View Report →</button>
-					</div>
+						<h3 className="text-sm font-bold text-gray-900 mb-1">Comprehensive Monthly Report</h3>
+						<p className="text-xs text-gray-500 mb-4">Full organizational report with all departmental metrics</p>
+						<span className="text-xs font-semibold text-indigo-600 hover:text-indigo-700">Open Report Form →</span>
+					</Link>
 
 					<div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
 						<div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center mb-3">

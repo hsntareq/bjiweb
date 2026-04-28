@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Printer } from 'lucide-react';
+import { Printer, FileText } from 'lucide-react';
+import { templateHtml, templateStyle } from './Template';
 
 export default function ReportPrintPage() {
   const searchParams = useSearchParams();
@@ -18,8 +19,6 @@ export default function ReportPrintPage() {
     "জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন",
     "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"
   ];
-
-  const formatVal = (val: any) => (val === 0 || val === "0" || !val) ? "-" : val;
 
   useEffect(() => {
     if (orgId && year && month) {
@@ -37,220 +36,186 @@ export default function ReportPrintPage() {
     }
   }, [orgId, year, month, accessToken]);
 
-  if (!report) return <div className="p-10 flex items-center justify-center font-bold text-gray-400">Loading report for print...</div>;
+  const toBengaliNumber = (n: any) => {
+    if (n === null || n === undefined || n === "") return "";
+    const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    return String(n).replace(/\d/g, d => bnDigits[parseInt(d)]);
+  };
+
+  const renderTemplate = (html: string) => {
+    if (!report) return html;
+    let output = html;
+
+    // Basic Metadata
+    output = output.replace(/{{month}}/g, month ? monthNames[parseInt(month) - 1] : "মার্চ");
+    output = output.replace(/{{year}}/g, toBengaliNumber(year) || "২০২৪");
+    output = output.replace(/{{orgName}}/g, orgName || "যুব ওয়ার্ড");
+    output = output.replace(/{{thana}}/g, report.thana || "খিলগাঁও উত্তর থানা");
+    output = output.replace(/{{president}}/g, report.presidentName || "মোঃ ইমতিয়াজ উদ্দিন");
+
+    // Dawah Section A
+    output = output.replace(/{{totalDawahReached}}/g, toBengaliNumber(report.dawah?.totalDawahCount) || "-");
+    output = output.replace(/{{totalPopulation}}/g, toBengaliNumber(report.dawah?.totalPopulation) || "২,০০,০০০");
+    output = output.replace(/{{monthlyTarget}}/g, toBengaliNumber(report.dawah?.totalDawahTarget) || "১০০০");
+
+    // Group Dawah (A1)
+    output = output.replace(/{{groupDawahCount}}/g, toBengaliNumber(report.dawah?.groupDawah?.groupsOut) || "-");
+    output = output.replace(/{{groupDawahParticipants}}/g, toBengaliNumber(report.dawah?.groupDawah?.participants) || "-");
+    output = output.replace(/{{groupDawahReached}}/g, toBengaliNumber(report.dawah?.groupDawah?.dawahReached) || "-");
+    output = output.replace(/{{groupDawahNewAssociate}}/g, toBengaliNumber(report.dawah?.groupDawah?.newAssociateMembers) || "-");
+
+    // Personal Dawah (A2)
+    output = output.replace(/{{personalDawahManpowerTotal}}/g, toBengaliNumber(report.dawah?.personal?.manpowerTotal) || "-");
+    output = output.replace(/{{personalDawahManpowerWorked}}/g, toBengaliNumber(report.dawah?.personal?.manpowerWorked) || "-");
+    output = output.replace(/{{personalDawahReached}}/g, toBengaliNumber(report.dawah?.personal?.reached) || "-");
+    output = output.replace(/{{personalDawahNewAssociate}}/g, toBengaliNumber(report.dawah?.personal?.associateIncrease) || "-");
+
+    // General Meetings (A3)
+    output = output.replace(/{{generalMeetingReached}}/g, toBengaliNumber(report.dawah?.tabligh?.generalMeetingAttendance) || "-");
+    output = output.replace(/{{generalMeetingNewAssociate}}/g, toBengaliNumber(report.dawah?.tabligh?.generalMeetingAssociateIncrease) || "-");
+
+    // Manpower (Section 2.1)
+    ['rokon', 'karmi', 'associate'].forEach(key => {
+      output = output.replace(new RegExp(`{{${key}Previous}}`, 'g'), toBengaliNumber(report.organization?.manpower?.[key]?.previous) || "-");
+      output = output.replace(new RegExp(`{{${key}Increase}}`, 'g'), toBengaliNumber(report.organization?.manpower?.[key]?.increase) || "-");
+      output = output.replace(new RegExp(`{{${key}Deficit}}`, 'g'), toBengaliNumber(report.organization?.manpower?.[key]?.deficit) || "-");
+      output = output.replace(new RegExp(`{{${key}Current}}`, 'g'), toBengaliNumber(report.organization?.manpower?.[key]?.current) || "-");
+    });
+
+    // Organizational Meetings (Section 2.9)
+    output = output.replace(/{{wardTeamMeetingCount}}/g, toBengaliNumber(report.organization?.meetings?.wardTeam?.count) || "-");
+    output = output.replace(/{{wardTeamMeetingAttendance}}/g, toBengaliNumber(report.organization?.meetings?.wardTeam?.attendance) || "-");
+
+    // Training (Section 3)
+    output = output.replace(/{{skillMeetingCount}}/g, toBengaliNumber(report.training?.hrd?.skillMeetingCount) || "-");
+    output = output.replace(/{{skillMeetingAttendance}}/g, toBengaliNumber(report.training?.hrd?.skillMeetingAttendance) || "-");
+
+    // Social Work (Section 4)
+    output = output.replace(/{{socialSickCarePersonal}}/g, toBengaliNumber(report.socialWork?.personal?.sickCare) || "-");
+
+    return output;
+  };
+
+  if (!report) return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="text-center animate-pulse">
+        <FileText className="w-12 h-12 text-indigo-400 mx-auto mb-4" />
+        <p className="text-gray-500 font-medium">প্রতিবেদন প্রস্তুত করা হচ্ছে...</p>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="bg-white min-h-screen text-black p-4 md:p-8 font-serif">
-      <div className="max-w-[8.5in] mx-auto border border-gray-200 p-8 shadow-sm print:shadow-none print:border-none print:p-0" id="print-area">
-        
-        {/* Header */}
-        <div className="text-center mb-6 space-y-1">
-          <p className="text-[10px] font-medium">বিসমিল্লাহির রাহমানির রাহিম</p>
-          <h1 className="text-xl font-bold border-b-2 border-black inline-block pb-1 px-4 mb-2">ওয়ার্ড সংগঠনের মাসিক রিপোর্ট</h1>
-          <div className="flex justify-between text-[11px] font-bold border-y border-black py-1 mt-4">
-             <span>মাস: {monthNames[parseInt(month!) - 1]}</span>
-             <span>ওয়ার্ড নং/নাম: {orgName}</span>
-             <span>সন: {year}</span>
-          </div>
-        </div>
+    <div className="bg-gray-100 min-h-screen p-[60px] print:p-0 print:bg-white flex justify-center flex-col items-center">
+      {/* Dynamic Style from Template */}
+      <style dangerouslySetInnerHTML={{ __html: templateStyle }} />
 
-        {/* Section 1: দাওয়াত */}
-        <div className="mb-6">
-          <h2 className="text-sm font-bold bg-gray-100 p-1 border border-black mb-2">১. দাওয়াত</h2>
-          <div className="grid grid-cols-2 gap-4">
-             <div>
-                <h3 className="text-[10px] font-bold mb-1 italic">ক. দাওয়াতী ও পারিবারিক ইউনিট ভিত্তিক কাজ:</h3>
-                <table className="w-full border-collapse border border-black text-[9px]">
-                   <tbody>
-                      <tr><td className="border border-black p-1">দাওয়াতী ইউনিট সংখ্যা</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.unit?.dawahUnitCount)}</td></tr>
-                      <tr><td className="border border-black p-1">পারিবারিক ইউনিট সংখ্যা</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.unit?.familyUnitCount)}</td></tr>
-                      <tr><td className="border border-black p-1">দাওয়াতী বৈঠক সংখ্যা</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.unit?.dawahMeetingCount)}</td></tr>
-                      <tr><td className="border border-black p-1">উপস্থিতি</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.unit?.attendance)}</td></tr>
-                   </tbody>
-                </table>
-             </div>
-             <div>
-                <h3 className="text-[10px] font-bold mb-1 italic">খ. ব্যক্তিগত দাওয়াত ও সহযোগী সদস্য তৈরি:</h3>
-                <table className="w-full border-collapse border border-black text-[9px]">
-                   <thead>
-                      <tr className="bg-gray-50"><th className="border border-black p-1">বিবরণ</th><th className="border border-black p-1 text-center">রুকন</th><th className="border border-black p-1 text-center">কর্মী</th></tr>
-                   </thead>
-                   <tbody>
-                      <tr><td className="border border-black p-1">মোট সংখ্যা</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.personal?.rokonTotal)}</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.personal?.karmiTotal)}</td></tr>
-                      <tr><td className="border border-black p-1">কাজ করেছেন</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.personal?.rokonWorked)}</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.personal?.karmiWorked)}</td></tr>
-                   </tbody>
-                </table>
-             </div>
-          </div>
-          <div className="mt-3">
-             <h3 className="text-[10px] font-bold mb-1 italic">গ. দাওয়াত ও তাবলীগ ভিত্তিক কাজ:</h3>
-             <table className="w-full border-collapse border border-black text-[9px]">
-                <thead>
-                   <tr className="bg-gray-50">
-                      <th className="border border-black p-1">বিবরণ</th>
-                      <th className="border border-black p-1">সংখ্যা</th>
-                      <th className="border border-black p-1">উপস্থিতি</th>
-                      <th className="border border-black p-1">সহযোগী সদস্য বৃদ্ধি</th>
-                   </tr>
-                </thead>
-                <tbody>
-                   <tr><td className="border border-black p-1">সাধারণ সভা</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.tabligh?.generalMeetingCount)}</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.tabligh?.generalMeetingAttendance)}</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.tabligh?.generalMeetingAssociateIncrease)}</td></tr>
-                   <tr><td className="border border-black p-1">উন্মুক্ত আলোচনা</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.tabligh?.openDiscussionCount)}</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.tabligh?.openDiscussionAttendance)}</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.tabligh?.openDiscussionAssociateIncrease)}</td></tr>
-                   <tr><td className="border border-black p-1">সুধী সমাবেশ</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.tabligh?.sudhiMeetingCount)}</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.tabligh?.sudhiMeetingAttendance)}</td><td className="border border-black p-1 text-center font-bold">{formatVal(report.dawah?.tabligh?.sudhiMeetingAssociateIncrease)}</td></tr>
-                </tbody>
-             </table>
-          </div>
-        </div>
-
-        {/* Section 2: সংগঠনঃ */}
-        <div className="mb-6">
-          <h2 className="text-sm font-bold bg-gray-100 p-1 border border-black mb-2">২. সংগঠনঃ</h2>
-          <div className="grid grid-cols-2 gap-6">
-             <div>
-                <h3 className="text-[10px] font-bold mb-1">ক. জনশক্তি ও দপ্তর:</h3>
-                <table className="w-full border-collapse border border-black text-[8px]">
-                   <thead>
-                      <tr className="bg-gray-50"><th className="border border-black p-1">জনশক্তি</th><th className="border border-black p-1 text-center">পূর্বের</th><th className="border border-black p-1 text-center">বৃদ্ধি</th><th className="border border-black p-1 text-center">ঘাটতি</th><th className="border border-black p-1 text-center">বর্তমান</th></tr>
-                   </thead>
-                   <tbody>
-                      {['rokon', 'karmi', 'associate'].map(key => (
-                         <tr key={key}>
-                            <td className="border border-black p-1 capitalize">{key === 'rokon' ? 'রুকন' : key === 'karmi' ? 'কর্মী' : 'সহযোগী সদস্য'}</td>
-                            <td className="border border-black p-1 text-center">{formatVal(report.organization?.manpower?.[key]?.previous)}</td>
-                            <td className="border border-black p-1 text-center">{formatVal(report.organization?.manpower?.[key]?.increase)}</td>
-                            <td className="border border-black p-1 text-center">{formatVal(report.organization?.manpower?.[key]?.decrease)}</td>
-                            <td className="border border-black p-1 text-center font-bold">{formatVal(report.organization?.manpower?.[key]?.current)}</td>
-                         </tr>
-                      ))}
-                   </tbody>
-                </table>
-             </div>
-             <div>
-                <h3 className="text-[10px] font-bold mb-1">খ. সাংগঠনিক বৈঠকাদি:</h3>
-                <table className="w-full border-collapse border border-black text-[8px]">
-                   <thead>
-                      <tr className="bg-gray-50"><th className="border border-black p-1">বৈঠকের ধরণ</th><th className="border border-black p-1 text-center">সংখ্যা</th><th className="border border-black p-1 text-center">টার্গেট</th><th className="border border-black p-1 text-center">উপস্থিতি</th></tr>
-                   </thead>
-                   <tbody>
-                      <tr><td className="border border-black p-1">ওয়ার্ড টিম বৈঠক</td><td className="border border-black p-1 text-center">{formatVal(report.organization?.meetings?.wardTeam?.count)}</td><td className="border border-black p-1 text-center">{formatVal(report.organization?.meetings?.wardTeam?.target)}</td><td className="border border-black p-1 text-center">{formatVal(report.organization?.meetings?.wardTeam?.attendance)}</td></tr>
-                      <tr><td className="border border-black p-1">ওয়ার্ড মাসিক সাধারণ সভা</td><td className="border border-black p-1 text-center">{formatVal(report.organization?.meetings?.wardMonthly?.count)}</td><td className="border border-black p-1 text-center">{formatVal(report.organization?.meetings?.wardMonthly?.target)}</td><td className="border border-black p-1 text-center">{formatVal(report.organization?.meetings?.wardMonthly?.attendance)}</td></tr>
-                   </tbody>
-                </table>
-             </div>
-          </div>
-        </div>
-
-        {/* Section 6: বায়তুলমাল */}
-        <div className="mb-6">
-          <h2 className="text-sm font-bold bg-gray-100 p-1 border border-black mb-2 text-center uppercase">৬. বায়তুলমাল</h2>
-          <div className="flex justify-between text-[9px] font-bold mb-2">
-             <span>ধার্যকৃত নিছাব: {formatVal(report.finance?.nisab?.allocated)} /=</span>
-             <span>ওয়াদাকৃত নিছাব: {formatVal(report.finance?.nisab?.promised)} /=</span>
-          </div>
-          <div className="grid grid-cols-2 gap-0 border border-black">
-             <div className="border-r border-black">
-                <table className="w-full text-[8px]">
-                   <thead><tr className="bg-emerald-50 border-b border-black font-bold text-center"><th className="p-1">আয়ের বিবরণ</th><th className="p-1 border-l border-black">আয় (৳)</th></tr></thead>
-                   <tbody>
-                      {[
-                        { id: 'receivedNisab', label: 'প্রাপ্ত নিছাব' },
-                        { id: 'directIanat', label: 'সরাসরি ইয়ানত' },
-                        { id: 'oneTime', label: 'এককালীন /জরুরী' },
-                        { id: 'electionFund', label: 'নির্বাচনী ফান্ড' },
-                        { id: 'shahidFund', label: 'শহীদ ফান্ড' },
-                        { id: 'zakat', label: 'যাকাত' },
-                        { id: 'fitra', label: 'ফিতরা' }
-                      ].map(item => (
-                         <tr key={item.id} className="border-b border-black">
-                            <td className="p-1">{item.label}</td>
-                            <td className="p-1 text-right border-l border-black font-bold">{formatVal(report.finance?.income?.[item.id])}</td>
-                         </tr>
-                      ))}
-                      <tr className="font-bold"><td className="p-1">মোট আয়</td><td className="p-1 text-right border-l border-black underline decoration-double">{formatVal(report.finance?.income?.totalIncome)}</td></tr>
-                      <tr><td className="p-1">গত মাসের উদ্বৃত্ত</td><td className="p-1 text-right border-l border-black">{formatVal(report.finance?.income?.previousMonthSurplus)}</td></tr>
-                      <tr className="bg-gray-100 font-bold border-t border-black"><td className="p-1">সর্বমোট আয়</td><td className="p-1 text-right border-l border-black">{formatVal(report.finance?.income?.grandTotalIncome)}</td></tr>
-                   </tbody>
-                </table>
-             </div>
-             <div>
-                <table className="w-full text-[8px]">
-                   <thead><tr className="bg-red-50 border-b border-black font-bold text-center"><th className="p-1">ব্যয়ের বিবরণ</th><th className="p-1 border-l border-black">ব্যয় (৳)</th></tr></thead>
-                   <tbody>
-                      {[
-                        { id: 'nisabPaid', label: 'নিসাব পরিশোধ' },
-                        { id: 'localExpense', label: 'স্থানীয় খরচ' },
-                        { id: 'oneTime', label: 'এককালীন /জরুরী' },
-                        { id: 'electionFund', label: 'নির্বাচনী ফান্ড' },
-                        { id: 'shahidFund', label: 'শহীদ ফান্ড' },
-                        { id: 'zakat', label: 'যাকাত' },
-                        { id: 'fitra', label: 'ফিতরা' }
-                      ].map(item => (
-                         <tr key={item.id} className="border-b border-black">
-                            <td className="p-1">{item.label}</td>
-                            <td className="p-1 text-right border-l border-black font-bold">{formatVal(report.finance?.expense?.[item.id])}</td>
-                         </tr>
-                      ))}
-                      <tr className="font-bold"><td className="p-1">মোট ব্যয়</td><td className="p-1 text-right border-l border-black underline decoration-double">{formatVal(report.finance?.expense?.totalExpense)}</td></tr>
-                      <tr className="text-blue-700"><td className="p-1">এ মাসের উদ্বৃত্ত</td><td className="p-1 text-right border-l border-black">{formatVal(report.finance?.expense?.monthlySurplus)}</td></tr>
-                      <tr className="bg-gray-100 font-bold border-t border-black"><td className="p-1">সর্বমোট ব্যয়</td><td className="p-1 text-right border-l border-black">{formatVal(report.finance?.income?.grandTotalIncome)}</td></tr>
-                   </tbody>
-                </table>
-             </div>
-          </div>
-        </div>
-
-        {/* Section 7: মন্তব্য */}
-        <div className="mb-6">
-          <h2 className="text-sm font-bold bg-gray-100 p-1 border border-black mb-2">৭. ওয়ার্ড সভাপতির মন্তব্যঃ</h2>
-          <div className="grid grid-cols-2 gap-4">
-             <div className="border border-black p-2">
-                <h4 className="text-[10px] font-bold text-red-700 border-b border-black pb-1 mb-1">সমস্যাঃ</h4>
-                <ol className="text-[9px] list-decimal pl-4 space-y-1">
-                   {(report.remarks?.problems || []).map((s: string, i: number) => (
-                      <li key={i}>{s}</li>
-                   ))}
-                   {(!report.remarks?.problems || report.remarks.problems.length === 0) && <li>-</li>}
-                </ol>
-             </div>
-             <div className="border border-black p-2">
-                <h4 className="text-[10px] font-bold text-emerald-700 border-b border-black pb-1 mb-1">সম্ভাবনাঃ</h4>
-                <ol className="text-[9px] list-decimal pl-4 space-y-1">
-                   {(report.remarks?.opportunities || []).map((s: string, i: number) => (
-                      <li key={i}>{s}</li>
-                   ))}
-                   {(!report.remarks?.opportunities || report.remarks.opportunities.length === 0) && <li>-</li>}
-                </ol>
-             </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-12 flex justify-between">
-          <div className="text-center w-48">
-             <div className="border-t border-black pt-1 text-[10px] font-bold">সভাপতি স্বাক্ষর ও তারিখ</div>
-          </div>
-          <div className="text-center w-48">
-             <div className="border-t border-black pt-1 text-[10px] font-bold">সেক্রেটারি স্বাক্ষর ও তারিখ</div>
-          </div>
-        </div>
-
-      </div>
-
+      {/* Standard Print Controls Override */}
       <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&display=swap');
+
+        body {
+          font-family: 'Tiro Bangla', serif !important;
+        }
+
+        .report-wrapper * {
+          font-family: 'Tiro Bangla', serif !important;
+        }
+
         @media print {
-          @page { margin: 0; size: auto; }
-          body { background: white; margin: 0; padding: 0; }
+          @page {
+            margin: 0in;
+            size: A4;
+          }
+          body {
+            background: white !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          .no-print { display: none !important; }
+        }
+
+        .report-wrapper {
+          width: 100%;
+          max-width: 8.27in;
+          background: white;
+          box-shadow: 0 0 20px rgba(0,0,0,0.1);
+          min-height: 11.69in;
+          padding: 0;
+        }
+
+        @media print {
+          @page {
+            margin: 60px;
+            size: A4;
+          }
+          body {
+            background: white !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          .report-wrapper {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            box-shadow: none;
+          }
           .no-print { display: none !important; }
         }
       `}</style>
 
-      <button 
-        onClick={() => window.print()}
-        className="fixed bottom-10 right-10 bg-indigo-600 text-white px-8 py-4 rounded-full shadow-2xl font-bold no-print flex items-center gap-3 hover:scale-110 active:scale-95 transition-all z-[100]"
-      >
-        <Printer className="w-6 h-6" />
-        Print Report
-      </button>
+      {/* Action Buttons */}
+      <div className="fixed top-6 right-6 flex flex-col gap-3 no-print z-50">
+        <button
+          onClick={() => window.print()}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 transition-all font-medium"
+        >
+          <Printer size={18} /> প্রিন্ট করুন
+        </button>
+        <button
+          onClick={async () => {
+            const element = document.getElementById('report-content');
+            if (element) {
+              try {
+                // @ts-ignore
+                const html2pdf = (await import('html2pdf.js')).default;
+                const opt = {
+                  margin: 0,
+                  filename: `Report_${orgName}_${year}_${month}.pdf`,
+                  image: { type: 'jpeg', quality: 0.98 },
+                  html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+                  jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                };
+                html2pdf().from(element).set(opt).save();
+              } catch (err) {
+                console.error('PDF Download failed:', err);
+                window.print();
+              }
+            }
+          }}
+          className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 transition-all font-medium"
+        >
+          <FileText size={18} /> পিডিএফ ডাউনলোড
+        </button>
+        <button
+          onClick={() => window.history.back()}
+          className="bg-white hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg shadow-md flex items-center gap-2 border border-gray-200 transition-all font-medium"
+        >
+          ফিরে যান
+        </button>
+      </div>
+
+      {/* Main Report Content */}
+      <div className="report-wrapper" id="report-content">
+        <div
+          className="p-[60px] print:p-0"
+          dangerouslySetInnerHTML={{ __html: renderTemplate(templateHtml) }}
+        />
+      </div>
+
+      <div className="mt-8 text-[13px] text-gray-400 text-center pb-10 no-print">
+         Generated via BJI Organizational Management System | {new Date().toLocaleString('bn-BD')}
+      </div>
     </div>
   );
 }

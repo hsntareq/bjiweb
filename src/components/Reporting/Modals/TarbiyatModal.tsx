@@ -47,7 +47,7 @@ export const TarbiyatModal: React.FC<TarbiyatModalProps> = ({
       saving={saving}
     >
        <div className="overflow-x-auto">
-          <table className="w-full text-[10px]">
+          <table className="w-full text-xs">
              <thead>
                 <tr className="bg-gray-100">
                    <th className="p-2 text-left">ক্রম</th>

@@ -7,7 +7,11 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontSize: {
+        'xs': ['0.8125rem', { lineHeight: '1rem' }], // 13px
+      },
+    },
   },
   plugins: [],
 };

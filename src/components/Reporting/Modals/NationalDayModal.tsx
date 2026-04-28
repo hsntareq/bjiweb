@@ -43,14 +43,14 @@ export const NationalDayModal: React.FC<NationalDayModalProps> = ({
        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {rows.map(row => (
              <div key={row.id} className="p-3 border rounded-xl bg-gray-50/50">
-                <h5 className="text-[10px] font-bold text-gray-700 mb-2">{row.label}</h5>
+                <h5 className="text-xs font-bold text-gray-700 mb-2">{row.label}</h5>
                 <div className="grid grid-cols-2 gap-2">
                    <div>
-                      <label className="text-[9px] block text-gray-500 uppercase">প্রোগ্রাম সংখ্যা</label>
+                      <label className="text-xs block text-gray-500 uppercase">প্রোগ্রাম সংখ্যা</label>
                       <input type="number" value={data[row.id]?.programCount || 0} onChange={(e) => handleTableChange(row.id, 'programCount', parseInt(e.target.value) || 0)} className="w-full border rounded p-1 text-center" />
                    </div>
                    <div>
-                      <label className="text-[9px] block text-gray-500 uppercase">গড় উপস্থিতি</label>
+                      <label className="text-xs block text-gray-500 uppercase">গড় উপস্থিতি</label>
                       <input type="number" value={data[row.id]?.avgAttendance || 0} onChange={(e) => handleTableChange(row.id, 'avgAttendance', parseInt(e.target.value) || 0)} className="w-full border rounded p-1 text-center" />
                    </div>
                 </div>

@@ -677,7 +677,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 
                       <ReportAccordionSection title="৩. বিভাগভিত্তিক তথ্য" onEdit={() => setIsDeptManpowerModalOpen(true)}>
                          <div className="overflow-x-auto">
-                            <table className="w-full border-collapse border border-gray-200 text-[10px] text-center">
+                            <table className="w-full border-collapse border border-gray-200 text-xs text-center">
                                <thead>
                                   <tr className="bg-gray-50 text-gray-700">
                                      <th className="border border-gray-200 p-2 text-left">বিভাগসমূহ</th>
@@ -756,15 +756,15 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                       <ReportAccordionSection title="৬. বিদায়ী ছাত্র জনশক্তির সংগঠনে যোগদান:" onEdit={() => setIsStudentModalOpen(true)}>
                          <div className="grid grid-cols-3 gap-4">
                             <div className="bg-white p-4 border rounded shadow-sm text-center">
-                               <div className="text-[10px] text-gray-500 font-bold uppercase mb-1">সদস্য</div>
+                               <div className="text-xs text-gray-500 font-bold uppercase mb-1">সদস্য</div>
                                <div className="text-xl font-bold">{formatVal(compReport.studentJoining?.rokonCount)}</div>
                             </div>
                             <div className="bg-white p-4 border rounded shadow-sm text-center">
-                               <div className="text-[10px] text-gray-500 font-bold uppercase mb-1">সাথী</div>
+                               <div className="text-xs text-gray-500 font-bold uppercase mb-1">সাথী</div>
                                <div className="text-xl font-bold">{formatVal(compReport.studentJoining?.companionCount)}</div>
                             </div>
                             <div className="bg-white p-4 border rounded shadow-sm text-center">
-                               <div className="text-[10px] text-gray-500 font-bold uppercase mb-1">কর্মী</div>
+                               <div className="text-xs text-gray-500 font-bold uppercase mb-1">কর্মী</div>
                                <div className="text-xl font-bold">{formatVal(compReport.studentJoining?.karmiCount)}</div>
                             </div>
                          </div>
@@ -805,7 +805,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                       {/* ৯. সাংগঠনিক বৈঠকাদি */}
                       <ReportAccordionSection title="৯. সাংগঠনিক বৈঠকাদি:" onEdit={() => setIsOrgMeetingModalOpen(true)}>
                          <div className="overflow-x-auto">
-                            <table className="w-full border-collapse border border-gray-200 text-[10px] text-center">
+                            <table className="w-full border-collapse border border-gray-200 text-xs text-center">
                                <thead>
                                   <tr className="bg-gray-50 text-gray-700">
                                      <th className="border border-gray-200 p-2 text-left">ক্রম</th>
@@ -867,7 +867,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                     <div className="space-y-6">
                       <ReportAccordionSection title="ক) তারবিয়াত (নৈতিক শিক্ষা ও সাংগঠনিক প্রশিক্ষণ):" onEdit={() => setIsTarbiyatModalOpen(true)}>
                          <div className="overflow-x-auto">
-                            <table className="w-full border-collapse border border-gray-200 text-[10px] text-center">
+                            <table className="w-full border-collapse border border-gray-200 text-xs text-center">
                                <thead>
                                   <tr className="bg-gray-50 text-gray-700">
                                      <th className="border border-gray-200 p-2 text-left">ক্রম</th>
@@ -923,7 +923,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 
                       <ReportAccordionSection title="খ) মানবসম্পদ উন্নয়ন কোর্স সমূহ:" onEdit={() => setIsHRDModalOpen(true)}>
                          <div className="overflow-x-auto">
-                            <table className="w-full border-collapse border border-gray-200 text-[10px] text-center">
+                            <table className="w-full border-collapse border border-gray-200 text-xs text-center">
                                <thead>
                                   <tr className="bg-gray-50 text-gray-700">
                                      <th className="border border-gray-200 p-2 text-left">ক্রম</th>
@@ -966,11 +966,11 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                       <ReportAccordionSection title="১. ব্যক্তিগত উদ্যোগে সামাজিক কাজ:" onEdit={() => setIsSocialPersonalModalOpen(true)}>
                          <div className="grid grid-cols-2 gap-4">
                             <div className="bg-blue-50/30 p-4 border rounded text-center">
-                               <div className="text-[10px] text-blue-700 font-bold uppercase mb-1">মোট অংশগ্রহণকারী</div>
+                               <div className="text-xs text-blue-700 font-bold uppercase mb-1">মোট অংশগ্রহণকারী</div>
                                <div className="text-2xl font-bold">{formatVal(compReport.socialWork?.personal?.workerCount)}</div>
                             </div>
                             <div className="bg-emerald-50/30 p-4 border rounded text-center">
-                               <div className="text-[10px] text-emerald-700 font-bold uppercase mb-1">মোট সেবাপ্রাপ্ত</div>
+                               <div className="text-xs text-emerald-700 font-bold uppercase mb-1">মোট সেবাপ্রাপ্ত</div>
                                <div className="text-2xl font-bold">{formatVal(compReport.socialWork?.personal?.beneficiaryCount)}</div>
                             </div>
                          </div>
@@ -980,20 +980,20 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                          <div className="space-y-4">
                             <div className="grid grid-cols-3 gap-2">
                                <div className="p-2 border rounded bg-gray-50 text-center">
-                                  <div className="text-[9px] font-bold text-gray-500 uppercase">সাধারণ টীম</div>
+                                  <div className="text-xs font-bold text-gray-500 uppercase">সাধারণ টীম</div>
                                   <div className="font-bold">{formatVal(compReport.socialWork?.group?.generalTeamCount)}</div>
                                </div>
                                <div className="p-2 border rounded bg-gray-50 text-center">
-                                  <div className="text-[9px] font-bold text-gray-500 uppercase">টেকনিক্যাল টীম</div>
+                                  <div className="text-xs font-bold text-gray-500 uppercase">টেকনিক্যাল টীম</div>
                                   <div className="font-bold">{formatVal(compReport.socialWork?.group?.technicalTeamCount)}</div>
                                </div>
                                <div className="p-2 border rounded bg-gray-50 text-center">
-                                  <div className="text-[9px] font-bold text-gray-500 uppercase">স্বেচ্ছাসেবক টীম</div>
+                                  <div className="text-xs font-bold text-gray-500 uppercase">স্বেচ্ছাসেবক টীম</div>
                                   <div className="font-bold">{formatVal(compReport.socialWork?.group?.volunteerTeamCount)}</div>
                                </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                               <table className="w-full border-collapse border border-gray-100 text-[10px]">
+                               <table className="w-full border-collapse border border-gray-100 text-xs">
                                   <tbody>
                                      {[
                                         { id: 'smallDev', label: 'উন্নয়নমূলক কাজ/বিরোধ মীমাংসা', f: ['v1', 'v2'] },
@@ -1021,7 +1021,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                                      ))}
                                   </tbody>
                                 </table>
-                                <table className="w-full border-collapse border border-gray-100 text-[10px]">
+                                <table className="w-full border-collapse border border-gray-100 text-xs">
                                   <tbody>
                                      {[
                                         { id: 'eduHelp', label: 'শিক্ষা সহায়তা প্রদান', f: ['val'] },
@@ -1056,15 +1056,15 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                       <ReportAccordionSection title="৩. স্বাস্থ্য ও পরিবার কল্যাণমূলক কাজ:" onEdit={() => setIsSocialHealthModalOpen(true)}>
                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div className="p-3 border rounded bg-amber-50/30">
-                               <div className="text-[9px] font-bold text-amber-700 uppercase">স্বাস্থ্যকর্মী প্রশিক্ষণ</div>
+                               <div className="text-xs font-bold text-amber-700 uppercase">স্বাস্থ্যকর্মী প্রশিক্ষণ</div>
                                <div className="text-xl font-bold">{formatVal(compReport.socialWork?.health?.trainingParticipantCount)}</div>
                             </div>
                             <div className="p-3 border rounded bg-white">
-                               <div className="text-[9px] font-bold text-gray-500 uppercase">সেবায়ে অংশগ্রহণ</div>
+                               <div className="text-xs font-bold text-gray-500 uppercase">সেবায়ে অংশগ্রহণ</div>
                                <div className="text-xl font-bold">{formatVal(compReport.socialWork?.health?.serviceParticipantCount)}</div>
                             </div>
                             <div className="p-3 border rounded bg-white">
-                               <div className="text-[9px] font-bold text-gray-500 uppercase">সেবাপ্রাপ্ত সংখ্যা</div>
+                               <div className="text-xs font-bold text-gray-500 uppercase">সেবাপ্রাপ্ত সংখ্যা</div>
                                <div className="text-xl font-bold">{formatVal(compReport.socialWork?.health?.beneficiaryCount)}</div>
                             </div>
                          </div>
@@ -1073,15 +1073,15 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                       <ReportAccordionSection title="৪. প্রাতিষ্ঠানিক উদ্যোগে সামাজিক কাজ:" onEdit={() => setIsSocialInstModalOpen(true)}>
                          <div className="grid grid-cols-3 gap-4">
                             <div className="p-3 border rounded bg-indigo-50/30 text-center">
-                               <div className="text-[9px] font-bold text-indigo-700 uppercase">মোট প্রতিষ্ঠান</div>
+                               <div className="text-xs font-bold text-indigo-700 uppercase">মোট প্রতিষ্ঠান</div>
                                <div className="text-xl font-bold">{formatVal(compReport.socialWork?.inst?.totalInstitutions)}</div>
                             </div>
                             <div className="p-3 border rounded bg-white text-center">
-                               <div className="text-[9px] font-bold text-gray-500 uppercase">কাজ হয়েছে</div>
+                               <div className="text-xs font-bold text-gray-500 uppercase">কাজ হয়েছে</div>
                                <div className="text-xl font-bold">{formatVal(compReport.socialWork?.inst?.activeInstitutions)}</div>
                             </div>
                             <div className="p-3 border rounded bg-white text-center">
-                               <div className="text-[9px] font-bold text-gray-500 uppercase">নতুন চালু</div>
+                               <div className="text-xs font-bold text-gray-500 uppercase">নতুন চালু</div>
                                <div className="text-xl font-bold">{formatVal(compReport.socialWork?.inst?.newInstitutions)}</div>
                             </div>
                          </div>
@@ -1119,7 +1119,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 
                       <ReportAccordionSection title="২. কর্মসূচি বাস্তবায়ন:" onEdit={() => setIsPoliticalProgModalOpen(true)}>
                          <div className="overflow-x-auto">
-                            <table className="w-full border-collapse border border-gray-200 text-[10px] text-center">
+                            <table className="w-full border-collapse border border-gray-200 text-xs text-center">
                                <thead>
                                   <tr className="bg-gray-50 text-gray-700">
                                      <th className="border border-gray-200 p-2 text-left">কর্মসূচির বিবরণ</th>
@@ -1166,15 +1166,15 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                                { id: 'motherLanguageDay', label: 'আন্তর্জাতিক মাতৃভাষা দিবস' },
                                { id: 'others', label: 'অন্যান্য' }
                             ].map(row => (
-                               <div key={row.id} className="p-2 border rounded bg-white flex justify-between items-center text-[10px]">
+                               <div key={row.id} className="p-2 border rounded bg-white flex justify-between items-center text-xs">
                                   <span className="font-medium">{row.label}</span>
                                   <div className="flex gap-4">
                                      <div className="text-center">
-                                        <div className="text-[8px] text-gray-500 uppercase">প্রোগ্রাম</div>
+                                        <div className="text-xs text-gray-500 uppercase">প্রোগ্রাম</div>
                                         <div className="font-bold">{formatVal(compReport.political?.nationalDay?.[row.id]?.programCount)}</div>
                                      </div>
                                      <div className="text-center">
-                                        <div className="text-[8px] text-gray-500 uppercase">উপস্থিতি</div>
+                                        <div className="text-xs text-gray-500 uppercase">উপস্থিতি</div>
                                         <div className="font-bold">{formatVal(compReport.political?.nationalDay?.[row.id]?.avgAttendance)}</div>
                                      </div>
                                   </div>
@@ -1186,15 +1186,15 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                       <ReportAccordionSection title="৪. জাতীয় ও স্থানীয় নির্বাচনভিত্তিক কার্যক্রম:" onEdit={() => setIsElectionModalOpen(true)}>
                          <div className="space-y-4">
                             <div className="p-3 border rounded bg-blue-50/30">
-                               <div className="text-[10px] font-bold text-blue-700 uppercase mb-2">কাউন্সিলর নির্বাচন</div>
+                               <div className="text-xs font-bold text-blue-700 uppercase mb-2">কাউন্সিলর নির্বাচন</div>
                                <div className="grid grid-cols-3 gap-2 text-center">
-                                  <div><div className="text-[8px] text-gray-500 uppercase">প্রার্থী</div><div className="font-bold">{formatVal(compReport.political?.election?.councilor?.candidateCount?.val)}</div></div>
-                                  <div><div className="text-[8px] text-gray-500 uppercase">নির্বাচিত</div><div className="font-bold">{formatVal(compReport.political?.election?.councilor?.electedCount?.val)}</div></div>
-                                  <div><div className="text-[8px] text-gray-500 uppercase">২য় অবস্থান</div><div className="font-bold">{formatVal(compReport.political?.election?.councilor?.secondPlaceCount?.val)}</div></div>
+                                  <div><div className="text-xs text-gray-500 uppercase">প্রার্থী</div><div className="font-bold">{formatVal(compReport.political?.election?.councilor?.candidateCount?.val)}</div></div>
+                                  <div><div className="text-xs text-gray-500 uppercase">নির্বাচিত</div><div className="font-bold">{formatVal(compReport.political?.election?.councilor?.electedCount?.val)}</div></div>
+                                  <div><div className="text-xs text-gray-500 uppercase">২য় অবস্থান</div><div className="font-bold">{formatVal(compReport.political?.election?.councilor?.secondPlaceCount?.val)}</div></div>
                                </div>
                             </div>
                             <div className="overflow-x-auto">
-                               <table className="w-full border-collapse border border-gray-200 text-[10px] text-center">
+                               <table className="w-full border-collapse border border-gray-200 text-xs text-center">
                                   <thead>
                                      <tr className="bg-gray-50 text-gray-700">
                                         <th className="border border-gray-200 p-2 text-left">প্রস্তুতিমূলক কার্যক্রম</th>
@@ -1219,7 +1219,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                                </table>
                             </div>
                             <div className="p-3 border rounded bg-emerald-50/30 flex justify-between items-center">
-                               <span className="text-[10px] font-bold text-emerald-800 uppercase">নির্বাচন পরিচালনা কমিটির বৈঠক সংখ্যা:</span>
+                               <span className="text-xs font-bold text-emerald-800 uppercase">নির্বাচন পরিচালনা কমিটির বৈঠক সংখ্যা:</span>
                                <span className="text-xl font-bold">{formatVal(compReport.political?.election?.electionCommitteeMeetingCount)}</span>
                             </div>
                          </div>
@@ -1229,14 +1229,14 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 
                   <ReportAccordionSection title="৬. বায়তুলমাল" onEdit={() => setIsBaitulmalModalOpen(true)}>
                     <div className="space-y-4">
-                       <div className="flex justify-between font-bold text-[10px] text-gray-600 bg-gray-50 p-2 rounded">
+                       <div className="flex justify-between font-bold text-xs text-gray-600 bg-gray-50 p-2 rounded">
                           <span>ধার্যকৃত নিছাব: {formatVal(compReport.finance?.nisab?.allocated)} /=</span>
                           <span>ওয়াদাকৃত নিছাব: {formatVal(compReport.finance?.nisab?.promised)} /=</span>
                        </div>
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                           {/* Income View */}
                           <div className="space-y-1">
-                             <div className="text-center font-bold text-[10px] bg-emerald-50 text-emerald-700 py-1 rounded">আয়ের বিবরণ</div>
+                             <div className="text-center font-bold text-xs bg-emerald-50 text-emerald-700 py-1 rounded">আয়ের বিবরণ</div>
                              {[
                                 { id: 'receivedNisab', label: 'প্রাপ্ত নিছাব' },
                                 { id: 'directIanat', label: 'সরাসরি ইয়ানত' },
@@ -1250,20 +1250,20 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                                 { id: 'iftar', label: 'ইফতার' },
                                 { id: 'delegateFee', label: 'ডেলিগেট ফি' }
                              ].map(item => (
-                                <div key={item.id} className="flex justify-between text-[10px] border-b border-gray-50 py-1">
+                                <div key={item.id} className="flex justify-between text-xs border-b border-gray-50 py-1">
                                    <span>{item.label}</span>
                                    <span className="font-medium">{formatVal(compReport.finance?.income?.[item.id])}</span>
                                 </div>
                              ))}
-                             <div className="flex justify-between text-[10px] font-bold text-emerald-700 pt-1">
+                             <div className="flex justify-between text-xs font-bold text-emerald-700 pt-1">
                                 <span>মোট আয় =</span>
                                 <span>{formatVal(compReport.finance?.income?.totalIncome)} /=</span>
                              </div>
-                             <div className="flex justify-between text-[10px] py-1">
+                             <div className="flex justify-between text-xs py-1">
                                 <span>গত মাসের উদ্বৃত্ত =</span>
                                 <span>{formatVal(compReport.finance?.income?.previousMonthSurplus)} /=</span>
                              </div>
-                             <div className="flex justify-between text-[10px] font-bold bg-emerald-100 p-1.5 rounded">
+                             <div className="flex justify-between text-xs font-bold bg-emerald-100 p-1.5 rounded">
                                 <span>সর্বমোট আয় =</span>
                                 <span>{formatVal(compReport.finance?.income?.grandTotalIncome)} /=</span>
                              </div>
@@ -1271,7 +1271,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 
                           {/* Expense View */}
                           <div className="space-y-1">
-                             <div className="text-center font-bold text-[10px] bg-red-50 text-red-700 py-1 rounded">ব্যয়ের বিবরণ</div>
+                             <div className="text-center font-bold text-xs bg-red-50 text-red-700 py-1 rounded">ব্যয়ের বিবরণ</div>
                              {[
                                 { id: 'nisabPaid', label: 'নিসাব পরিশোধ' },
                                 { id: 'localExpense', label: 'স্থানীয় খরচ' },
@@ -1285,20 +1285,20 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                                 { id: 'iftar', label: 'ইফতার' },
                                 { id: 'delegateFee', label: 'ডেলিগেট ফি' }
                              ].map(item => (
-                                <div key={item.id} className="flex justify-between text-[10px] border-b border-gray-50 py-1">
+                                <div key={item.id} className="flex justify-between text-xs border-b border-gray-50 py-1">
                                    <span>{item.label}</span>
                                    <span className="font-medium">{formatVal(compReport.finance?.expense?.[item.id])}</span>
                                 </div>
                              ))}
-                             <div className="flex justify-between text-[10px] font-bold text-red-700 pt-1">
+                             <div className="flex justify-between text-xs font-bold text-red-700 pt-1">
                                 <span>মোট ব্যয় =</span>
                                 <span>{formatVal(compReport.finance?.expense?.totalExpense)} /=</span>
                              </div>
-                             <div className="flex justify-between text-[10px] py-1 font-medium text-blue-600">
+                             <div className="flex justify-between text-xs py-1 font-medium text-blue-600">
                                 <span>এ মাসের উদ্বৃত্ত =</span>
                                 <span className="font-bold">{formatVal(compReport.finance?.expense?.monthlySurplus)} /=</span>
                              </div>
-                             <div className="flex justify-between text-[10px] font-bold bg-red-100 p-1.5 rounded">
+                             <div className="flex justify-between text-xs font-bold bg-red-100 p-1.5 rounded">
                                 <span>সর্বমোট ব্যয় =</span>
                                 <span>{formatVal(compReport.finance?.income?.grandTotalIncome)} /=</span>
                              </div>
@@ -1309,7 +1309,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 
                   <ReportAccordionSection title="৭. ওয়ার্ড সভাপতির মন্তব্যঃ" onEdit={() => setIsRemarksModalOpen(true)}>
                     <div className="space-y-6">
-                       <p className="text-[10px] italic text-gray-500 border-l-2 border-gray-100 pl-3 py-1">
+                       <p className="text-xs italic text-gray-500 border-l-2 border-gray-100 pl-3 py-1">
                           এ মাসের মাসিক প্রতিবেদন পেশ করতে সক্ষম হওয়ায় মহান রবের দরবারে শুকরিয়া আদায় করছি। পরিকল্পনা অনুযায়ী যেসব কাজ সম্পন্ন হয়েছে, তা একান্তই মহান প্রভুর রহমতেই সম্ভব হয়েছে। আর যেসব কাজ এখনো সম্পন্ন করা সম্ভব হয়নি, সেক্ষেত্রে প্রধান দায়িত্বশীল হিসেবে আমার সীমাবদ্ধতা ও দুর্বলতাই মূলত দায়ী। পাশাপাশি যে সকল বাস্তব কারণ প্রতিবন্ধকতা সৃষ্টি করেছে, সেগুলোর বিবরণ এবং ময়দানের বিদ্যমান সম্ভাবনাসমূহ নিচে উল্লেখ করা হলো।
                        </p>
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1318,7 +1318,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                                 <span className="w-2 h-2 rounded-full bg-red-500"></span>
                                 সমস্যাঃ
                              </h4>
-                             <ul className="space-y-1 text-[10px] text-gray-600">
+                             <ul className="space-y-1 text-xs text-gray-600">
                                 {(compReport.remarks?.problems || ['-', '-', '-', '-', '-']).map((val: string, idx: number) => (
                                    <li key={idx} className="flex gap-2 p-1.5 bg-red-50/30 rounded">
                                       <span className="font-bold text-red-300">{idx + 1}.</span>
@@ -1332,7 +1332,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                                 <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
                                 সম্ভাবনাঃ
                              </h4>
-                             <ul className="space-y-1 text-[10px] text-gray-600">
+                             <ul className="space-y-1 text-xs text-gray-600">
                                 {(compReport.remarks?.opportunities || ['-', '-', '-', '-', '-']).map((val: string, idx: number) => (
                                    <li key={idx} className="flex gap-2 p-1.5 bg-emerald-50/30 rounded">
                                       <span className="font-bold text-emerald-300">{idx + 1}.</span>
@@ -1342,7 +1342,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                              </ul>
                           </div>
                        </div>
-                       <p className="text-[9px] text-center text-gray-400 font-medium pt-4 border-t border-gray-50 italic">
+                       <p className="text-xs text-center text-gray-400 font-medium pt-4 border-t border-gray-50 italic">
                           মহান আল্লাহ আমাদের সব সমস্যার ঊর্ধ্বে ওঠার তাওফিক দান করুন, সম্ভাবনাগুলোকে যথাযথভাবে কাজে লাগানোর বুদ্ধি দিন, সুপরিকল্পনা গ্রহণ ও তা বাস্তবায়নে সদা সচেষ্ট রাখুন এবং ময়দানে সিসা ঢালার ন্যায় দৃঢ় ও ঐক্যবদ্ধ হয়ে কেবল তাঁর সন্তুষ্টি অর্জনের চেষ্টা করার তাওফিক দিয়ে আমাদের কবুল করুন। আমিন!
                        </p>
                     </div>

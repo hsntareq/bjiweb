@@ -404,7 +404,7 @@ export default function StatusTabWrapper({
 				{/* Header */}
 				<div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-indigo-100/50 bg-gradient-to-r from-indigo-50/50 to-violet-50/50 relative">
 					<div className="text-center">
-						<p className="text-[11px] text-indigo-500/80 font-bold uppercase tracking-widest mb-1">{t.status}</p>
+						<p className="text-xs text-indigo-500/80 font-bold uppercase tracking-widest mb-1">{t.status}</p>
 						<p className="text-lg sm:text-xl font-black text-gray-800 tracking-tight">
 							{formatMonthYear(month)}
 						</p>
@@ -429,7 +429,7 @@ export default function StatusTabWrapper({
 					<div className="hidden sm:block overflow-x-auto">
 						<table className="w-full text-left border-separate border-spacing-y-2">
 							<thead>
-								<tr className="text-indigo-900/50 text-[10px] uppercase tracking-widest font-bold">
+								<tr className="text-indigo-900/50 text-xs uppercase tracking-widest font-bold">
 									<th className="pb-2 px-3 whitespace-nowrap">{t.subject}</th>
 									<th className="pb-2 px-3 whitespace-nowrap text-center">{t.plan}</th>
 									<th className="pb-2 px-3 whitespace-nowrap text-center">{t.achieved}</th>
@@ -521,7 +521,7 @@ export default function StatusTabWrapper({
 									<div className="grid grid-cols-3 gap-2">
 										{/* Plan */}
 										<div className="text-center">
-											<div className="text-[10px] uppercase tracking-widest font-bold text-indigo-900/50 mb-1">{t.plan}</div>
+											<div className="text-xs uppercase tracking-widest font-bold text-indigo-900/50 mb-1">{t.plan}</div>
 											<div className="text-sm text-gray-400 font-bold">
 												{formatValue(th.key, planVal)}
 											</div>
@@ -529,7 +529,7 @@ export default function StatusTabWrapper({
 
 										{/* Achieved */}
 										<div className="text-center">
-											<div className="text-[10px] uppercase tracking-widest font-bold text-indigo-900/50 mb-1">{t.achieved}</div>
+											<div className="text-xs uppercase tracking-widest font-bold text-indigo-900/50 mb-1">{t.achieved}</div>
 											<div>
 												{th.editable ? (
 													th.isArray ? (
@@ -557,7 +557,7 @@ export default function StatusTabWrapper({
 
 										{/* Remaining */}
 										<div className="text-center">
-											<div className="text-[10px] uppercase tracking-widest font-bold text-indigo-900/50 mb-1">{t.remaining}</div>
+											<div className="text-xs uppercase tracking-widest font-bold text-indigo-900/50 mb-1">{t.remaining}</div>
 											<div>
 												{remaining > 0 ? (
 													<span className="text-xs font-bold text-gray-400">{formatValue(th.key, remaining)}</span>

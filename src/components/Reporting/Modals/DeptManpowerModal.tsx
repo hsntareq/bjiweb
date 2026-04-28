@@ -52,7 +52,7 @@ export const DeptManpowerModal: React.FC<DeptManpowerModalProps> = ({
     >
       <div className="space-y-6">
         <div className="overflow-x-auto">
-          <table className="w-full text-[10px]">
+          <table className="w-full text-xs">
             <thead>
               <tr className="bg-gray-100">
                 <th className="p-2 text-left">বিভাগসমূহ</th>

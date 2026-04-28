@@ -93,18 +93,18 @@ export const RemarksModal: React.FC<RemarksModalProps> = ({
                       <div className="relative">
                         <button 
                           onClick={(e) => { e.stopPropagation(); setActiveDropdown(activeDropdown === section.id ? null : section.id); }}
-                          className={`text-[10px] bg-${section.color}-50 text-${section.color}-600 px-2 py-1 rounded-full border border-${section.color}-100 hover:bg-${section.color}-100 transition-colors`}
+                          className={`text-xs bg-${section.color}-50 text-${section.color}-600 px-2 py-1 rounded-full border border-${section.color}-100 hover:bg-${section.color}-100 transition-colors`}
                         >
                           + সাধারণ {section.label} যুক্ত করুন
                         </button>
                         {activeDropdown === section.id && (
                           <div className="absolute right-0 top-full mt-1 w-64 bg-white border shadow-xl rounded-lg z-50 p-2 space-y-1 animate-in fade-in zoom-in duration-200 max-h-60 overflow-y-auto">
-                            <div className="text-[9px] font-bold text-gray-400 px-2 pb-1 border-b uppercase mb-1 sticky top-0 bg-white">পছন্দ করুন:</div>
+                            <div className="text-xs font-bold text-gray-400 px-2 pb-1 border-b uppercase mb-1 sticky top-0 bg-white">পছন্দ করুন:</div>
                             {section.suggestions.map((s, idx) => (
                               <button 
                                 key={idx} 
                                 onClick={(e) => { e.stopPropagation(); addSuggestion(section.id, s); }}
-                                className="w-full text-left p-2 text-[10px] hover:bg-gray-50 rounded transition-colors border-b border-gray-50 last:border-0"
+                                className="w-full text-left p-2 text-xs hover:bg-gray-50 rounded transition-colors border-b border-gray-50 last:border-0"
                               >
                                 {s}
                               </button>

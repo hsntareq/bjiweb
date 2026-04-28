@@ -88,7 +88,7 @@ export const ElectionActivityModal: React.FC<ElectionActivityModalProps> = ({
           </div>
 
           <div className="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
-             <label className="block font-bold mb-2 uppercase text-[10px] text-emerald-800">ওয়ার্ডভিত্তিক নির্বাচন পরিচালনা কমিটির বৈঠক সংখ্যা:</label>
+             <label className="block font-bold mb-2 uppercase text-xs text-emerald-800">ওয়ার্ডভিত্তিক নির্বাচন পরিচালনা কমিটির বৈঠক সংখ্যা:</label>
              <input type="number" value={data.electionCommitteeMeetingCount || 0} onChange={(e) => handleChange('electionCommitteeMeetingCount', parseInt(e.target.value) || 0)} className="w-full border border-emerald-200 rounded p-3 text-lg font-bold" />
           </div>
        </div>

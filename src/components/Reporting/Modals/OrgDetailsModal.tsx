@@ -106,15 +106,15 @@ export const OrgDetailsModal: React.FC<OrgDetailsModalProps> = ({
            <h4 className="font-bold text-emerald-800 mb-4 underline">৭. সফর:</h4>
            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                 <label className="block text-[10px] font-bold mb-1">উর্ধ্বতন দায়িত্বশীলদের সফর</label>
+                 <label className="block text-xs font-bold mb-1">উর্ধ্বতন দায়িত্বশীলদের সফর</label>
                  <input type="number" value={data.safar?.higherAuthoritySafar || 0} onChange={(e) => handleChange('safar', 'higherAuthoritySafar', parseInt(e.target.value) || 0)} className="w-full border rounded p-2" />
               </div>
               <div>
-                 <label className="block text-[10px] font-bold mb-1">ওয়ার্ড সভাপতির সফর</label>
+                 <label className="block text-xs font-bold mb-1">ওয়ার্ড সভাপতির সফর</label>
                  <input type="number" value={data.safar?.wardPresidentSafar || 0} onChange={(e) => handleChange('safar', 'wardPresidentSafar', parseInt(e.target.value) || 0)} className="w-full border rounded p-2" />
               </div>
               <div>
-                 <label className="block text-[10px] font-bold mb-1">টিম সদস্যদের সফর</label>
+                 <label className="block text-xs font-bold mb-1">টিম সদস্যদের সফর</label>
                  <input type="number" value={data.safar?.teamMemberSafar || 0} onChange={(e) => handleChange('safar', 'teamMemberSafar', parseInt(e.target.value) || 0)} className="w-full border rounded p-2" />
               </div>
            </div>
@@ -125,11 +125,11 @@ export const OrgDetailsModal: React.FC<OrgDetailsModalProps> = ({
            <h4 className="font-bold text-amber-800 mb-4 underline">৮. ইয়ানত দাতা (সহযোগী সদস্য/সুধী):</h4>
            <div className="grid grid-cols-2 gap-4">
               <div>
-                 <label className="block text-[10px] font-bold mb-1">নতুন ইয়ানত দাতা (সংখ্যা)</label>
+                 <label className="block text-xs font-bold mb-1">নতুন ইয়ানত দাতা (সংখ্যা)</label>
                  <input type="number" value={data.donors?.newCount || 0} onChange={(e) => handleChange('donors', 'newCount', parseInt(e.target.value) || 0)} className="w-full border rounded p-2" />
               </div>
               <div>
-                 <label className="block text-[10px] font-bold mb-1">অর্থের পরিমাণ</label>
+                 <label className="block text-xs font-bold mb-1">অর্থের পরিমাণ</label>
                  <input type="number" value={data.donors?.amount || 0} onChange={(e) => handleChange('donors', 'amount', parseInt(e.target.value) || 0)} className="w-full border rounded p-2" />
               </div>
            </div>
@@ -139,7 +139,7 @@ export const OrgDetailsModal: React.FC<OrgDetailsModalProps> = ({
         <div>
            <h4 className="font-bold text-gray-800 mb-4 underline">৯. সাংগঠনিক বৈঠকাদি:</h4>
            <div className="overflow-x-auto">
-              <table className="w-full text-[10px]">
+              <table className="w-full text-xs">
                  <thead>
                     <tr className="bg-gray-100">
                        <th className="p-2 text-left">বৈঠকের ধরণ</th>

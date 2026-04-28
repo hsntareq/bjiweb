@@ -123,19 +123,19 @@ const TreeNode: React.FC<{
 				<div className="flex-1 min-w-0">
 					<div className="flex items-center gap-2">
 						<p className={`font-semibold ${isCompact ? 'text-xs' : 'text-sm'} text-gray-900 truncate`}>{node.name}</p>
-						{node.division && <span className="text-[9px] text-gray-500 bg-gray-100 px-1 rounded border border-gray-200 truncate max-w-[80px]">{node.division}</span>}
+						{node.division && <span className="text-xs text-gray-500 bg-gray-100 px-1 rounded border border-gray-200 truncate max-w-[80px]">{node.division}</span>}
 					</div>
 					{!isCompact && (
 						<div className="flex gap-1.5 mt-1 flex-wrap">
-						<span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">M {stats.members}</span>
-						<span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">A {stats.activists}</span>
-						<span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">S {stats.associates}</span>
+						<span className="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">M {stats.members}</span>
+						<span className="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">A {stats.activists}</span>
+						<span className="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">S {stats.associates}</span>
 					</div>
 					)}
 				</div>
 
 				{hasChildren && (
-					<div className="flex-shrink-0 px-2 py-0.5 rounded-full bg-white border border-gray-200 text-[10px] font-semibold text-gray-700">
+					<div className="flex-shrink-0 px-2 py-0.5 rounded-full bg-white border border-gray-200 text-xs font-semibold text-gray-700">
 						{node.children.length}
 					</div>
 				)}

@@ -37,11 +37,11 @@ export const SocialInstModal: React.FC<SocialInstModalProps> = ({
           </div>
           <div className="grid grid-cols-2 gap-4">
              <div className="bg-white p-4 border rounded shadow-sm">
-                <label className="block text-[10px] font-bold text-gray-500 uppercase mb-2">কতটি প্রতিষ্ঠানে সামাজিক কাজ হয়েছে:</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">কতটি প্রতিষ্ঠানে সামাজিক কাজ হয়েছে:</label>
                 <input type="number" value={data.activeInstitutions || 0} onChange={(e) => handleChange('activeInstitutions', parseInt(e.target.value) || 0)} className="w-full border rounded p-2 text-lg font-bold" />
              </div>
              <div className="bg-white p-4 border rounded shadow-sm">
-                <label className="block text-[10px] font-bold text-gray-500 uppercase mb-2">কতটি নতুন সামাজিক প্রতিষ্ঠান চালু করা হয়েছে:</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">কতটি নতুন সামাজিক প্রতিষ্ঠান চালু করা হয়েছে:</label>
                 <input type="number" value={data.newInstitutions || 0} onChange={(e) => handleChange('newInstitutions', parseInt(e.target.value) || 0)} className="w-full border rounded p-2 text-lg font-bold" />
              </div>
           </div>

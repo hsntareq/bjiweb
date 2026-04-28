@@ -68,15 +68,15 @@ export const SocialGroupModal: React.FC<SocialGroupModalProps> = ({
     >
        <div className="space-y-8">
           <div className="grid grid-cols-3 gap-4">
-             <div><label className="text-[10px] block font-bold">সাধারণ সেবা টীম</label><input type="number" value={data.generalTeamCount || 0} onChange={(e) => handleChange('generalTeamCount', parseInt(e.target.value) || 0)} className="w-full border rounded p-1" /></div>
-             <div><label className="text-[10px] block font-bold">টেকনিক্যাল সেবা টীম</label><input type="number" value={data.technicalTeamCount || 0} onChange={(e) => handleChange('technicalTeamCount', parseInt(e.target.value) || 0)} className="w-full border rounded p-1" /></div>
-             <div><label className="text-[10px] block font-bold">স্বেচ্ছাসেবক টীম</label><input type="number" value={data.volunteerTeamCount || 0} onChange={(e) => handleChange('volunteerTeamCount', parseInt(e.target.value) || 0)} className="w-full border rounded p-1" /></div>
+             <div><label className="text-xs block font-bold">সাধারণ সেবা টীম</label><input type="number" value={data.generalTeamCount || 0} onChange={(e) => handleChange('generalTeamCount', parseInt(e.target.value) || 0)} className="w-full border rounded p-1" /></div>
+             <div><label className="text-xs block font-bold">টেকনিক্যাল সেবা টীম</label><input type="number" value={data.technicalTeamCount || 0} onChange={(e) => handleChange('technicalTeamCount', parseInt(e.target.value) || 0)} className="w-full border rounded p-1" /></div>
+             <div><label className="text-xs block font-bold">স্বেচ্ছাসেবক টীম</label><input type="number" value={data.volunteerTeamCount || 0} onChange={(e) => handleChange('volunteerTeamCount', parseInt(e.target.value) || 0)} className="w-full border rounded p-1" /></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
              <div className="space-y-2">
                 {leftRows.map(row => (
-                   <div key={row.id} className="flex items-center justify-between p-2 border-b text-[10px]">
+                   <div key={row.id} className="flex items-center justify-between p-2 border-b text-xs">
                       <span className="w-2/3">{row.label}</span>
                       <div className="flex gap-1">
                          {row.f.map(sub => (
@@ -88,7 +88,7 @@ export const SocialGroupModal: React.FC<SocialGroupModalProps> = ({
              </div>
              <div className="space-y-2">
                 {rightRows.map(row => (
-                   <div key={row.id} className="flex items-center justify-between p-2 border-b text-[10px]">
+                   <div key={row.id} className="flex items-center justify-between p-2 border-b text-xs">
                       <span className="w-2/3">{row.label}</span>
                       <div className="flex gap-1">
                          {row.f.map(sub => (

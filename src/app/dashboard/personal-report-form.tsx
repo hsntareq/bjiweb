@@ -537,7 +537,7 @@ export default function PersonalReportForm({
 				{/* Form Header with date navigation */}
 				<div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-indigo-100/50 bg-gradient-to-r from-indigo-50/50 to-violet-50/50">
 					<div className="text-center mb-4">
-						<p className="text-[11px] text-indigo-500/80 font-bold uppercase tracking-widest mb-1">{t.dailyReport}</p>
+						<p className="text-xs text-indigo-500/80 font-bold uppercase tracking-widest mb-1">{t.dailyReport}</p>
 						<p className="text-lg sm:text-xl font-black text-gray-800 tracking-tight">{formatDisplayDate(date)}</p>
 					</div>
 					<div className="grid grid-cols-1 sm:grid-cols-2 items-start gap-3 sm:gap-4">
@@ -572,14 +572,14 @@ export default function PersonalReportForm({
 									type="button"
 									onClick={() => handleDateSwitch(toDateStr(new Date()))}
 									disabled={isToday}
-									className="basis-full sm:basis-auto text-[11px] px-3 h-10 rounded-xl border border-indigo-200 text-indigo-700 bg-white hover:bg-indigo-50 disabled:opacity-40 disabled:cursor-not-allowed font-semibold tracking-wide uppercase transition-all shadow-sm flex items-center justify-center"
+									className="basis-full sm:basis-auto text-xs px-3 h-10 rounded-xl border border-indigo-200 text-indigo-700 bg-white hover:bg-indigo-50 disabled:opacity-40 disabled:cursor-not-allowed font-semibold tracking-wide uppercase transition-all shadow-sm flex items-center justify-center"
 								>
 									{t.today}
 								</button>
 							</div>
 						</div>
 						<div className="flex flex-col-reverse md:flex-row items-center md:justify-end gap-3 w-full justify-center">
-							{!isToday && <p className="text-[11px] text-gray-400 text-center md:text-right leading-tight">{t.timerForTodayOnly}</p>}
+							{!isToday && <p className="text-xs text-gray-400 text-center md:text-right leading-tight">{t.timerForTodayOnly}</p>}
 							<button
 								type="button"
 								onClick={timerRunning ? pauseOrgWorkTimer : startOrgWorkTimer}
@@ -591,7 +591,7 @@ export default function PersonalReportForm({
 							>
 								<span className="flex flex-col items-center justify-center leading-none">
 									<span className="font-bold text-[14px] font-mono tracking-tight">{timerDisplay}</span>
-									<span className="text-[9px] uppercase tracking-wider mt-0.5">{timerRunning ? t.pauseTimer : t.startTimer}</span>
+									<span className="text-xs uppercase tracking-wider mt-0.5">{timerRunning ? t.pauseTimer : t.startTimer}</span>
 								</span>
 							</button>
 						</div>

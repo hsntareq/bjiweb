@@ -300,25 +300,25 @@ export const OrganizationDetails: React.FC<OrganizationDetailsProps> = ({
 						)}
 						{organization.type === 'CENTRAL' && (
 							<div className="space-y-1">
-								<p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Cities / Thanas / Wards / Units</p>
+								<p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Cities / Thanas / Wards / Units</p>
 								<p className="text-xl font-bold text-gray-900">{cityCount} / {thanaCount} / {wardCount} / {unitCount}</p>
 							</div>
 						)}
 						{organization.type === 'CITY' && (
 							<div className="space-y-1">
-								<p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Thanas / Wards / Units</p>
+								<p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Thanas / Wards / Units</p>
 								<p className="text-xl font-bold text-gray-900">{thanaCount} / {wardCount} / {unitCount}</p>
 							</div>
 						)}
 						{organization.type === 'THANA' && (
 							<div className="space-y-1">
-								<p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Wards / Units</p>
+								<p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Wards / Units</p>
 								<p className="text-xl font-bold text-gray-900">{wardCount} / {unitCount}</p>
 							</div>
 						)}
 						{organization.type === 'WARD' && (
 							<div className="space-y-1">
-								<p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Units</p>
+								<p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Units</p>
 								<p className="text-xl font-bold text-gray-900">{unitCount}</p>
 							</div>
 						)}

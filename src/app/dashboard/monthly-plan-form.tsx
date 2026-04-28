@@ -702,7 +702,7 @@ export default function MonthlyPlanForm({
 
 				<div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-indigo-100/50 bg-gradient-to-r from-indigo-50/50 to-violet-50/50">
 					<div className="text-center">
-						<p className="text-[11px] text-indigo-500/80 font-bold uppercase tracking-widest mb-1">{t.monthlyPlan}</p>
+						<p className="text-xs text-indigo-500/80 font-bold uppercase tracking-widest mb-1">{t.monthlyPlan}</p>
 						<p className="text-lg sm:text-xl font-black text-gray-800 tracking-tight">
 							{formatMonthYear(month)}
 						</p>
