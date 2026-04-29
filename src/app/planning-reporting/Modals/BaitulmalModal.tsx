@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BaseModal } from './BaseModal';
+import { BaseModal } from '../../../components/Reporting/Modals/BaseModal';
 
 interface BaitulmalModalProps {
   isOpen: boolean;

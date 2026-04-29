@@ -18,6 +18,12 @@ export const PoliticalCommunicationModal: React.FC<PoliticalCommunicationModalPr
 }) => {
   const [data, setData] = useState(initialData);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setData(initialData);
+    }
+  }, [isOpen]);
+
   const handleTableChange = (rowId: string, field: string, value: any) => {
     setData((prev: any) => ({
       ...prev,

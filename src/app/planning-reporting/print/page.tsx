@@ -1,16 +1,16 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Printer, FileText } from 'lucide-react';
 import { templateHtml, templateStyle } from './Template';
 
-export default function ReportPrintPage() {
+function ReportPrintContent() {
   const searchParams = useSearchParams();
-  const orgId = searchParams.get('orgId');
-  const year = searchParams.get('year');
-  const month = searchParams.get('month');
-  const accessToken = searchParams.get('token');
+  const orgId = searchParams?.get('orgId');
+  const year = searchParams?.get('year');
+  const month = searchParams?.get('month');
+  const accessToken = searchParams?.get('token');
 
   const [report, setReport] = useState<any>(null);
   const [orgName, setOrgName] = useState('');
@@ -176,7 +176,7 @@ export default function ReportPrintPage() {
                   html2canvas: { scale: 2, useCORS: true, letterRendering: true },
                   jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
                 };
-                html2pdf().from(element).set(opt).save();
+                html2pdf().from(element).set(opt as any).save();
               } catch (err) {
                 console.error('PDF Download failed:', err);
                 window.print();
@@ -207,5 +207,20 @@ export default function ReportPrintPage() {
          Generated via BJI Organizational Management System | {new Date().toLocaleString('bn-BD')}
       </div>
     </div>
+  );
+}
+
+export default function ReportPrintPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center animate-pulse">
+          <FileText className="w-12 h-12 text-indigo-400 mx-auto mb-4" />
+          <p className="text-gray-500 font-medium">প্রতিবেদন প্রস্তুত করা হচ্ছে...</p>
+        </div>
+      </div>
+    }>
+      <ReportPrintContent />
+    </Suspense>
   );
 }

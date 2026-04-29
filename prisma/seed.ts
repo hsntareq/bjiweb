@@ -153,7 +153,7 @@ async function createOrganizationHierarchy() {
       description: 'Administrator at central level with full permissions',
       organizationId: centralOrg.id,
       permissions: {
-        connect: permissions.map(p => ({ id: p.id })),
+        connect: permissions.map((p: any) => ({ id: p.id })),
       },
     },
   });
@@ -191,7 +191,7 @@ async function createOrganizationHierarchy() {
         description: `Manager for ${division.name} Division`,
         organizationId: divisionOrg.id,
         permissions: {
-          connect: permissions.map(p => ({ id: p.id })),
+          connect: permissions.map((p: any) => ({ id: p.id })),
         },
       },
     });
@@ -230,10 +230,10 @@ async function createOrganizationHierarchy() {
           organizationId: cityOrg.id,
           permissions: {
             connect: permissions
-              .filter(p =>
+              .filter((p: any) =>
                 ['users', 'activities', 'reports', 'organization'].includes(p.resource)
               )
-              .map(p => ({ id: p.id })),
+              .map((p: any) => ({ id: p.id })),
           },
         },
       });
@@ -273,11 +273,11 @@ async function createOrganizationHierarchy() {
             organizationId: thanaOrg.id,
             permissions: {
               connect: permissions
-                .filter(p =>
+                .filter((p: any) =>
                   ['activities', 'reports', 'organization'].includes(p.resource) &&
                   p.action !== 'delete'
                 )
-                .map(p => ({ id: p.id })),
+                .map((p: any) => ({ id: p.id })),
             },
           },
         });
@@ -318,11 +318,11 @@ async function createOrganizationHierarchy() {
               organizationId: wardOrg.id,
               permissions: {
                 connect: permissions
-                  .filter(p =>
+                  .filter((p: any) =>
                     ['activities', 'reports'].includes(p.resource) &&
                     ['create', 'read', 'update'].includes(p.action)
                   )
-                  .map(p => ({ id: p.id })),
+                  .map((p: any) => ({ id: p.id })),
               },
             },
           });
@@ -363,11 +363,11 @@ async function createOrganizationHierarchy() {
               organizationId: unitOrg.id,
               permissions: {
                 connect: permissions
-                  .filter(p =>
+                  .filter((p: any) =>
                     ['activities', 'reports'].includes(p.resource) &&
                     ['read', 'create'].includes(p.action)
                   )
-                  .map(p => ({ id: p.id })),
+                  .map((p: any) => ({ id: p.id })),
               },
             },
           });

@@ -61,7 +61,7 @@ export default function ModuleSwitcher() {
 	const dropdownRef = useRef<HTMLDivElement>(null);
 	const pathname = usePathname();
 
-	const currentModule = MODULES.find(m => pathname.startsWith(m.href));
+	const currentModule = MODULES.find(m => pathname?.startsWith(m.href));
 
 	// Close dropdown when clicking outside
 	useEffect(() => {

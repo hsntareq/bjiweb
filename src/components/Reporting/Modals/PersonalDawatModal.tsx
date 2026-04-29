@@ -18,6 +18,12 @@ export const PersonalDawatModal: React.FC<PersonalDawatModalProps> = ({
 }) => {
   const [data, setData] = useState(initialData);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setData(initialData);
+    }
+  }, [isOpen]);
+
   const handleChange = (type: string, field: string, value: any) => {
     setData((prev: any) => ({
       ...prev,

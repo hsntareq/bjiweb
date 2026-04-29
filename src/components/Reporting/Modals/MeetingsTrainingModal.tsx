@@ -18,6 +18,12 @@ export const MeetingsTrainingModal: React.FC<MeetingsTrainingModalProps> = ({
 }) => {
   const [data, setData] = useState(initialData);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setData(initialData);
+    }
+  }, [isOpen]);
+
   const handleTableChange = (section: string, rowId: string, field: string, value: any) => {
     setData((prev: any) => ({
       ...prev,

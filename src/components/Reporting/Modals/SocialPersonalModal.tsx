@@ -18,6 +18,12 @@ export const SocialPersonalModal: React.FC<SocialPersonalModalProps> = ({
 }) => {
   const [data, setData] = useState(initialData);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setData(initialData);
+    }
+  }, [isOpen]);
+
   const handleChange = (field: string, value: any) => {
     setData((prev: any) => ({ ...prev, [field]: value }));
   };

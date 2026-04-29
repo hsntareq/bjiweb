@@ -18,6 +18,12 @@ export const SocialWorkModal: React.FC<SocialWorkModalProps> = ({
 }) => {
   const [data, setData] = useState(initialData);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setData(initialData);
+    }
+  }, [isOpen]);
+
   const handleTableChange = (rowId: string, value: any) => {
     setData((prev: any) => ({
       ...prev,

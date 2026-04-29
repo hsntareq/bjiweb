@@ -18,6 +18,12 @@ export const DepartmentalInfoModal: React.FC<DepartmentalInfoModalProps> = ({
 }) => {
   const [data, setData] = useState(initialData);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setData(initialData);
+    }
+  }, [isOpen]);
+
   const handleChange = (section: string, field: string, value: any) => {
     setData((prev: any) => ({
       ...prev,
@@ -46,7 +52,7 @@ export const DepartmentalInfoModal: React.FC<DepartmentalInfoModalProps> = ({
       <div className="space-y-10">
         {/* 1. Quran Talim */}
         <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-          <h4 className="font-bold text-blue-800 mb-4 underline">১. তা'লীমুল কুরআনের মাধ্যমে দাওয়াত:</h4>
+          <h4 className="font-bold text-blue-800 mb-4 underline">১. তা&apos;লীমুল কুরআনের মাধ্যমে দাওয়াত:</h4>
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>

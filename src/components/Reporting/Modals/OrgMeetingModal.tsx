@@ -18,6 +18,12 @@ export const OrgMeetingModal: React.FC<OrgMeetingModalProps> = ({
 }) => {
   const [data, setData] = useState(initialData);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setData(initialData);
+    }
+  }, [isOpen]);
+
   const handleDeepTableChange = (rowId: string, field: string, subField: string, value: any) => {
     setData((prev: any) => ({
       ...prev,

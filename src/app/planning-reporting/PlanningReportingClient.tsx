@@ -189,7 +189,10 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
   };
 
   const handleSaveCompSection = async (sectionName: string, sectionData: any) => {
-    if (!selectedOrgId) return;
+    if (!selectedOrgId) {
+      alert('Error: No organization selected!');
+      return;
+    }
     try {
       setSaving(true);
       const res = await fetch(`http://localhost:3001/comprehensive-report`, {
@@ -234,16 +237,60 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
         setIsElectionModalOpen(false);
         setIsBaitulmalModalOpen(false);
         setIsRemarksModalOpen(false);
+      } else {
+        const errorText = await res.text();
+        console.error('Save failed:', res.status, errorText);
+        alert(`Failed to save! Status: ${res.status}. Error: ${errorText}`);
       }
     } catch (e) {
       console.error(e);
+      alert('An error occurred while saving.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveMultipleCompSections = async (updates: any) => {
+    if (!selectedOrgId) {
+      alert('Error: No organization selected!');
+      return;
+    }
+    try {
+      setSaving(true);
+      const res = await fetch(`http://localhost:3001/comprehensive-report`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+        body: JSON.stringify({
+          organizationId: selectedOrgId,
+          year,
+          month,
+          ...updates
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCompReport(data);
+        setIsDawatTablighModalOpen(false);
+      } else {
+        const errorText = await res.text();
+        console.error('Save failed:', res.status, errorText);
+        alert(`Failed to save! Status: ${res.status}. Error: ${errorText}`);
+      }
+    } catch (e) {
+      console.error(e);
+      alert('An error occurred while saving.');
     } finally {
       setSaving(false);
     }
   };
 
   const prevMonth = () => { if (month === 1) { setMonth(12); setYear(y => y - 1); } else setMonth(m => m - 1); };
-  const nextMonth = () => { if (month === 12) { setMonth(1); setYear(y => y + 1); } else setMonth(m => m + 1); };
+  const nextMonth = () => { 
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+    if (year === currentYear && month === currentMonth) return;
+    if (month === 12) { setMonth(1); setYear(y => y + 1); } else setMonth(m => m + 1); 
+  };
 
   const formatVal = (val: any) => (val === 0 || val === undefined || val === null) ? '-' : val;
 
@@ -265,7 +312,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
         <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-xl p-1 w-full sm:w-auto justify-between">
           <button onClick={prevMonth} className="p-2 hover:bg-white rounded-lg text-gray-500 transition-colors shadow-sm"><ChevronLeft className="w-4 h-4" /></button>
           <span className="font-bold text-gray-700 min-w-[140px] text-center">{monthNames[month - 1]} {year}</span>
-          <button onClick={nextMonth} className="p-2 hover:bg-white rounded-lg text-gray-500 transition-colors shadow-sm"><ChevronRight className="w-4 h-4" /></button>
+          <button onClick={nextMonth} disabled={year === new Date().getFullYear() && month === new Date().getMonth() + 1} className={`p-2 hover:bg-white rounded-lg transition-colors shadow-sm ${year === new Date().getFullYear() && month === new Date().getMonth() + 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500'}`}><ChevronRight className="w-4 h-4" /></button>
         </div>
       </div>
 
@@ -393,33 +440,36 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                       {/* Section 4 */}
                       <div>
                         <h4 className="text-sm font-bold text-gray-700 mb-3">৪. গণসংযোগ ও দাওয়াতী অভিযান পালন:</h4>
-                        <table className="w-full border-collapse border border-gray-200 text-sm text-center">
-                          <thead>
-                            <tr className="bg-gray-50">
-                              <th className="border border-gray-200 p-2 text-left">বিবরণ</th>
-                              <th className="border border-gray-200 p-2">মোট গ্রুপ সংখ্যা</th>
-                              <th className="border border-gray-200 p-2">মোট অংশগ্রহণকারী</th>
-                              <th className="border border-gray-200 p-2">পৌঁছানো হয়েছে</th>
-                              <th className="border border-gray-200 p-2">সহযোগী সদস্য</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {[
-                              { id: 'prDecade', label: 'গণসংযোগ দশক/পক্ষ' },
-                              { id: 'districtCampaign', label: 'জেলা/মহঃ ঘোষিত অভিযান' },
-                              { id: 'electionWeek', label: 'নির্বাচনী আসনে গণসংযোগ সপ্তাহ' },
-                              { id: 'proWeek', label: 'উলামা/পেশাজীবী গণসংযোগ সপ্তাহ' }
-                            ].map(row => (
-                              <tr key={row.id}>
-                                <td className="border border-gray-200 p-2 text-left">{row.label}</td>
-                                <td className="border border-gray-200 p-2">{formatVal(compReport.prCampaign?.[row.id]?.groupCount)}</td>
-                                <td className="border border-gray-200 p-2">{formatVal(compReport.prCampaign?.[row.id]?.participantCount)}</td>
-                                <td className="border border-gray-200 p-2">{formatVal(compReport.prCampaign?.[row.id]?.reachedCount)}</td>
-                                <td className="border border-gray-200 p-2">{formatVal(compReport.prCampaign?.[row.id]?.associateCount)}</td>
+                        <div className="overflow-x-auto border border-gray-200 rounded-lg">
+                          <table className="w-full border-collapse text-sm text-center">
+                            <thead>
+                              <tr className="bg-gray-50">
+                                <th className="border-b border-gray-200 p-2 text-left">বিবরণ</th>
+                                <th className="border-b border-l border-gray-200 p-2">মোট গ্রুপ সংখ্যা</th>
+                                <th className="border-b border-l border-gray-200 p-2">মোট অংশগ্রহণকারী</th>
+                                <th className="border-b border-l border-gray-200 p-2">পৌঁছানো হয়েছে</th>
+                                <th className="border-b border-l border-gray-200 p-2">সহযোগী সদস্য</th>
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                            </thead>
+                            <tbody>
+                              {[
+                                { id: 'prDecade', label: 'গণসংযোগ দশক/পক্ষ' },
+                                { id: 'districtCampaign', label: 'জেলা/মহঃ ঘোষিত অভিযান' },
+                                { id: 'electionWeek', label: 'নির্বাচনী আসনে গণসংযোগ সপ্তাহ' },
+                                { id: 'proWeek', label: 'উলামা/পেশাজীবী গণসংযোগ সপ্তাহ' },
+                                { id: 'other', label: 'অন্যান্য' }
+                              ].map(row => (
+                                <tr key={row.id} className="hover:bg-gray-50/50 transition-colors">
+                                  <td className="border-b border-gray-200 p-2 text-left font-medium">{row.label}</td>
+                                  <td className="border-b border-l border-gray-200 p-2">{formatVal(compReport.prCampaign?.[row.id]?.groupCount)}</td>
+                                  <td className="border-b border-l border-gray-200 p-2">{formatVal(compReport.prCampaign?.[row.id]?.participantCount)}</td>
+                                  <td className="border-b border-l border-gray-200 p-2">{formatVal(compReport.prCampaign?.[row.id]?.reachedCount)}</td>
+                                  <td className="border-b border-l border-gray-200 p-2">{formatVal(compReport.prCampaign?.[row.id]?.associateCount)}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     </div>
                   </ReportAccordionSection>
@@ -429,7 +479,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                     <div className="space-y-8">
                       {/* 1. Quran Talim */}
                       <div>
-                        <h4 className="text-sm font-bold text-gray-700 mb-3 underline">১. তা'লীমুল কুরআনের মাধ্যমে দাওয়াত:</h4>
+                        <h4 className="text-sm font-bold text-gray-700 mb-3 underline">১. তা&apos;লীমুল কুরআনের মাধ্যমে দাওয়াত:</h4>
                         <table className="w-full border-collapse border border-gray-200 text-sm">
                           <thead>
                             <tr className="bg-gray-50">
@@ -1415,13 +1465,13 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
         isOpen={isDawatTablighModalOpen} 
         onClose={() => setIsDawatTablighModalOpen(false)} 
         onSave={(data) => {
-          // Flatten saving for multiple sections
-          handleSaveCompSection('headerInfo', data.headerInfo);
-          handleSaveCompSection('unitDawat', data.unitDawat);
-          handleSaveCompSection('personalDawat', data.personalDawat);
-          handleSaveCompSection('generalMeeting', data.generalMeeting);
-          handleSaveCompSection('prCampaign', data.prCampaign);
-          setIsDawatTablighModalOpen(false);
+          handleSaveMultipleCompSections({
+            headerInfo: data.headerInfo,
+            unitDawat: data.unitDawat,
+            personalDawat: data.personalDawat,
+            generalMeeting: data.generalMeeting,
+            prCampaign: data.prCampaign
+          });
         }}
         initialData={{
           headerInfo: compReport.headerInfo,

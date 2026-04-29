@@ -99,7 +99,7 @@ export default async function OrganizationReportPage() {
 						<div>
 							<Users className="w-8 h-8 text-white/80 mb-3" />
 							<h3 className="text-white font-extrabold text-lg leading-tight">Team Performance<br />Analytics</h3>
-							<p className="text-purple-200/70 text-sm mt-2">Get comprehensive insights into your team's progress and achievements.</p>
+							<p className="text-purple-200/70 text-sm mt-2">Get comprehensive insights into your team&apos;s progress and achievements.</p>
 						</div>
 						<button className="mt-6 w-full py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-white text-sm font-semibold transition-all">
 							View Analytics

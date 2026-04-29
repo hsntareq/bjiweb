@@ -18,6 +18,12 @@ export const RemarksModal: React.FC<RemarksModalProps> = ({
 }) => {
   const [data, setData] = useState(initialData);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setData(initialData);
+    }
+  }, [isOpen]);
+
   const handleListChange = (section: string, index: number, value: string) => {
     const list = [...(data[section] || ['', '', '', '', ''])];
     list[index] = value;

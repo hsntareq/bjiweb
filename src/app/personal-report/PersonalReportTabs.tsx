@@ -53,20 +53,20 @@ export default function PersonalReportTabs() {
 	const tabNames = ["daily", "planning", "status"];
 
 	// Sync active tab with URL
-	const activeTabName = searchParams.get("tab") || "daily";
+	const activeTabName = searchParams?.get("tab") || "daily";
 	const active = useMemo(() => {
 		const idx = tabNames.indexOf(activeTabName);
 		return idx !== -1 ? idx : 0;
 	}, [activeTabName]);
 
 	const setActive = useCallback((index: number) => {
-		const params = new URLSearchParams(searchParams.toString());
+		const params = new URLSearchParams(searchParams?.toString() || "");
 		params.set("tab", tabNames[index]);
 		router.push(`?${params.toString()}`, { scroll: false });
 	}, [searchParams, router]);
 
 	// Sync month with URL
-	const urlMonth = searchParams.get("month");
+	const urlMonth = searchParams?.get("month");
 	const selectedMonth = useMemo(() => {
 		if (urlMonth && /^\d{4}-\d{2}$/.test(urlMonth)) return urlMonth;
 		const d = new Date();
@@ -76,7 +76,7 @@ export default function PersonalReportTabs() {
 	}, [urlMonth]);
 
 	const setSelectedMonth = useCallback((month: string) => {
-		const params = new URLSearchParams(searchParams.toString());
+		const params = new URLSearchParams(searchParams?.toString() || "");
 		params.set("month", month);
 		router.push(`?${params.toString()}`, { scroll: false });
 	}, [searchParams, router]);

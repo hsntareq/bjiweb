@@ -12,6 +12,7 @@ interface Organization {
 	demoMembers?: number;
 	activists?: number;
 	associates?: number;
+	division?: string;
 }
 
 interface OrganizationTreeProps {

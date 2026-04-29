@@ -18,6 +18,12 @@ export const PoliticalProgramModal: React.FC<PoliticalProgramModalProps> = ({
 }) => {
   const [data, setData] = useState(initialData);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setData(initialData);
+    }
+  }, [isOpen]);
+
   const handleDeepChange = (rowId: string, field: string, subField: string, value: any) => {
     setData((prev: any) => ({
       ...prev,

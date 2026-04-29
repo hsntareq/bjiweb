@@ -18,6 +18,12 @@ export const ProgramImplementationModal: React.FC<ProgramImplementationModalProp
 }) => {
   const [data, setData] = useState(initialData);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setData(initialData);
+    }
+  }, [isOpen]);
+
   const handleTableChange = (rowId: string, field: string, subField: string, value: any) => {
     setData((prev: any) => ({
       ...prev,

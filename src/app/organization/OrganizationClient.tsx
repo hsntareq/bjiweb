@@ -380,7 +380,7 @@ export default function OrganizationClient({ userEmail = 'default', accessToken 
 
 						<div className="mt-3 border border-gray-100 rounded-xl p-3 bg-white min-h-[26rem] max-h-[66vh] overflow-y-auto">
 							<OrganizationTree
-								data={filteredOrganizations}
+								data={filteredOrganizations as any}
 								onSelect={setSelectedOrganization}
 								selectedId={selectedOrganization?.id}
 								isCompact={isCompact}

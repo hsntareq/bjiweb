@@ -18,6 +18,12 @@ export const DawatTablighModal: React.FC<DawatTablighModalProps> = ({
 }) => {
   const [data, setData] = useState(initialData);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setData(initialData);
+    }
+  }, [isOpen]);
+
   const handleChange = (section: string, field: string, value: any) => {
     setData((prev: any) => ({
       ...prev,
@@ -42,6 +48,7 @@ export const DawatTablighModal: React.FC<DawatTablighModalProps> = ({
       title="দাওয়াত ও তাবলীগী রিপোর্ট" 
       onSave={() => onSave(data)}
       saving={saving}
+      width="max-w-4xl"
     >
       <div className="space-y-8">
         
@@ -143,10 +150,10 @@ export const DawatTablighModal: React.FC<DawatTablighModalProps> = ({
                    ].map(row => (
                      <tr key={row.id} className="border-b">
                         <td className="p-2 font-medium">{row.label}</td>
-                        <td className="p-2"><input type="number" value={data.prCampaign?.[row.id]?.groupCount || 0} onChange={(e) => handleTableChange('prCampaign', row.id, 'groupCount', parseInt(e.target.value) || 0)} className="w-16 border rounded p-1 text-right ml-auto block" /></td>
-                        <td className="p-2"><input type="number" value={data.prCampaign?.[row.id]?.participantCount || 0} onChange={(e) => handleTableChange('prCampaign', row.id, 'participantCount', parseInt(e.target.value) || 0)} className="w-16 border rounded p-1 text-right ml-auto block" /></td>
-                        <td className="p-2"><input type="number" value={data.prCampaign?.[row.id]?.reachedCount || 0} onChange={(e) => handleTableChange('prCampaign', row.id, 'reachedCount', parseInt(e.target.value) || 0)} className="w-16 border rounded p-1 text-right ml-auto block" /></td>
-                        <td className="p-2"><input type="number" value={data.prCampaign?.[row.id]?.associateCount || 0} onChange={(e) => handleTableChange('prCampaign', row.id, 'associateCount', parseInt(e.target.value) || 0)} className="w-16 border rounded p-1 text-right ml-auto block" /></td>
+                        <td className="p-2"><input type="number" value={data.prCampaign?.[row.id]?.groupCount || 0} onChange={(e) => handleTableChange('prCampaign', row.id, 'groupCount', parseInt(e.target.value) || 0)} className="w-full border border-gray-300 rounded p-1.5 text-center bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all" /></td>
+                        <td className="p-2"><input type="number" value={data.prCampaign?.[row.id]?.participantCount || 0} onChange={(e) => handleTableChange('prCampaign', row.id, 'participantCount', parseInt(e.target.value) || 0)} className="w-full border border-gray-300 rounded p-1.5 text-center bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all" /></td>
+                        <td className="p-2"><input type="number" value={data.prCampaign?.[row.id]?.reachedCount || 0} onChange={(e) => handleTableChange('prCampaign', row.id, 'reachedCount', parseInt(e.target.value) || 0)} className="w-full border border-gray-300 rounded p-1.5 text-center bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all" /></td>
+                        <td className="p-2"><input type="number" value={data.prCampaign?.[row.id]?.associateCount || 0} onChange={(e) => handleTableChange('prCampaign', row.id, 'associateCount', parseInt(e.target.value) || 0)} className="w-full border border-gray-300 rounded p-1.5 text-center bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all" /></td>
                      </tr>
                    ))}
                 </tbody>

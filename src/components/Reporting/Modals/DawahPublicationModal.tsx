@@ -18,6 +18,12 @@ export const DawahPublicationModal: React.FC<DawahPublicationModalProps> = ({
 }) => {
   const [data, setData] = useState(initialData);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setData(initialData);
+    }
+  }, [isOpen]);
+
   const handleChange = (section: string, field: string, value: any) => {
     setData((prev: any) => ({
       ...prev,

@@ -18,6 +18,12 @@ export const BaitulmalModal: React.FC<BaitulmalModalProps> = ({
 }) => {
   const [data, setData] = useState(initialData);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setData(initialData);
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     const incomeKeys = ['receivedNisab', 'directIanat', 'oneTime', 'electionFund', 'shahidFund', 'floodCollection', 'socialWork', 'zakat', 'fitra', 'iftar', 'delegateFee'];
     const totalIncome = incomeKeys.reduce((acc, key) => acc + (data.income?.[key] || 0), 0);

@@ -18,6 +18,12 @@ export const NationalDayModal: React.FC<NationalDayModalProps> = ({
 }) => {
   const [data, setData] = useState(initialData);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setData(initialData);
+    }
+  }, [isOpen]);
+
   const handleTableChange = (rowId: string, field: string, value: any) => {
     setData((prev: any) => ({
       ...prev,
