@@ -68,7 +68,7 @@ export const templateHtml = `
 </tr>
 </table>
 <p class="c13 c11">
-<span class="c42">&#2470;&#2494;&#2451;&#2527;&#2494;&#2468; &#2451; &#2468;&#2494;&#2476;&#2482;&#2496;&#2455;&#2435;</span>
+<span class="c42">&#2535;. &#2470;&#2494;&#2451;&#2527;&#2494;&#2468; &#2451; &#2468;&#2494;&#2476;&#2482;&#2496;&#2455;&#2435;</span>
 <span class="c158">&nbsp;</span>
 <span class="c48">*&#2470;&#2494;&#2451;&#2527;&#2494;&#2468; &#2451; &#2468;&#2494;&#2476;&#2482;&#2496;&#2455;&#2503;&#2480; &lsquo;&#2453;&rsquo; &#2447;&#2480; &#2437;&#2471;&#2496;&#2472;&#2503; &#2453;&#2509;&#2480;&#2478;&#2495;&#2453; &#2535;-&#2538; &#2472;&#2434; &#2474;&#2480;&#2509;&#2479;&#2472;&#2509;&#2468; &#2470;&#2494;&#2451;&#2527;&#2494;&#2468; &#2474;&#2509;&#2480;&#2470;&#2494;&#2472;&#2503;&#2480; &#2478;&#2507;&#2463; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494; &#2479;&#2507;&#2455; &#2453;&#2480;&#2503; &#2447;&#2454;&#2494;&#2472;&#2503; &#2476;&#2488;&#2494;&#2468;&#2503; &#2489;&#2476;&#2503;&#2404;</span>
 <span class="c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -1451,7 +1451,7 @@ export const templateHtml = `
 </tr>
 </table>
 <p class="c13 c11">
-<span class="c97 c136">&#2488;&#2434;&#2455;&#2464;&#2472;&#2435; </span>
+<span class="c97 c136">&#2536;. &#2488;&#2434;&#2455;&#2464;&#2472;&#2435; </span>
 </p>
 <p class="c13 c11">
 <span class="c42">&#2535;. &#2460;&#2472;&#2486;&#2453;&#2509;&#2468;&#2495;:</span>
@@ -2806,20 +2806,17 @@ export const templateHtml = `
 </td>
 <td class="c122" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{studentJoiningRokon}}</span>
 </p>
 </td>
 <td class="c51" colspan="3" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{studentJoiningCompanion}}</span>
 </p>
 </td>
 <td class="c178" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{studentJoiningKarmi}}</span>
 </p>
 </td>
 </tr>
@@ -2836,7 +2833,7 @@ export const templateHtml = `
 </td>
 <td style="width: 37.54pt;" class="c61" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c2">&#2537;</span>
+<span class="c2">{{safarHigherAuthority}}</span>
 </p>
 </td>
 <td style="width: 117.94pt;" class="c140" colspan="1" rowspan="1">
@@ -2846,7 +2843,7 @@ export const templateHtml = `
 </td>
 <td style="width: 39.85pt;" class="c73" colspan="2" rowspan="1">
 <p class="c1">
-<span class="c2">&#2539;</span>
+<span class="c2">{{safarWardPresident}}</span>
 </p>
 </td>
 <td style="width: 141.97pt;" class="c77" colspan="3" rowspan="1">
@@ -2856,7 +2853,7 @@ export const templateHtml = `
 </td>
 <td style="width: 45.05pt;" class="c151" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c2">&#2535;&#2534;</span>
+<span class="c2">{{safarTeamMember}}</span>
 </p>
 </td>
 </tr>
@@ -2890,12 +2887,12 @@ export const templateHtml = `
 </td>
 <td class="c125" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{donorNewCount}}</span>
 </p>
 </td>
 <td class="c125" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{donorAmount}}</span>
 </p>
 </td>
 </tr>
@@ -2949,7 +2946,7 @@ export const templateHtml = `
 </td>
 <td class="c85" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3"></span>
+<span class="c3">{{meetingWardTeamTarget}}</span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
@@ -2976,7 +2973,7 @@ export const templateHtml = `
 </td>
 <td class="c85" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3"></span>
+<span class="c3">{{meetingWardTarget}}</span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
@@ -3003,7 +3000,7 @@ export const templateHtml = `
 </td>
 <td class="c85" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3"></span>
+<span class="c3">{{meetingRokonTarget}}</span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
@@ -3030,7 +3027,7 @@ export const templateHtml = `
 </td>
 <td class="c85" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3"></span>
+<span class="c3">{{meetingKarmiTarget}}</span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
@@ -3052,20 +3049,17 @@ export const templateHtml = `
 </td>
 <td class="c55" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{meetingKarmiConferenceCount}}</span>
 </p>
 </td>
 <td class="c85" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{meetingKarmiConferenceTarget}}</span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{meetingKarmiConferenceAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -3082,17 +3076,17 @@ export const templateHtml = `
 </td>
 <td class="c55" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp; &nbsp; / &nbsp; &nbsp; /</span>
+<span class="c3">{{meetingDeptMeetingCount}}</span>
 </p>
 </td>
 <td class="c85" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp; &nbsp; / &nbsp; &nbsp; /</span>
+<span class="c3">{{meetingDeptMeetingTarget}}</span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp; &nbsp; / &nbsp; &nbsp; /</span>
+<span class="c3">{{meetingDeptMeetingAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -3114,7 +3108,7 @@ export const templateHtml = `
 </td>
 <td class="c85" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3"></span>
+<span class="c3">{{meetingAssociateTarget}}</span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
@@ -3136,17 +3130,17 @@ export const templateHtml = `
 </td>
 <td class="c55" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{meetingActiveAssociateGatheringCount}}</span>
 </p>
 </td>
 <td class="c85" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{meetingActiveAssociateGatheringTarget}}</span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{meetingActiveAssociateGatheringAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -3163,26 +3157,23 @@ export const templateHtml = `
 </td>
 <td class="c55" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{meetingOthersCount}}</span>
 </p>
 </td>
 <td class="c85" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{meetingOthersTarget}}</span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{meetingOthersAttendance}}</span>
 </p>
 </td>
 </tr>
 </table>
 <p class="c13 c11">
-<span class="c97 c136">&#2474;&#2509;&#2480;&#2486;&#2495;&#2453;&#2509;&#2487;&#2467;&#2435; </span>
+<span class="c97 c136">&#2537;. &#2474;&#2509;&#2480;&#2486;&#2495;&#2453;&#2509;&#2487;&#2467;&#2435; </span>
 </p>
 <p class="c13 c11">
 <span class="c2">&#2453;) &#2468;&#2494;&#2480;&#2476;&#2495;&#2527;&#2494;&#2468; (&#2472;&#2504;&#2468;&#2495;&#2453; &#2486;&#2495;&#2453;&#2509;&#2487;&#2494; &#2451; &#2488;&#2494;&#2434;&#2455;&#2464;&#2472;&#2495;&#2453; &#2474;&#2509;&#2480;&#2486;&#2495;&#2453;&#2509;&#2487;&#2467;):</span>
@@ -3228,17 +3219,17 @@ export const templateHtml = `
 </td>
 <td class="c75" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2535;</span>
+<span class="c3">{{trainingTarbiyat_unitTarbiyat_Count}}</span>
 </p>
 </td>
 <td class="c34" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2539;</span>
+<span class="c3">{{trainingTarbiyat_unitTarbiyat_Target}}</span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2538;</span>
+<span class="c3">{{trainingTarbiyat_unitTarbiyat_Avg}}</span>
 </p>
 </td>
 </tr>
@@ -3255,20 +3246,17 @@ export const templateHtml = `
 </td>
 <td class="c75" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingTarbiyat_wardTarbiyat_Count}}</span>
 </p>
 </td>
 <td class="c34" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingTarbiyat_wardTarbiyat_Target}}</span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingTarbiyat_wardTarbiyat_Avg}}</span>
 </p>
 </td>
 </tr>
@@ -3285,20 +3273,17 @@ export const templateHtml = `
 </td>
 <td class="c75" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingTarbiyat_higherTarbiyat_Count}}</span>
 </p>
 </td>
 <td class="c34" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingTarbiyat_higherTarbiyat_Target}}</span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingTarbiyat_higherTarbiyat_Avg}}</span>
 </p>
 </td>
 </tr>
@@ -3315,20 +3300,17 @@ export const templateHtml = `
 </td>
 <td class="c75" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingTarbiyat_publicTarbiyat_Count}}</span>
 </p>
 </td>
 <td class="c34" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingTarbiyat_publicTarbiyat_Target}}</span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingTarbiyat_publicTarbiyat_Avg}}</span>
 </p>
 </td>
 </tr>
@@ -3345,12 +3327,12 @@ export const templateHtml = `
 </td>
 <td class="c75" colspan="1" rowspan="1">
 <p class="c13">
-<span class="c3">&#2455;&#2509;&#2480;&#2497;&#2474; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494;: &#2536;</span>
+<span class="c3">&#2455;&#2509;&#2480;&#2497;&#2474; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494;: {{trainingTarbiyat_discussionCircle_Group}}</span>
 </p>
 </td>
 <td class="c34" colspan="1" rowspan="1">
 <p class="c13">
-<span class="c3">&#2437;&#2471;&#2495;&#2476;&#2503;&#2472; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494;: &#2534;</span>
+<span class="c3">&#2437;&#2471;&#2495;&#2476;&#2503;&#2472; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494;: {{trainingTarbiyat_discussionCircle_Session}}</span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
@@ -3373,7 +3355,7 @@ export const templateHtml = `
 </td>
 <td class="c75" colspan="1" rowspan="1">
 <p class="c13">
-<span class="c3">&#2474;&#2509;&#2480;&#2507;&#2455;&#2509;&#2480;&#2494;&#2478; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494;:</span>
+<span class="c3">&#2474;&#2509;&#2480;&#2507;&#2455;&#2509;&#2480;&#2494;&#2478; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494;: {{trainingTarbiyat_quranDars_Program}}</span>
 </p>
 </td>
 <td class="c34" colspan="1" rowspan="1">
@@ -3402,20 +3384,17 @@ export const templateHtml = `
 </td>
 <td class="c75" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingTarbiyat_others_Count}}</span>
 </p>
 </td>
 <td class="c34" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingTarbiyat_others_Target}}</span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingTarbiyat_others_Avg}}</span>
 </p>
 </td>
 </tr>
@@ -3469,24 +3448,22 @@ export const templateHtml = `
 </td>
 <td class="c111" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{trainingHRD_dawah_Conducted}}</span>
 </p>
 </td>
 <td class="c0" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{trainingHRD_dawah_Completed}}</span>
 </p>
 </td>
 <td class="c8" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingHRD_dawah_Others}}</span>
 </p>
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingHRD_dawah_Total}}</span>
 </p>
 </td>
 </tr>
@@ -3503,24 +3480,22 @@ export const templateHtml = `
 </td>
 <td class="c111" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{trainingHRD_social_Conducted}}</span>
 </p>
 </td>
 <td class="c0" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{trainingHRD_social_Completed}}</span>
 </p>
 </td>
 <td class="c8" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingHRD_social_Others}}</span>
 </p>
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingHRD_social_Total}}</span>
 </p>
 </td>
 </tr>
@@ -3537,24 +3512,22 @@ export const templateHtml = `
 </td>
 <td class="c111" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{trainingHRD_media_Conducted}}</span>
 </p>
 </td>
 <td class="c0" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{trainingHRD_media_Completed}}</span>
 </p>
 </td>
 <td class="c8" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingHRD_media_Others}}</span>
 </p>
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingHRD_media_Total}}</span>
 </p>
 </td>
 </tr>
@@ -3571,24 +3544,22 @@ export const templateHtml = `
 </td>
 <td class="c111" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{trainingHRD_it_Conducted}}</span>
 </p>
 </td>
 <td class="c0" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{trainingHRD_it_Completed}}</span>
 </p>
 </td>
 <td class="c8" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingHRD_it_Others}}</span>
 </p>
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingHRD_it_Total}}</span>
 </p>
 </td>
 </tr>
@@ -3605,24 +3576,22 @@ export const templateHtml = `
 </td>
 <td class="c111" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{trainingHRD_finance_Conducted}}</span>
 </p>
 </td>
 <td class="c0" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{trainingHRD_finance_Completed}}</span>
 </p>
 </td>
 <td class="c8" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingHRD_finance_Others}}</span>
 </p>
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingHRD_finance_Total}}</span>
 </p>
 </td>
 </tr>
@@ -3639,24 +3608,22 @@ export const templateHtml = `
 </td>
 <td class="c111" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{trainingHRD_english_Conducted}}</span>
 </p>
 </td>
 <td class="c0" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{trainingHRD_english_Completed}}</span>
 </p>
 </td>
 <td class="c8" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingHRD_english_Others}}</span>
 </p>
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingHRD_english_Total}}</span>
 </p>
 </td>
 </tr>
@@ -3673,24 +3640,22 @@ export const templateHtml = `
 </td>
 <td class="c111" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{trainingHRD_arabic_Conducted}}</span>
 </p>
 </td>
 <td class="c0" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{trainingHRD_arabic_Completed}}</span>
 </p>
 </td>
 <td class="c8" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingHRD_arabic_Others}}</span>
 </p>
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingHRD_arabic_Total}}</span>
 </p>
 </td>
 </tr>
@@ -3707,30 +3672,28 @@ export const templateHtml = `
 </td>
 <td class="c111" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{trainingHRD_technical_Conducted}}</span>
 </p>
 </td>
 <td class="c0" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{trainingHRD_technical_Completed}}</span>
 </p>
 </td>
 <td class="c8" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingHRD_technical_Others}}</span>
 </p>
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{trainingHRD_technical_Total}}</span>
 </p>
 </td>
 </tr>
 </table>
 <p class="c13 c11">
-<span class="c97 c136">&#2488;&#2478;&#2494;&#2460; &#2488;&#2434;&#2488;&#2509;&#2453;&#2494;&#2480; &#2451; &#2488;&#2478;&#2494;&#2460; &#2488;&#2503;&#2476;&#2494;&#2435;</span>
+<span class="c97 c136">&#2538;. &#2488;&#2478;&#2494;&#2460; &#2488;&#2434;&#2488;&#2509;&#2453;&#2494;&#2480; &#2451; &#2488;&#2478;&#2494;&#2460; &#2488;&#2503;&#2476;&#2494;&#2435;</span>
 </p>
 <p class="c13 c11">
 <span class="c2">&#2535;. &#2476;&#2509;&#2479;&#2453;&#2509;&#2468;&#2495;&#2455;&#2468; &#2441;&#2470;&#2509;&#2479;&#2507;&#2455;&#2503; &#2488;&#2494;&#2478;&#2494;&#2460;&#2495;&#2453; &#2453;&#2494;&#2460;:</span>
@@ -3771,19 +3734,17 @@ export const templateHtml = `
 </td>
 <td style="width: 44.21pt;" class="c6" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c2">
-</span>
+<span class="c2">{{socialGeneralServiceTeamCount}}</span>
 </p>
 </td>
 <td style="width: 220.54pt;" class="c24" colspan="1" rowspan="1">
 <p class="c13">
-<span class="c2">&#2463;&#2503;&#2453;&#2472;&#2495;&#2453;&#2509;&#2479;&#2494;&#2482; &#2488;&#2503;&#2476;&#2494; &#2463;&#2496;&#2478; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494;: &nbsp;&nbsp;&nbsp;&nbsp; , &#2488;&#2509;&#2476;&#2503;&#2458;&#2509;&#2459;&#2494;&#2488;&#2503;&#2476;&#2453; &#2463;&#2496;&#2478; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494;</span>
+<span class="c2">&#2463;&#2503;&#2453;&#2472;&#2495;&#2453;&#2509;&#2479;&#2494;&#2482; &#2488;&#2503;&#2476;&#2494; &#2463;&#2496;&#2478; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494;: {{socialTechnicalServiceTeamCount}} , &#2488;&#2509;&#2476;&#2503;&#2458;&#2509;&#2459;&#2494;&#2488;&#2503;&#2476;&#2453; &#2463;&#2496;&#2478; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494;</span>
 </p>
 </td>
 <td style="width: 48.01pt;" class="c39" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c2">
-</span>
+<span class="c2">{{socialVolunteerTeamCount}}</span>
 </p>
 </td>
 </tr>
@@ -3871,7 +3832,7 @@ export const templateHtml = `
 </td>
 <td class="c39" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{socialOnline}}</span>
 </p>
 </td>
 </tr>
@@ -3959,7 +3920,7 @@ export const templateHtml = `
 </td>
 <td class="c39" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">{{socialNewborn}}</span>
+<span class="c3">{{socialRelief}}</span>
 </p>
 </td>
 </tr>
@@ -3971,7 +3932,7 @@ export const templateHtml = `
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{socialNewborn}}</span>
 </p>
 </td>
 <td class="c24" colspan="1" rowspan="1">
@@ -3981,7 +3942,7 @@ export const templateHtml = `
 </td>
 <td class="c39" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{socialNonMuslim}}</span>
 </p>
 </td>
 </tr>
@@ -4015,17 +3976,17 @@ export const templateHtml = `
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{socialOthers}}</span>
 </p>
 </td>
 <td class="c24" colspan="1" rowspan="1">
 <p class="c13">
-<span class="c3">&#2488;&#2509;&#2476;&#2482;&#2509;&#2474; &#2474;&#2497;&#2433;&#2460;&#2495;&#2468;&#2503; &#2453;&#2480;&#2509;&#2478;&#2488;&#2434;&#2488;&#2509;&#2469;&#2494;&#2472;&#2503;&#2480; &#2488;&#2489;&#2494;&#2527;&#2468;&#2494; (&#2453;&#2468;&#2460;&#2472;&#2453;&#2503;)</span>
+<span class="c3">&#2488;&#2509;&#2476;&#2482;&#2509;&#2474; &#2474;&#2497;&#2433;&#2460;&#2495;&#2468;&#2503; &#2453;&#2480;&#2509;&#2478;&#2488;&#2434;&#2488;&#2509;&#2464;&#2494;&#2472;&#2503;&#2480; &#2488;&#2489;&#2494;&#2527;&#2468;&#2494; (&#2453;&#2468;&#2460;&#2472;&#2453;&#2503;)</span>
 </p>
 </td>
 <td class="c39" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{socialEmployment}}</span>
 </p>
 </td>
 </tr>
@@ -4054,12 +4015,12 @@ export const templateHtml = `
 <tr class="c27">
 <td class="c168" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">{{socialHealthTrainingParticipantCount}}</span>
+<span class="c3">{{socialHealthTrainingCount}}</span>
 </p>
 </td>
 <td class="c87" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">{{socialHealthServiceParticipantCount}}</span>
+<span class="c3">{{socialHealthServiceCount}}</span>
 </p>
 </td>
 <td class="c101" colspan="1" rowspan="1">
@@ -4093,23 +4054,23 @@ export const templateHtml = `
 <tr class="c27">
 <td class="c63" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">{{socialInstTotalInstitutions}}</span>
+<span class="c3">{{socialInstTotalCount}}</span>
 </p>
 </td>
 <td class="c62" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">{{socialInstActiveInstitutions}}</span>
+<span class="c3">{{socialInstActiveCount}}</span>
 </p>
 </td>
 <td class="c81" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">{{socialInstNewInstitutions}}</span>
+<span class="c3">{{socialInstNewCount}}</span>
 </p>
 </td>
 </tr>
 </table>
 <p class="c13 c11">
-<span class="c132 c136">&#2480;&#2494;&#2487;&#2509;&#2463;&#2509;&#2480;&#2496;&#2527; &#2488;&#2434;&#2488;&#2509;&#2453;&#2494;&#2480; &#2451; &#2488;&#2434;&#2486;&#2507;&#2471;&#2472;&#2435;</span>
+<span class="c132 c136">&#2539;. &#2480;&#2494;&#2487;&#2509;&#2463;&#2509;&#2480;&#2496;&#2527; &#2488;&#2434;&#2488;&#2509;&#2453;&#2494;&#2480; &#2451; &#2488;&#2434;&#2486;&#2507;&#2471;&#2472;&#2435;</span>
 </p>
 <p class="c13 c11">
 <span class="c2">&#2535;. &#2480;&#2494;&#2460;&#2472;&#2504;&#2468;&#2495;&#2453; &#2451; &#2474;&#2509;&#2480;&#2486;&#2494;&#2488;&#2472;&#2495;&#2453; &#2479;&#2507;&#2455;&#2494;&#2479;&#2507;&#2455;:</span>
@@ -4484,7 +4445,7 @@ export const templateHtml = `
 </td>
 <td class="c28 c154" colspan="2" rowspan="1">
 <p class="c1 c11">
-<span class="c121">&#2476;&#2494;&#2527;&#2468;&#2497;&#2482;&#2478;&#2494;&#2482;</span>
+<span class="c121">&#2540;. &#2476;&#2494;&#2527;&#2468;&#2497;&#2482;&#2478;&#2494;&#2482;</span>
 </p>
 </td>
 <td class="c28" colspan="2" rowspan="1">
@@ -4833,6 +4794,10 @@ export const templateHtml = `
 </td>
 </tr>
 </table>
+<p class="c13 c11">
+<p class="c13 c11">
+<span class="c97 c136">&#2541;. &#2476;&#2495;&#2476;&#2495;&#2471; &#2451; &#2478;&#2472;&#2509;&#2468;&#2476;&#2509;&#2479;&#2435;</span>
+</p>
 <p class="c13 c11">
 <span class="c97 c102">&#2451;&#2527;&#2494;&#2480;&#2509;&#2465; &#2488;&#2477;&#2494;&#2474;&#2468;&#2495;&#2480; &#2478;&#2472;&#2509;&#2468;&#2476;&#2509;&#2479;&#2435;</span>
 </p>

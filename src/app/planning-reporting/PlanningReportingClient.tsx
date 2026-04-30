@@ -149,10 +149,6 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
   const [isOrgMeetingModalOpen, setIsOrgMeetingModalOpen] = useState(false);
   const [isTarbiyatModalOpen, setIsTarbiyatModalOpen] = useState(false);
   const [isHRDModalOpen, setIsHRDModalOpen] = useState(false);
-  const [isSocialPersonalModalOpen, setIsSocialPersonalModalOpen] = useState(false);
-  const [isSocialGroupModalOpen, setIsSocialGroupModalOpen] = useState(false);
-  const [isSocialHealthModalOpen, setIsSocialHealthModalOpen] = useState(false);
-  const [isSocialInstModalOpen, setIsSocialInstModalOpen] = useState(false);
   const [isPoliticalCommModalOpen, setIsPoliticalCommModalOpen] = useState(false);
   const [isPoliticalProgModalOpen, setIsPoliticalProgModalOpen] = useState(false);
   const [isNationalDayModalOpen, setIsNationalDayModalOpen] = useState(false);
@@ -566,7 +562,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                      </div>
                   </div>
 
-                  <ReportAccordionSection title="ক. দাওয়াত ও তাবলীগঃ" onEdit={isFuture ? undefined : () => setIsDawatTablighModalOpen(true)} buttonText="দাওয়াত এডিট" icon={Megaphone}>
+                  <ReportAccordionSection title="১. দাওয়াত ও তাবলীগঃ" onEdit={isFuture ? undefined : () => setIsDawatTablighModalOpen(true)} buttonText="দাওয়াত এডিট" icon={Megaphone}>
                     <div className="space-y-8">
                       {/* Section 1 */}
                       <div>
@@ -971,33 +967,35 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                          </div>
                       </ReportAccordionSection>
 
-                      <ReportAccordionSection title="২. দাওয়াতী ও পারিবারিক ইউনিট" onEdit={isFuture ? undefined : () => setIsUnitModalOpen(true)} buttonText="ইউনিট এডিট" icon={Layers}>
+                      <ReportAccordionSection title="২. সহযোগী সদস্য:" onEdit={isFuture ? undefined : () => setIsManpowerModalOpen(true)} buttonText="সহযোগী সদস্য এডিট" icon={Users}>
                          <div className="overflow-x-auto">
-                            <table className="w-full border-collapse border border-gray-200 text-xs text-center">
+                            <table className="w-full border-collapse border border-gray-200 text-sm text-center">
                                <thead>
                                   <tr className="bg-gray-50 text-gray-700">
-                                     <th className="border border-gray-200 p-2 text-left">ইউনিটের ধরণ</th>
-                                     <th className="border border-gray-200 p-2">বিগত</th>
-                                     <th className="border border-gray-200 p-2">বর্তমান</th>
+                                     <th className="border border-gray-200 p-2">বিগত সময়ের সংখ্যা</th>
+                                     <th className="border border-gray-200 p-2">বর্তমান সংখ্যা</th>
                                      <th className="border border-gray-200 p-2">বৃদ্ধি</th>
-                                     <th className="border border-gray-200 p-2">ঘাটতি</th>
                                      <th className="border border-gray-200 p-2">টার্গেট</th>
+                                     <th className="border border-gray-200 p-2">বাস্তবায়নের হার</th>
                                   </tr>
                                </thead>
                                <tbody>
-                                  {[
-                                     { id: 'dawahUnit', label: 'দাওয়াতী ইউনিট' },
-                                     { id: 'familyUnit', label: 'পারিবারিক ইউনিট' }
-                                  ].map(row => (
-                                     <tr key={row.id}>
-                                        <td className="border border-gray-200 p-2 text-left font-medium">{row.label}</td>
-                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unit?.[row.id]?.previousCount)}</td>
-                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unit?.[row.id]?.currentCount)}</td>
-                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unit?.[row.id]?.increase)}</td>
-                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unit?.[row.id]?.deficit)}</td>
-                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unit?.[row.id]?.target)}</td>
-                                     </tr>
-                                  ))}
+                                  {(() => {
+                                     const rowData = compReport.manpower?.generalAssociate || {};
+                                     const target = rowData.target || 0;
+                                     const increase = rowData.promotionIncrease || 0;
+                                     const rate = target > 0 ? Math.round((increase / target) * 100) : 0;
+                                     
+                                     return (
+                                        <tr>
+                                           <td className="border border-gray-200 p-2">{formatVal(rowData.previousCount)}</td>
+                                           <td className="border border-gray-200 p-2">{formatVal(rowData.currentCount)}</td>
+                                           <td className="border border-gray-200 p-2">{formatVal(rowData.promotionIncrease)}</td>
+                                           <td className="border border-gray-200 p-2">{formatVal(rowData.target)}</td>
+                                           <td className="border border-gray-200 p-2">{rate}%</td>
+                                        </tr>
+                                     );
+                                  })()}
                                </tbody>
                             </table>
                          </div>
@@ -1027,19 +1025,18 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                                    ].map(dept => (
                                       <React.Fragment key={dept.id}>
                                          {dept.rows.map((row, idx) => (
-                                            <tr key={`${dept.id}-${row.id}`}>
-                                               {idx === 0 && <td rowSpan={dept.rows.length} className="border border-gray-200 p-2 text-left font-bold">{dept.label}</td>}
-                                               <td className="border border-gray-200 p-2 text-left">{row.label}</td>
-                                               <td className="border border-gray-200 p-2">{formatVal(compReport.deptManpower?.[dept.id]?.[row.id]?.previousCount)}</td>
-                                               <td className="border border-gray-200 p-2">{formatVal(compReport.deptManpower?.[dept.id]?.[row.id]?.currentCount)}</td>
-                                               <td className="border border-gray-200 p-2">{formatVal(compReport.deptManpower?.[dept.id]?.[row.id]?.increase)}</td>
-                                               <td className="border border-gray-200 p-2">{formatVal(compReport.deptManpower?.[dept.id]?.[row.id]?.deficit)}</td>
-                                               <td className="border border-gray-200 p-2">{formatVal(compReport.deptManpower?.[dept.id]?.[row.id]?.target)}</td>
-                                            </tr>
+                                             <tr key={`${dept.id}-${row.id}`}>
+                                                {idx === 0 && <td rowSpan={dept.rows.length} className="border border-gray-200 p-2 text-left font-bold">{dept.label}</td>}
+                                                <td className="border border-gray-200 p-2 text-left">{row.label}</td>
+                                                <td className="border border-gray-200 p-2">{formatVal(compReport.deptManpower?.[dept.id]?.[row.id]?.previousCount)}</td>
+                                                <td className="border border-gray-200 p-2">{formatVal(compReport.deptManpower?.[dept.id]?.[row.id]?.currentCount)}</td>
+                                                <td className="border border-gray-200 p-2">{formatVal(compReport.deptManpower?.[dept.id]?.[row.id]?.increase)}</td>
+                                                <td className="border border-gray-200 p-2">{formatVal(compReport.deptManpower?.[dept.id]?.[row.id]?.deficit)}</td>
+                                                <td className="border border-gray-200 p-2">{formatVal(compReport.deptManpower?.[dept.id]?.[row.id]?.target)}</td>
+                                             </tr>
                                          ))}
                                       </React.Fragment>
                                    ))}
-
                                </tbody>
                             </table>
                          </div>
@@ -1056,6 +1053,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                                      <th className="border border-gray-200 p-2">বৃদ্ধি</th>
                                      <th className="border border-gray-200 p-2">ঘাটতি</th>
                                      <th className="border border-gray-200 p-2">টার্গেট</th>
+                                     <th className="border border-gray-200 p-2">বাস্তবায়নের হার</th>
                                   </tr>
                                </thead>
                                <tbody>
@@ -1068,14 +1066,158 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                                      { id: 'media', label: 'মিডিয়া ইউনিট' },
                                      { id: 'culture', label: 'সাহিত্য ও সংস্কৃতি ইউনিট' },
                                      { id: 'total', label: 'সর্বমোট ইউনিট সংখ্যা' }
+                                  ].map(row => {
+                                     const data = compReport.unitOrganization?.[row.id] || {};
+                                     const target = data.target || 0;
+                                     const increase = data.increase || 0;
+                                     const rate = target > 0 ? Math.round((increase / target) * 100) : 0;
+                                     
+                                     return (
+                                        <tr key={row.id}>
+                                           <td className="border border-gray-200 p-2 text-left font-medium">{row.label}</td>
+                                           <td className="border border-gray-200 p-2">{formatVal(data.previousCount)}</td>
+                                           <td className="border border-gray-200 p-2">{formatVal(data.currentCount)}</td>
+                                           <td className="border border-gray-200 p-2">{formatVal(data.increase)}</td>
+                                           <td className="border border-gray-200 p-2">{formatVal(data.deficit)}</td>
+                                           <td className="border border-gray-200 p-2">{formatVal(data.target)}</td>
+                                           <td className="border border-gray-200 p-2">{rate}%</td>
+                                        </tr>
+                                     );
+                                  })}
+                               </tbody>
+                            </table>
+                         </div>
+                      </ReportAccordionSection>
+
+                      <ReportAccordionSection title="৫. দাওয়াতী ও পারিবারিক ইউনিট" onEdit={isFuture ? undefined : () => setIsUnitModalOpen(true)} buttonText="ইউনিট এডিট" icon={Layers}>
+                         <div className="overflow-x-auto">
+                            <table className="w-full border-collapse border border-gray-200 text-xs text-center">
+                               <thead>
+                                  <tr className="bg-gray-50 text-gray-700">
+                                     <th className="border border-gray-200 p-2 text-left">ইউনিটের ধরণ</th>
+                                     <th className="border border-gray-200 p-2">বিগত</th>
+                                     <th className="border border-gray-200 p-2">বর্তমান</th>
+                                     <th className="border border-gray-200 p-2">বৃদ্ধি</th>
+                                     <th className="border border-gray-200 p-2">ঘাটতি</th>
+                                     <th className="border border-gray-200 p-2">টার্গেট</th>
+                                  </tr>
+                               </thead>
+                               <tbody>
+                                  {[
+                                     { id: 'dawahUnit', label: 'দাওয়াতী ইউনিট' },
+                                     { id: 'familyUnit', label: 'পারিবারিক ইউনিট' }
                                   ].map(row => (
                                      <tr key={row.id}>
                                         <td className="border border-gray-200 p-2 text-left font-medium">{row.label}</td>
-                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unitOrganization?.[row.id]?.previousCount)}</td>
-                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unitOrganization?.[row.id]?.currentCount)}</td>
-                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unitOrganization?.[row.id]?.increase)}</td>
-                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unitOrganization?.[row.id]?.deficit)}</td>
-                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unitOrganization?.[row.id]?.target)}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unitStats?.[row.id]?.previousCount)}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unitStats?.[row.id]?.currentCount)}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unitStats?.[row.id]?.increase)}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unitStats?.[row.id]?.deficit)}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unitStats?.[row.id]?.target)}</td>
+                                     </tr>
+                                  ))}
+                               </tbody>
+                            </table>
+                         </div>
+                      </ReportAccordionSection>
+
+                      <ReportAccordionSection title="৬. বিদায়ী ছাত্র জনশক্তির সংগঠনে যোগদান:" onEdit={isFuture ? undefined : () => setIsStudentModalOpen(true)} buttonText="যোগদান এডিট" icon={GraduationCap}>
+                         <div className="overflow-x-auto">
+                            <table className="w-full border-collapse border border-gray-200 text-sm text-center">
+                               <thead>
+                                  <tr className="bg-gray-50 text-gray-700">
+                                     <th className="border border-gray-200 p-2 text-left">বিবরণ</th>
+                                     <th className="border border-gray-200 p-2">সদস্য</th>
+                                     <th className="border border-gray-200 p-2">সাথী</th>
+                                     <th className="border border-gray-200 p-2">কর্মী</th>
+                                  </tr>
+                               </thead>
+                               <tbody>
+                                  <tr>
+                                     <td className="border border-gray-200 p-2 text-left font-medium">মোট যোগদানকৃত ছাত্র সংখ্যা</td>
+                                     <td className="border border-gray-200 p-2">{formatVal(compReport.studentJoining?.rokonCount)}</td>
+                                     <td className="border border-gray-200 p-2">{formatVal(compReport.studentJoining?.companionCount)}</td>
+                                     <td className="border border-gray-200 p-2">{formatVal(compReport.studentJoining?.karmiCount)}</td>
+                                  </tr>
+                               </tbody>
+                            </table>
+                         </div>
+                      </ReportAccordionSection>
+
+                      <ReportAccordionSection title="৭. সফর:" onEdit={isFuture ? undefined : () => setIsSafarModalOpen(true)} buttonText="সফর এডিট" icon={MapPin}>
+                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="bg-indigo-50 p-3 rounded-lg border border-indigo-100 text-center">
+                               <p className="text-[10px] text-indigo-600 font-bold uppercase mb-1">উর্ধ্বতন দায়িত্বশীল</p>
+                               <p className="text-lg font-black text-indigo-700">{formatVal(compReport.safar?.higherAuthoritySafar)}</p>
+                            </div>
+                            <div className="bg-emerald-50 p-3 rounded-lg border border-emerald-100 text-center">
+                               <p className="text-[10px] text-emerald-600 font-bold uppercase mb-1">ওয়ার্ড সভাপতি</p>
+                               <p className="text-lg font-black text-emerald-700">{formatVal(compReport.safar?.wardPresidentSafar)}</p>
+                            </div>
+                            <div className="bg-amber-50 p-3 rounded-lg border border-amber-100 text-center">
+                               <p className="text-[10px] text-amber-600 font-bold uppercase mb-1">ওয়ার্ড টিম সদস্য</p>
+                               <p className="text-lg font-black text-amber-700">{formatVal(compReport.safar?.teamMemberSafar)}</p>
+                            </div>
+                         </div>
+                      </ReportAccordionSection>
+
+                      <ReportAccordionSection title="৮. ইয়ানত দাতা:" onEdit={isFuture ? undefined : () => setIsDonorModalOpen(true)} buttonText="দাতা এডিট" icon={HandCoins}>
+                         <div className="overflow-x-auto">
+                            <table className="w-full border-collapse border border-gray-200 text-sm text-center">
+                               <thead>
+                                  <tr className="bg-gray-50 text-gray-700">
+                                     <th className="border border-gray-200 p-2 text-left">নতুন ইয়ানত দাতা</th>
+                                     <th className="border border-gray-200 p-2">মোট সংখ্যা</th>
+                                     <th className="border border-gray-200 p-2">অর্থের পরিমাণ</th>
+                                  </tr>
+                               </thead>
+                               <tbody>
+                                  <tr>
+                                     <td className="border border-gray-200 p-2 text-left font-medium">সহযোগী সদস্য/সুধী</td>
+                                     <td className="border border-gray-200 p-2">{formatVal(compReport.donors?.newCount)}</td>
+                                     <td className="border border-gray-200 p-2">{formatVal(compReport.donors?.amount)}</td>
+                                  </tr>
+                               </tbody>
+                            </table>
+                         </div>
+                      </ReportAccordionSection>
+
+                      <ReportAccordionSection title="৯. সাংগঠনিক বৈঠকাদি:" onEdit={isFuture ? undefined : () => setIsOrgMeetingModalOpen(true)} buttonText="বৈঠক এডিট" icon={MessagesSquare}>
+                         <div className="overflow-x-auto">
+                            <table className="w-full border-collapse border border-gray-200 text-xs text-center">
+                               <thead>
+                                  <tr className="bg-gray-50 text-gray-700">
+                                     <th className="border border-gray-200 p-2">ক্রম</th>
+                                     <th className="border border-gray-200 p-2 text-left">বৈঠকের ধরণ</th>
+                                     <th className="border border-gray-200 p-2">সংখ্যা</th>
+                                     <th className="border border-gray-200 p-2">টার্গেট</th>
+                                     <th className="border border-gray-200 p-2">গড় উপস্থিতি</th>
+                                  </tr>
+                               </thead>
+                               <tbody>
+                                  {[
+                                     { id: 'wardTeam', sl: '১.', label: 'ওয়ার্ড টিম বৈঠক', f: 'val' },
+                                     { id: 'wardMeeting', sl: '২.', label: 'ওয়ার্ড বৈঠক (মাসিক ইউনিট দায়িত্বশীল)', f: 'val' },
+                                     { id: 'memberMeeting', sl: '৩.', label: 'ওয়ার্ডভিত্তিক মাসিক সদস্য (রুকন)', f: 'val' },
+                                     { id: 'karmiMeeting', sl: '৪.', label: 'ইউনিটে কর্মী বৈঠক/পারিবারিক বৈঠক', f: 'val' },
+                                     { id: 'karmiConference', sl: '৫.', label: 'ওয়ার্ড পর্যায়ে কর্মী সম্মেলন', f: 'val' },
+                                     { id: 'deptMeeting', sl: '৬.', label: 'উলামা/যুব/শ্রমিক বৈঠক/সমাবেশ', f: 'val' },
+                                     { id: 'associateGathering', sl: '৭.', label: 'সহযোগী সদস্য সমাবেশ/সম্মেলন', f: 'val' },
+                                     { id: 'activeAssociateGathering', sl: '৮.', label: 'সক্রিয় সহযোগী সদস্য সমাবেশ', f: 'val' },
+                                     { id: 'others', sl: '৯.', label: 'অন্যান্য', f: 'val' }
+                                  ].map(row => (
+                                     <tr key={row.id}>
+                                        <td className="border border-gray-200 p-2 text-center">{row.sl}</td>
+                                        <td className="border border-gray-200 p-2 text-left font-medium">{row.label}</td>
+                                        <td className="border border-gray-200 p-2">
+                                           {Object.values(compReport.orgMeetings?.[row.id]?.count || {}).join(' / ') || '-'}
+                                        </td>
+                                        <td className="border border-gray-200 p-2">
+                                           {Object.values(compReport.orgMeetings?.[row.id]?.target || {}).join(' / ') || '-'}
+                                        </td>
+                                        <td className="border border-gray-200 p-2">
+                                           {Object.values(compReport.orgMeetings?.[row.id]?.avgAttendance || {}).join(' / ') || '-'}
+                                        </td>
                                      </tr>
                                   ))}
                                </tbody>
@@ -1085,117 +1227,223 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                     </div>
                   </ReportAccordionSection>
 
-                  <ReportAccordionSection title="৩. সমাজসেবা ও সমাজ সংস্কারঃ" icon={HeartHandshake}>
+                  <ReportAccordionSection title="৩. প্রশিক্ষণঃ" icon={GraduationCap}>
                     <div className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <ReportAccordionSection title="ব্যক্তিগত ও সামষ্টিক সমাজসেবা" onEdit={isFuture ? undefined : () => setIsSocialPersonalModalOpen(true)} buttonText="সমাজসেবা এডিট" icon={User}>
-                           <div className="overflow-x-auto">
-                              <table className="w-full border-collapse border border-gray-200 text-xs text-center">
-                                 <thead>
-                                    <tr className="bg-gray-50 text-gray-700">
-                                       <th className="border border-gray-200 p-2 text-left">বিবরণ</th>
-                                       <th className="border border-gray-200 p-2">সংখ্যা</th>
-                                    </tr>
-                                 </thead>
-                                 <tbody>
-                                    <tr>
-                                       <td className="border border-gray-200 p-2 text-left">ব্যক্তিগত সমাজসেবা (জনশক্তি সংখ্যা)</td>
-                                       <td className="border border-gray-200 p-2">{formatVal(compReport.socialWork?.personal?.totalParticipants)}</td>
-                                    </tr>
-                                    <tr>
-                                       <td className="border border-gray-200 p-2 text-left">মোট কতজনকে সেবা প্রদান করা হয়েছে</td>
-                                       <td className="border border-gray-200 p-2">{formatVal(compReport.socialWork?.personal?.totalServices)}</td>
-                                    </tr>
-                                 </tbody>
-                              </table>
-                           </div>
-                        </ReportAccordionSection>
+                      <ReportAccordionSection title="ক) তারবিয়াত (নৈতিক শিক্ষা ও সাংগঠনিক প্রশিক্ষণ):" onEdit={isFuture ? undefined : () => setIsTarbiyatModalOpen(true)} buttonText="তারবিয়াত এডিট" icon={BookOpen}>
+                         <div className="overflow-x-auto">
+                            <table className="w-full border-collapse border border-gray-200 text-xs text-center">
+                               <thead>
+                                  <tr className="bg-gray-50 text-gray-700">
+                                     <th className="border border-gray-200 p-2">ক্রম</th>
+                                     <th className="border border-gray-200 p-2 text-left">বৈঠকের ধরণ</th>
+                                     <th className="border border-gray-200 p-2">সংখ্যা</th>
+                                     <th className="border border-gray-200 p-2">টার্গেট</th>
+                                     <th className="border border-gray-200 p-2">গড় উপস্থিতি</th>
+                                  </tr>
+                               </thead>
+                               <tbody>
+                                  {[
+                                     { id: 'unitTarbiyat', sl: '১.', label: 'ইউনিটে তারবিয়াতী বৈঠক', f: ['val'] },
+                                     { id: 'wardTarbiyat', sl: '২.', label: 'ওয়ার্ডভিত্তিক কর্মীদের শিক্ষা বৈঠক', f: ['val'] },
+                                     { id: 'higherTarbiyat', sl: '৩.', label: 'উর্ধ্বতন সংগঠনের শিক্ষা শিবির/শিক্ষা বৈঠক', f: ['val'] },
+                                     { id: 'publicTarbiyat', sl: '৪.', label: 'গণশিক্ষা বৈঠক/গণ নৈশ ইবাদত', f: ['val'] },
+                                     { id: 'discussionCircle', sl: '৫.', label: 'আলোচনা চক্র', f: ['group', 'session'] },
+                                     { id: 'quranDars', sl: '৬.', label: 'দারস/সহীহ কুরআন তিলাওয়াত অনুশীলন', f: ['program'] },
+                                     { id: 'others', sl: '৭.', label: 'অন্যান্য', f: ['val'] }
+                                  ].map(row => (
+                                     <tr key={row.id}>
+                                        <td className="border border-gray-200 p-2 text-center">{row.sl}</td>
+                                        <td className="border border-gray-200 p-2 text-left font-medium">{row.label}</td>
+                                        <td className="border border-gray-200 p-2">
+                                           {Object.values(compReport.training?.[row.id]?.count || {}).join(' / ') || '-'}
+                                        </td>
+                                        <td className="border border-gray-200 p-2">
+                                           {Object.values(compReport.training?.[row.id]?.target || {}).join(' / ') || '-'}
+                                        </td>
+                                        <td className="border border-gray-200 p-2">
+                                           {Object.values(compReport.training?.[row.id]?.avgAttendance || {}).join(' / ') || '-'}
+                                        </td>
+                                     </tr>
+                                  ))}
+                               </tbody>
+                            </table>
+                         </div>
+                      </ReportAccordionSection>
 
-                        <ReportAccordionSection title="সামষ্টিক উদ্যোগ (সামাজিক কাজ)" onEdit={isFuture ? undefined : () => setIsSocialGroupModalOpen(true)} buttonText="উদ্যোগ এডিট" icon={Users}>
-                           <div className="overflow-x-auto">
-                              <table className="w-full border-collapse border border-gray-200 text-xs text-center">
-                                 <thead>
-                                    <tr className="bg-gray-50 text-gray-700">
-                                       <th className="border border-gray-200 p-2 text-left">বিবরণ</th>
-                                       <th className="border border-gray-200 p-2">সংখ্যা</th>
-                                    </tr>
-                                 </thead>
-                                 <tbody>
-                                     {[
-                                        { id: 'smallDev', label: 'উন্নয়নমূলক কাজ/মীমাংসা' },
-                                        { id: 'socialEvent', label: 'সামাজিক অনুষ্ঠানে অংশগ্রহণ' },
-                                        { id: 'humanitarian', label: 'মানবিক সহায়তা / কর্জে হাসানা' },
-                                        { id: 'cleaning', label: 'পরিষ্কার-পরিচ্ছন্নতা অভিযান' },
-                                        { id: 'patientCare', label: 'রোগীর পরিচর্চা' },
-                                        { id: 'bloodDonation', label: 'স্বেচ্ছায় রক্ত দান' }
-                                     ].map(row => (
-                                        <tr key={row.id}>
-                                           <td className="border border-gray-200 p-2 text-left">{row.label}</td>
-                                           <td className="border border-gray-200 p-2 text-center">
-                                              {formatVal(compReport.socialWork?.samostic?.activities?.[row.id]?.v1 || compReport.socialWork?.samostic?.activities?.[row.id]?.val)}
-                                              {compReport.socialWork?.samostic?.activities?.[row.id]?.v2 !== undefined && ` / ${formatVal(compReport.socialWork?.samostic?.activities?.[row.id]?.v2)}`}
-                                           </td>
-                                        </tr>
-                                     ))}
-                                 </tbody>
-                              </table>
-                           </div>
-                        </ReportAccordionSection>
+                      <ReportAccordionSection title="খ) মানবসম্পদ উন্নয়ন কোর্স সমূহ:" onEdit={isFuture ? undefined : () => setIsHRDModalOpen(true)} buttonText="কোর্স এডিট" icon={Users}>
+                         <div className="overflow-x-auto">
+                            <table className="w-full border-collapse border border-gray-200 text-[10px] text-center">
+                               <thead>
+                                  <tr className="bg-gray-50 text-gray-700">
+                                     <th className="border border-gray-200 p-2">ক্রম</th>
+                                     <th className="border border-gray-200 p-2 text-left">প্রশিক্ষণ কোর্সের নাম</th>
+                                     <th className="border border-gray-200 p-2">মহানগরী/থানা পরিচালিত</th>
+                                     <th className="border border-gray-200 p-2">কোর্স সম্পন্নকারী সংখ্যা</th>
+                                     <th className="border border-gray-200 p-2">অন্য প্রতিষ্ঠান হতে</th>
+                                     <th className="border border-gray-200 p-2">মোট কতজন</th>
+                                  </tr>
+                               </thead>
+                               <tbody>
+                                  {[
+                                     { id: 'dawah', sl: '১.', label: 'দাওয়াহ' },
+                                     { id: 'social', sl: '২.', label: 'সমাজকর্ম' },
+                                     { id: 'media', sl: '৩.', label: 'মিডিয়া' },
+                                     { id: 'it', sl: '৪.', label: 'আইসিটি' },
+                                     { id: 'finance', sl: '৫.', label: 'অফিস/ফিন্যান্সিয়াল ম্যানেজমেন্ট' },
+                                     { id: 'english', sl: '৬.', label: 'ইংরেজি ভাষা' },
+                                     { id: 'arabic', sl: '৭.', label: 'আরবী ভাষা' },
+                                     { id: 'technical', sl: '৮.', label: 'ট্রেডভিত্তিক কারিগরি প্রশিক্ষণ' }
+                                  ].map(row => (
+                                     <tr key={row.id}>
+                                        <td className="border border-gray-200 p-2 text-center">{row.sl}</td>
+                                        <td className="border border-gray-200 p-2 text-left font-medium">{row.label}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.training?.[row.id]?.conductedCount)}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.training?.[row.id]?.completedCount)}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.training?.[row.id]?.othersCompletedCount)}</td>
+                                        <td className="border border-gray-200 p-2 font-bold">{formatVal(compReport.training?.[row.id]?.totalCount)}</td>
+                                     </tr>
+                                  ))}
+                               </tbody>
+                            </table>
+                         </div>
+                      </ReportAccordionSection>
+                    </div>
+                  </ReportAccordionSection>
+
+                  <ReportAccordionSection title="৪. সমাজসেবা ও সমাজ সংস্কারঃ" onEdit={isFuture ? undefined : () => setIsSocialModalOpen(true)} buttonText="সমাজসেবা এডিট" icon={HeartHandshake}>
+                    <div className="space-y-6">
+                      {/* Section 1: Personal */}
+                      <div className="space-y-2">
+                        <h4 className="font-bold text-xs text-gray-700 border-b pb-1">১. ব্যক্তিগত উদ্যোগে সামাজিক কাজ:</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="bg-gray-50 p-2 rounded flex justify-between items-center text-[10px]">
+                            <span>মোট কতজন ব্যক্তিগত উদ্যোগে সামাজিক কাজ করেছেন:</span>
+                            <span className="font-bold">{formatVal(compReport.socialWork?.personalCount)}</span>
+                          </div>
+                          <div className="bg-gray-50 p-2 rounded flex justify-between items-center text-[10px]">
+                            <span>মোট সেবা প্রাপ্ত সংখ্যা:</span>
+                            <span className="font-bold">{formatVal(compReport.socialWork?.personalServiceCount)}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Section 2: Collective */}
+                      <div className="space-y-2">
+                        <h4 className="font-bold text-xs text-gray-700 border-b pb-1">২. সামষ্টিক/সেবা টিমের মাধ্যমে সামাজিক কাজ:</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                          <div className="bg-blue-50 p-2 rounded flex justify-between items-center text-[10px]">
+                            <span>সাধারণ সেবা টিম:</span>
+                            <span className="font-bold">{formatVal(compReport.socialWork?.generalServiceTeamCount)}</span>
+                          </div>
+                          <div className="bg-blue-50 p-2 rounded flex justify-between items-center text-[10px]">
+                            <span>টেকনিক্যাল সেবা টিম:</span>
+                            <span className="font-bold">{formatVal(compReport.socialWork?.technicalServiceTeamCount)}</span>
+                          </div>
+                          <div className="bg-blue-50 p-2 rounded flex justify-between items-center text-[10px]">
+                            <span>স্বেচ্ছাসেবক টিম:</span>
+                            <span className="font-bold">{formatVal(compReport.socialWork?.volunteerTeamCount)}</span>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                          <table className="w-full border-collapse border border-gray-200 text-[10px]">
+                            <thead>
+                              <tr className="bg-gray-100"><th className="border border-gray-200 p-1 text-left">বিবরণ</th><th className="border border-gray-200 p-1 w-12">সংখ্যা</th></tr>
+                            </thead>
+                            <tbody>
+                              {[
+                                { id: 'devWork', label: 'ছোট-ছোট উন্নয়নমূলক কাজ' },
+                                { id: 'socialEvent', label: 'সামাজিক অনুষ্ঠানে অংশগ্রহণ' },
+                                { id: 'humanitarian', label: 'মানবিক সহায়তা' },
+                                { id: 'cleaning', label: 'পরিষ্কার-পরিচ্ছন্নতা' },
+                                { id: 'medical', label: 'রোগীর পরিচর্চা' },
+                                { id: 'blood', label: 'স্বেচ্ছায় রক্ত দান' },
+                                { id: 'maternity', label: 'মাতৃত্বকালীন সময়ে সেবা' },
+                                { id: 'newborn', label: 'নবজাতক গিফট প্রদান' },
+                                { id: 'maktub', label: 'ভ্রম্যামান স্কুল/মক্তব চালু' },
+                                { id: 'others', label: 'অন্যান্য' }
+                              ].map(row => (
+                                <tr key={row.id}>
+                                  <td className="border border-gray-200 p-1">{row.label}</td>
+                                  <td className="border border-gray-200 p-1 text-center">{formatVal(compReport.socialWork?.[row.id])}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                          <table className="w-full border-collapse border border-gray-200 text-[10px]">
+                            <thead>
+                              <tr className="bg-gray-100"><th className="border border-gray-200 p-1 text-left">বিবরণ</th><th className="border border-gray-200 p-1 w-12">সংখ্যা</th></tr>
+                            </thead>
+                            <tbody>
+                              {[
+                                { id: 'education', label: 'শিক্ষা সহায়তা প্রদান' },
+                                { id: 'technical', label: 'টেকনিক্যাল সেবা প্রদান' },
+                                { id: 'online', label: 'অনলাইনের মাধ্যমে সেবা' },
+                                { id: 'trees', label: 'বৃক্ষরোপন' },
+                                { id: 'awareness', label: 'জনসচেতনতামূলক প্রোগ্রাম' },
+                                { id: 'disaster', label: 'দুর্যোগকালীন সহায়তা' },
+                                { id: 'relief', label: 'ত্রাণ বিতরণ / গোশত বিতরণ' },
+                                { id: 'nonMuslim', label: 'ভিন্নধর্মাবলম্বীদের সেবা' },
+                                { id: 'burial', label: 'মাইয়্যেতের গোসল' },
+                                { id: 'employment', label: 'স্বল্প পুঁজিতে কর্মসংস্থান' }
+                              ].map(row => (
+                                <tr key={row.id}>
+                                  <td className="border border-gray-200 p-1">{row.label}</td>
+                                  <td className="border border-gray-200 p-1 text-center">{formatVal(compReport.socialWork?.[row.id])}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <ReportAccordionSection title="স্বাস্থ্যসেবা ও অন্যান্য" onEdit={isFuture ? undefined : () => setIsSocialHealthModalOpen(true)} buttonText="স্বাস্থ্য এডিট" icon={Stethoscope}>
-                           <div className="overflow-x-auto">
-                              <table className="w-full border-collapse border border-gray-200 text-xs text-center">
-                                 <thead>
-                                    <tr className="bg-gray-50 text-gray-700">
-                                       <th className="border border-gray-200 p-2 text-left">বিবরণ</th>
-                                       <th className="border border-gray-200 p-2">সংখ্যা</th>
-                                    </tr>
-                                 </thead>
-                                 <tbody>
-                                     {[
-                                        { label: 'ব্যক্তিগত উদ্যোগ (কর্মী/সেবা)', val: `${formatVal(compReport.socialWork?.personal?.workerCount)} / ${formatVal(compReport.socialWork?.personal?.beneficiaryCount)}` },
-                                        { label: 'স্বাস্থ্যকর্মী প্রশিক্ষণ', val: formatVal(compReport.socialWork?.health?.trainingParticipantCount) },
-                                        { label: 'স্বাস্থ্যসেবা (অংশগ্রহণকারী/সেবা)', val: `${formatVal(compReport.socialWork?.health?.serviceParticipantCount)} / ${formatVal(compReport.socialWork?.health?.beneficiaryCount)}` }
-                                     ].map((row, idx) => (
-                                        <tr key={idx}>
-                                           <td className="border border-gray-200 p-2 text-left">{row.label}</td>
-                                           <td className="border border-gray-200 p-2 text-center">{row.val}</td>
-                                        </tr>
-                                     ))}
-                                 </tbody>
-                              </table>
-                           </div>
-                        </ReportAccordionSection>
+                        {/* Section 3: Health */}
+                        <div className="space-y-2">
+                          <h4 className="font-bold text-xs text-gray-700 border-b pb-1">৩. স্বাস্থ্য ও পরিবার কল্যাণমূলক কাজ:</h4>
+                          <table className="w-full border-collapse border border-gray-200 text-[10px] text-center">
+                            <thead>
+                              <tr className="bg-gray-100">
+                                <th className="border border-gray-200 p-1">স্বাস্থ্যকর্মী প্রশিক্ষণ</th>
+                                <th className="border border-gray-200 p-1">স্বাস্থ্যসেবায় অংশগ্রহণ</th>
+                                <th className="border border-gray-200 p-1">সেবা প্রাপ্ত সংখ্যা</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td className="border border-gray-200 p-1">{formatVal(compReport.socialWork?.healthTrainingCount)}</td>
+                                <td className="border border-gray-200 p-1">{formatVal(compReport.socialWork?.healthServiceCount)}</td>
+                                <td className="border border-gray-200 p-1">{formatVal(compReport.socialWork?.healthBeneficiaryCount)}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
 
-                        <ReportAccordionSection title="প্রাতিষ্ঠানিক সমাজসেবা" onEdit={isFuture ? undefined : () => setIsSocialInstModalOpen(true)} buttonText="প্রতিষ্ঠান এডিট" icon={Building2}>
-                           <div className="overflow-x-auto">
-                              <table className="w-full border-collapse border border-gray-200 text-xs text-center">
-                                 <thead>
-                                    <tr className="bg-gray-50 text-gray-700">
-                                       <th className="border border-gray-200 p-2 text-left">বিবরণ</th>
-                                       <th className="border border-gray-200 p-2">সংখ্যা</th>
-                                    </tr>
-                                 </thead>
-                                 <tbody>
-                                    <tr>
-                                       <td className="border border-gray-200 p-2 text-left">মোট প্রতিষ্ঠান সংখ্যা</td>
-                                       <td className="border border-gray-200 p-2">{formatVal(compReport.socialWork?.inst?.totalInstitutions)}</td>
-                                    </tr>
-                                    <tr>
-                                       <td className="border border-gray-200 p-2 text-left">সক্রিয় প্রতিষ্ঠান</td>
-                                       <td className="border border-gray-200 p-2">{formatVal(compReport.socialWork?.inst?.activeInstitutions)}</td>
-                                    </tr>
-                                 </tbody>
-                              </table>
-                           </div>
-                        </ReportAccordionSection>
+                        {/* Section 4: Institutional */}
+                        <div className="space-y-2">
+                          <h4 className="font-bold text-xs text-gray-700 border-b pb-1">৪. প্রাতিষ্ঠানিক উদ্যোগে সামাজিক কাজ:</h4>
+                          <table className="w-full border-collapse border border-gray-200 text-[10px] text-center">
+                            <thead>
+                              <tr className="bg-gray-100">
+                                <th className="border border-gray-200 p-1">মোট প্রতিষ্ঠান</th>
+                                <th className="border border-gray-200 p-1">সক্রিয় প্রতিষ্ঠান</th>
+                                <th className="border border-gray-200 p-1">নতুন প্রতিষ্ঠান</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td className="border border-gray-200 p-1">{formatVal(compReport.socialWork?.instTotalCount)}</td>
+                                <td className="border border-gray-200 p-1">{formatVal(compReport.socialWork?.instActiveCount)}</td>
+                                <td className="border border-gray-200 p-1">{formatVal(compReport.socialWork?.instNewCount)}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     </div>
                   </ReportAccordionSection>
 
-                  <ReportAccordionSection title="৪. রাষ্ট্রীয়, রাজনৈতিক ও নির্বাচনী কার্যক্রমঃ" icon={Scale}>
+                  <ReportAccordionSection title="৫. রাষ্ট্রীয়, রাজনৈতিক ও নির্বাচনী কার্যক্রমঃ" icon={Scale}>
                     <div className="space-y-6">
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                          <ReportAccordionSection title="রাজনৈতিক যোগাযোগ" onEdit={isFuture ? undefined : () => setIsPoliticalCommModalOpen(true)} buttonText="যোগাযোগ এডিট" icon={PhoneCall}>
@@ -1311,7 +1559,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                     </div>
                   </ReportAccordionSection>
 
-                  <ReportAccordionSection title="৫. বায়তুলমাল (আর্থিক কার্যক্রম):" onEdit={isFuture ? undefined : () => setIsBaitulmalModalOpen(true)} buttonText="আর্থিক এডিট" icon={Wallet}>
+                  <ReportAccordionSection title="৬. বায়তুলমাল (আর্থিক কার্যক্রম):" onEdit={isFuture ? undefined : () => setIsBaitulmalModalOpen(true)} buttonText="আর্থিক এডিট" icon={Wallet}>
                      <div className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                            <div className="bg-emerald-50 p-4 rounded-xl border border-emerald-100"><p className="text-xs text-emerald-600 font-bold uppercase mb-1">এয়ানত আদায়</p><p className="text-xl font-black text-emerald-700">{formatVal(compReport.finance?.eanotAmount)}</p></div>
@@ -1341,7 +1589,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                      </div>
                   </ReportAccordionSection>
 
-                  <ReportAccordionSection title="৬. বিবিধ ও মন্তব্যঃ" onEdit={isFuture ? undefined : () => setIsRemarksModalOpen(true)} buttonText="মন্তব্য এডিট" icon={MessagesSquare}>
+                  <ReportAccordionSection title="৭. বিবিধ ও মন্তব্যঃ" onEdit={isFuture ? undefined : () => setIsRemarksModalOpen(true)} buttonText="মন্তব্য এডিট" icon={MessagesSquare}>
                     <div className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                            <div className="space-y-2">
@@ -1490,8 +1738,8 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
       <DawahFamilyUnitModal 
         isOpen={isUnitModalOpen} 
         onClose={() => setIsUnitModalOpen(false)} 
-        onSave={(data) => handleSaveCompSection('unit', data)}
-        initialData={compReport.unit}
+        onSave={(data) => handleSaveCompSection('unitStats', data)}
+        initialData={compReport.unitStats}
         saving={saving}
       />
 
@@ -1543,35 +1791,11 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
         saving={saving}
       />
 
-      <SocialPersonalModal 
-        isOpen={isSocialPersonalModalOpen} 
-        onClose={() => setIsSocialPersonalModalOpen(false)} 
-        onSave={(data) => handleSaveCompSection('socialWork', { ...compReport.socialWork, personal: data })}
-        initialData={compReport.socialWork?.personal}
-        saving={saving}
-      />
-
-      <SocialGroupModal 
-        isOpen={isSocialGroupModalOpen} 
-        onClose={() => setIsSocialGroupModalOpen(false)} 
+      <SocialWorkModal 
+        isOpen={isSocialModalOpen} 
+        onClose={() => setIsSocialModalOpen(false)} 
         onSave={(data) => handleSaveCompSection('socialWork', data)}
         initialData={compReport.socialWork}
-        saving={saving}
-      />
-
-      <SocialHealthModal 
-        isOpen={isSocialHealthModalOpen} 
-        onClose={() => setIsSocialHealthModalOpen(false)} 
-        onSave={(data) => handleSaveCompSection('socialWork', { ...compReport.socialWork, health: data })}
-        initialData={compReport.socialWork?.health}
-        saving={saving}
-      />
-
-      <SocialInstModal 
-        isOpen={isSocialInstModalOpen} 
-        onClose={() => setIsSocialInstModalOpen(false)} 
-        onSave={(data) => handleSaveCompSection('socialWork', { ...compReport.socialWork, inst: data })}
-        initialData={compReport.socialWork?.inst}
         saving={saving}
       />
 

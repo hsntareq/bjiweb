@@ -242,8 +242,8 @@ function ReportPrintContent() {
       output = output.replace(new RegExp(`{{unitOrg${type.key}Rate}}`, 'g'), toBengaliNumber(rate));
     });
 
-    // Dawah and Family Units
-    const units = report.unit || {};
+    // Dawat and Family Units
+    const units = report.unitStats || {};
     const unitTypes = [
       { id: 'dawahUnit', key: 'DawahUnit' },
       { id: 'familyUnit', key: 'FamilyUnit' }
@@ -262,6 +262,51 @@ function ReportPrintContent() {
       output = output.replace(new RegExp(`{{${type.id}Increase}}`, 'g'), toBengaliNumber(increase) || "০");
       output = output.replace(new RegExp(`{{${type.id}Deficit}}`, 'g'), toBengaliNumber(deficit) || "০");
       output = output.replace(new RegExp(`{{${type.id}Target}}`, 'g'), toBengaliNumber(target) || "০");
+    });
+
+    // 6. Student Joining
+    const studentJoining = report.studentJoining || {};
+    output = output.replace(/{{studentJoiningRokon}}/g, toBengaliNumber(studentJoining.rokonCount) || "০");
+    output = output.replace(/{{studentJoiningCompanion}}/g, toBengaliNumber(studentJoining.companionCount) || "০");
+    output = output.replace(/{{studentJoiningKarmi}}/g, toBengaliNumber(studentJoining.karmiCount) || "০");
+
+    // 7. Safar
+    const safar = report.safar || {};
+    output = output.replace(/{{safarHigherAuthority}}/g, toBengaliNumber(safar.higherAuthoritySafar) || "০");
+    output = output.replace(/{{safarWardPresident}}/g, toBengaliNumber(safar.wardPresidentSafar) || "০");
+    output = output.replace(/{{safarTeamMember}}/g, toBengaliNumber(safar.teamMemberSafar) || "০");
+
+    // 8. Donor
+    const donors = report.donors || {};
+    output = output.replace(/{{donorNewCount}}/g, toBengaliNumber(donors.newCount) || "০");
+    output = output.replace(/{{donorAmount}}/g, toBengaliNumber(donors.amount) || "০");
+
+    // 9. Organizational Meetings
+    const orgMeetings = report.orgMeetings || {};
+    const meetingRows = [
+      { id: 'wardTeam', key: 'WardTeam' },
+      { id: 'wardMeeting', key: 'Ward' },
+      { id: 'memberMeeting', key: 'Rokon' },
+      { id: 'karmiMeeting', key: 'Karmi' },
+      { id: 'karmiConference', key: 'KarmiConference' },
+      { id: 'deptMeeting', key: 'DeptMeeting' },
+      { id: 'associateGathering', key: 'Associate' },
+      { id: 'activeAssociateGathering', key: 'ActiveAssociateGathering' },
+      { id: 'others', key: 'Others' }
+    ];
+
+    meetingRows.forEach(row => {
+      const data = orgMeetings[row.id] || {};
+      const getVal = (val: any) => {
+        if (typeof val === 'object' && val !== null) {
+          return Object.values(val).reduce((acc: number, curr: any) => acc + (Number(curr) || 0), 0);
+        }
+        return Number(val) || 0;
+      };
+
+      output = output.replace(new RegExp(`{{meeting${row.key}Count}}`, 'g'), toBengaliNumber(getVal(data.count)) || "০");
+      output = output.replace(new RegExp(`{{meeting${row.key}Target}}`, 'g'), toBengaliNumber(getVal(data.target)) || "০");
+      output = output.replace(new RegExp(`{{meeting${row.key}Attendance}}`, 'g'), toBengaliNumber(getVal(data.avgAttendance)) || "০");
     });
 
     // 3. Department-wise Info
@@ -366,6 +411,39 @@ function ReportPrintContent() {
     output = output.replace(/{{baitulmalMonthlySurplus}}/g, toBengaliNumber(baitulmal.expense?.monthlySurplus) || "০");
     output = output.replace(/{{baitulmalGrandTotalIncome}}/g, toBengaliNumber(baitulmal.income?.grandTotalIncome) || "০");
     output = output.replace(/{{baitulmalGrandTotalExpense}}/g, toBengaliNumber(baitulmal.income?.grandTotalIncome) || "০"); // Using income total for grand total expense as per logic
+
+    // 3. Training
+    const training = report.training || {};
+    const tarbiyat = training.tarbiyat || {};
+    
+    // Regular Tarbiyat rows (unit, ward, higher, public, others)
+    const tarbiyatKeys = ['unitTarbiyat', 'wardTarbiyat', 'higherTarbiyat', 'publicTarbiyat', 'others'];
+    tarbiyatKeys.forEach(key => {
+      const rowData = tarbiyat[key] || {};
+      output = output.replace(new RegExp(`{{trainingTarbiyat_${key}_Count}}`, 'g'), toBengaliNumber(rowData.count?.val) || "০");
+      output = output.replace(new RegExp(`{{trainingTarbiyat_${key}_Target}}`, 'g'), toBengaliNumber(rowData.target?.val) || "০");
+      output = output.replace(new RegExp(`{{trainingTarbiyat_${key}_Avg}}`, 'g'), toBengaliNumber(rowData.avgAttendance?.val) || "০");
+    });
+    
+    // Discussion Circle
+    const discussion = tarbiyat.discussionCircle || {};
+    output = output.replace(/{{trainingTarbiyat_discussionCircle_Group}}/g, toBengaliNumber(discussion.count?.group) || "০");
+    output = output.replace(/{{trainingTarbiyat_discussionCircle_Session}}/g, toBengaliNumber(discussion.target?.session) || "০");
+    
+    // Quran Dars
+    const quranDars = tarbiyat.quranDars || {};
+    output = output.replace(/{{trainingTarbiyat_quranDars_Program}}/g, toBengaliNumber(quranDars.count?.program) || "০");
+
+    // HRD mapping
+    const hrd = training.hrd || {};
+    const hrdKeys = ['dawah', 'social', 'media', 'it', 'finance', 'english', 'arabic', 'technical'];
+    hrdKeys.forEach(key => {
+      const data = hrd[key] || {};
+      output = output.replace(new RegExp(`{{trainingHRD_${key}_Conducted}}`, 'g'), toBengaliNumber(data.conductedCount) || "০");
+      output = output.replace(new RegExp(`{{trainingHRD_${key}_Completed}}`, 'g'), toBengaliNumber(data.completedCount) || "০");
+      output = output.replace(new RegExp(`{{trainingHRD_${key}_Others}}`, 'g'), toBengaliNumber(data.othersCompletedCount) || "০");
+      output = output.replace(new RegExp(`{{trainingHRD_${key}_Total}}`, 'g'), toBengaliNumber(data.totalCount) || "০");
+    });
 
     // 7. National Days
     const nationalDays = report.nationalDays || {};
