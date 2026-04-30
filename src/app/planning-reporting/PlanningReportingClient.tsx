@@ -2,7 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { Target, Users, BookOpen, Layers, Coins, Calendar, ChevronLeft, ChevronRight, Save, Building, FileText, Printer } from 'lucide-react';
+import { 
+  Target, Users, BookOpen, Layers, Coins, Calendar, ChevronLeft, ChevronRight, Save, Building, FileText, Printer,
+  Megaphone, LayoutGrid, Library, CalendarCheck, Users2, UserPlus, GraduationCap, MapPin, HandCoins, MessagesSquare,
+  Heart, Award, HeartHandshake, Stethoscope, Building2, Scale, PhoneCall, Flag, Vote, Wallet, Home, Radio, ClipboardList,
+  PieChart, User
+} from 'lucide-react';
 import { ReportAccordionSection } from '../../components/Reporting/ReportAccordionSection';
 import { UnitDawatModal } from '../../components/Reporting/Modals/UnitDawatModal';
 import { PersonalDawatModal } from '../../components/Reporting/Modals/PersonalDawatModal';
@@ -41,15 +46,28 @@ interface Organization {
 }
 
 export default function PlanningReportingClient({ accessToken }: { accessToken: string }) {
-  const date = new Date();
-  const [year, setYear] = useState(date.getFullYear());
-  const [month, setMonth] = useState(date.getMonth() + 1);
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [organizations, setOrganizations] = useState<{id: number, name: string, type: string}[]>([]);
   const [selectedOrgId, setSelectedOrgId] = useState<number | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
   
   const [activeTab, setActiveTab] = useState<'plan' | 'report' | 'comprehensive'>('comprehensive');
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  // Initialize from localStorage after mount
+  useEffect(() => {
+    const savedYear = localStorage.getItem('reporting_year');
+    const savedMonth = localStorage.getItem('reporting_month');
+    const savedOrgId = localStorage.getItem('reporting_org_id');
+
+    if (savedYear) setYear(parseInt(savedYear));
+    if (savedMonth) setMonth(parseInt(savedMonth));
+    if (savedOrgId) setSelectedOrgId(parseInt(savedOrgId));
+    
+    setIsMounted(true);
+  }, []);
   
   // Basic Planning state
   const [plan, setPlan] = useState<any>({
@@ -60,14 +78,28 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 
   // Comprehensive Report state
   const [compReport, setCompReport] = useState<any>({
+    headerInfo: {},
     unitDawat: {},
     personalDawat: {},
     generalMeeting: {},
     publicRelations: {},
+    prCampaign: {},
     departmentalInfo: {},
     dawahPublication: {},
+    programs: {},
+    manpower: {},
+    deptManpower: {},
+    unitStats: {},
+    studentJoining: {},
+    safar: {},
+    donors: {},
+    orgMeetings: {},
+    training: {},
+    socialWork: {},
+    political: {},
     finance: {},
-    miscellaneous: {}
+    miscellaneous: {},
+    remarks: {}
   });
 
   const [isUnitDawatModalOpen, setIsUnitDawatModalOpen] = useState(false);
@@ -115,6 +147,20 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
     return result;
   };
 
+  // Persistence effects
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem('reporting_year', year.toString());
+      localStorage.setItem('reporting_month', month.toString());
+    }
+  }, [year, month, isMounted]);
+
+  useEffect(() => {
+    if (isMounted && selectedOrgId) {
+      localStorage.setItem('reporting_org_id', selectedOrgId.toString());
+    }
+  }, [selectedOrgId, isMounted]);
+
   useEffect(() => {
     const fetchOrgs = async () => {
       try {
@@ -123,6 +169,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
         });
         if (response.status === 401 || response.status === 403) {
            console.error("Unauthorized access to organizations");
+           window.location.href = "/login";
            return;
         }
         if (response.ok) {
@@ -131,7 +178,9 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
           if (data) {
             const flatList = flattenOrganizations(data);
             setOrganizations(flatList);
-            if (flatList.length > 0) setSelectedOrgId(flatList[0].id);
+            if (flatList.length > 0 && !selectedOrgId) {
+              setSelectedOrgId(flatList[0].id);
+            }
           }
         }
       } catch (err) {
@@ -141,33 +190,46 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
     fetchOrgs();
   }, [accessToken]);
 
+  const isFuture = year > new Date().getFullYear() || (year === new Date().getFullYear() && month > new Date().getMonth() + 1);
+
   const fetchData = async () => {
     if (!selectedOrgId) return;
     setLoading(true);
-    // Clear previous data while loading to ensure we don't show stale data for the new month/year
+    // Clear previous data while loading
     setPlan({ year, month, dawatTarget: 0, dawatAchieved: 0, activistTarget: 0, activistAchieved: 0, memberTarget: 0, memberAchieved: 0, programTarget: 0, programAchieved: 0, programDetails: '', donationTarget: 0, donationAchieved: 0 });
     setCompReport({ unitDawat: {}, personalDawat: {}, generalMeeting: {}, publicRelations: {}, departmentalInfo: {}, dawahPublication: {}, finance: {}, miscellaneous: {}, prCampaign: {} });
+    
     try {
-      // Fetch Basic Plan
+      // Fetch Basic Plan (Allowed for future)
       const planRes = await fetch(`http://localhost:3001/planning/organization/${selectedOrgId}?year=${year}&month=${month}`, {
         headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {}
       });
+      if (planRes.status === 401 || planRes.status === 403) {
+        window.location.href = "/login";
+        return;
+      }
       if (planRes.ok) {
         const text = await planRes.text();
         const data = text ? JSON.parse(text) : null;
         if (data && data.length > 0) setPlan(data[0]);
-        else setPlan({ year, month, dawatTarget: 0, dawatAchieved: 0, activistTarget: 0, activistAchieved: 0, memberTarget: 0, memberAchieved: 0, programTarget: 0, programAchieved: 0, programDetails: '', donationTarget: 0, donationAchieved: 0 });
       }
 
-      // Fetch Comprehensive Report
-      const compRes = await fetch(`http://localhost:3001/comprehensive-report/organization/${selectedOrgId}?year=${year}&month=${month}`, {
-        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {}
-      });
-      if (compRes.ok) {
-        const text = await compRes.text();
-        const data = text ? JSON.parse(text) : null;
-        if (data) setCompReport(data);
-        else setCompReport({ unitDawat: {}, personalDawat: {}, generalMeeting: {}, publicRelations: {}, departmentalInfo: {}, dawahPublication: {}, finance: {}, miscellaneous: {}, prCampaign: {} });
+      // Skip Comprehensive Report for future months
+      if (isFuture) {
+        setCompReport({ unitDawat: {}, personalDawat: {}, generalMeeting: {}, publicRelations: {}, departmentalInfo: {}, dawahPublication: {}, finance: {}, miscellaneous: {}, prCampaign: {} });
+      } else {
+        const compRes = await fetch(`http://localhost:3001/comprehensive-report/organization/${selectedOrgId}?year=${year}&month=${month}`, {
+          headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {}
+        });
+        if (compRes.status === 401 || compRes.status === 403) {
+           window.location.href = "/login";
+           return;
+        }
+        if (compRes.ok) {
+          const text = await compRes.text();
+          const data = text ? JSON.parse(text) : null;
+          if (data) setCompReport(data);
+        }
       }
     } catch (e) {
       console.error(e);
@@ -177,10 +239,15 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
   };
 
   useEffect(() => {
-    fetchData();
-  }, [selectedOrgId, year, month, accessToken]);
+    if (isMounted) {
+      fetchData();
+    }
+  }, [selectedOrgId, year, month, accessToken, isMounted]);
 
   const handleSavePlan = async () => {
+    // Planning for future is usually allowed, but if the user wants to block all "writing" upfront:
+    // If they meant only "Report", I'll keep Plan allowed. If they meant both, I'll block both.
+    // Given the request "report of after current month", I will only block Comp Report and Basic Achievements.
     if (!selectedOrgId) return;
     try {
       setSaving(true);
@@ -213,6 +280,11 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
   };
 
   const handleSaveCompSection = async (sectionName: string, sectionData: any) => {
+    const isFuture = year > new Date().getFullYear() || (year === new Date().getFullYear() && month > new Date().getMonth() + 1);
+    if (isFuture) {
+      toast.error('Reporting for future months is not allowed.');
+      return;
+    }
     if (!selectedOrgId) {
       toast.error('Error: No organization selected!');
       return;
@@ -317,7 +389,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
       }
     } catch (e) {
       console.error(e);
-      alert('An error occurred while saving.');
+      toast.error('An error occurred while saving.');
     } finally {
       setSaving(false);
     }
@@ -325,21 +397,34 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 
   const prevMonth = () => { if (month === 1) { setMonth(12); setYear(y => y - 1); } else setMonth(m => m - 1); };
   const nextMonth = () => { 
-    const currentYear = new Date().getFullYear();
-    const currentMonth = new Date().getMonth() + 1;
-    if (year === currentYear && month === currentMonth) return;
     if (month === 12) { setMonth(1); setYear(y => y + 1); } else setMonth(m => m + 1); 
   };
 
+  const handleMonthInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value; // YYYY-MM
+    if (!val) return;
+    const [y, m] = val.split('-').map(Number);
+    setYear(y);
+    setMonth(m);
+  };
+
+  const setToday = () => {
+    const d = new Date();
+    setYear(d.getFullYear());
+    setMonth(d.getMonth() + 1);
+  };
+
   const formatVal = (val: any) => (val === 0 || val === undefined || val === null) ? '-' : val;
+
+  if (!isMounted) return <div className="flex justify-center p-12"><div className="animate-spin w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full"></div></div>;
 
   return (
     <div className="space-y-6">
       {/* Header Selectors */}
       <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-            <Building className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
+            <Building className="w-5 h-5 shrink-0" />
           </div>
           <div className="flex-1">
             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-1">Organization</label>
@@ -348,10 +433,27 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
             </select>
           </div>
         </div>
-        <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-xl p-1 w-full sm:w-auto justify-between">
-          <button onClick={prevMonth} className="p-2 hover:bg-white rounded-lg text-gray-500 transition-colors shadow-sm"><ChevronLeft className="w-4 h-4" /></button>
-          <span className="font-bold text-gray-700 min-w-[140px] text-center">{monthNames[month - 1]} {year}</span>
-          <button onClick={nextMonth} disabled={year === new Date().getFullYear() && month === new Date().getMonth() + 1} className={`p-2 hover:bg-white rounded-lg transition-colors shadow-sm ${year === new Date().getFullYear() && month === new Date().getMonth() + 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500'}`}><ChevronRight className="w-4 h-4" /></button>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          {!(year === new Date().getFullYear() && month === new Date().getMonth() + 1) && (
+            <button 
+              onClick={setToday}
+              className="px-3 py-2 bg-indigo-50 text-indigo-600 rounded-xl text-xs font-bold hover:bg-indigo-100 transition-colors"
+            >
+              This Month
+            </button>
+          )}
+          <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-xl p-1 flex-1 sm:flex-none justify-between">
+            <button onClick={prevMonth} className="p-2 hover:bg-white rounded-lg text-gray-500 transition-colors shadow-sm"><ChevronLeft className="w-4 h-4 shrink-0" /></button>
+            <div className="relative group">
+              <input 
+                type="month" 
+                value={`${year}-${month.toString().padStart(2, '0')}`}
+                onChange={handleMonthInputChange}
+                className="bg-transparent border-none text-gray-700 font-bold text-sm focus:ring-0 cursor-pointer p-1 min-w-[160px] text-center"
+              />
+            </div>
+            <button onClick={nextMonth} className="p-2 hover:bg-white rounded-lg transition-colors shadow-sm text-gray-500"><ChevronRight className="w-4 h-4 shrink-0" /></button>
+          </div>
         </div>
       </div>
 
@@ -368,12 +470,40 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
             <div className="flex justify-center p-12"><div className="animate-spin w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full"></div></div>
           ) : (
             <>
+              {isFuture && (activeTab === 'comprehensive' || activeTab === 'report') && (
+                <div className="mb-6 bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-500">
+                  <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
+                    <Calendar className="w-6 h-6 shrink-0" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-amber-900">Reporting Not Available</h4>
+                    <p className="text-sm text-amber-700">You cannot modify or submit reports for future months. Please wait until <strong>{monthNames[month - 1]} {year}</strong> arrives to enter achievement data.</p>
+                  </div>
+                </div>
+              )}
               {(activeTab === 'plan' || activeTab === 'report') && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* ... same as before for basic plan/report ... */}
-                  <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
-                    <h4 className="font-bold text-gray-800 mb-2">Dawat (Invitation)</h4>
-                    <input type="number" value={activeTab === 'plan' ? plan.dawatTarget : plan.dawatAchieved} onChange={e => setPlan({...plan, [activeTab === 'plan' ? 'dawatTarget' : 'dawatAchieved']: parseInt(e.target.value) || 0})} className="w-full border border-gray-200 rounded-lg p-3" />
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
+                      <h4 className="font-bold text-gray-800 mb-2">Dawat (Invitation)</h4>
+                      <input 
+                        type="number" 
+                        value={activeTab === 'plan' ? plan.dawatTarget : plan.dawatAchieved} 
+                        onChange={e => setPlan({...plan, [activeTab === 'plan' ? 'dawatTarget' : 'dawatAchieved']: parseInt(e.target.value) || 0})} 
+                        disabled={isFuture && activeTab === 'report'}
+                        className={`w-full border border-gray-200 rounded-lg p-3 ${isFuture && activeTab === 'report' ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'}`} 
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end">
+                    <button 
+                      onClick={handleSavePlan}
+                      disabled={saving || (isFuture && activeTab === 'report')}
+                      className={`flex items-center gap-2 px-6 py-3 rounded-xl text-white font-bold transition-all shadow-lg ${saving || (isFuture && activeTab === 'report') ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+                    >
+                      <Save className="w-5 h-5 shrink-0" />
+                      {saving ? 'Saving...' : 'Save Data'}
+                    </button>
                   </div>
                 </div>
               )}
@@ -385,7 +515,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                       onClick={() => window.open(`/planning-reporting/print?orgId=${selectedOrgId}&year=${year}&month=${month}&token=${accessToken}`, '_blank')}
                       className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-xl hover:bg-gray-900 transition-colors shadow-lg"
                     >
-                      <Printer className="w-4 h-4" />
+                      <Printer className="w-4 h-4 shrink-0" />
                       Print Ward Report
                     </button>
                   </div>
@@ -405,9 +535,15 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                      </div>
                   </div>
 
-                  <ReportAccordionSection title="১. দাওয়াত" defaultOpen={true}>
+                  <ReportAccordionSection title="১. দাওয়াত" defaultOpen={true} icon={Megaphone}>
                     <div className="space-y-6">
-                      <ReportAccordionSection title="ক) জনসাধারণের মাঝে সর্বমোট দাওয়াত" onEdit={() => setIsDawatTablighModalOpen(true)} defaultOpen={true}>
+                      <ReportAccordionSection 
+                        title="ক) জনসাধারণের মাঝে সর্বমোট দাওয়াত" 
+                        onEdit={isFuture ? undefined : () => setIsDawatTablighModalOpen(true)} 
+                        defaultOpen={true}
+                        buttonText="দাওয়াত এডিট"
+                        icon={Users}
+                      >
                     <div className="space-y-8">
                       {/* Section 1 */}
                       <div>
@@ -514,7 +650,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                   </ReportAccordionSection>
 
                   {/* Section: Departmental Info */}
-                  <ReportAccordionSection title="খ) বিভাগ ভিত্তিক তথ্য" onEdit={() => setIsDeptModalOpen(true)}>
+                  <ReportAccordionSection title="খ) বিভাগ ভিত্তিক তথ্য" onEdit={isFuture ? undefined : () => setIsDeptModalOpen(true)} buttonText="বিভাগ তথ্য এডিট" icon={LayoutGrid}>
                     <div className="space-y-8">
                       {/* 1. Quran Talim */}
                       <div>
@@ -630,7 +766,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                   </ReportAccordionSection>
 
                   {/* Section: Dawah & Publication */}
-                  <ReportAccordionSection title="গ) দাওয়াহ ও প্রকাশনা:*সংগঠন অনুমোদিত:" onEdit={() => setIsDawahPubModalOpen(true)}>
+                  <ReportAccordionSection title="গ) দাওয়াহ ও প্রকাশনা:*সংগঠন অনুমোদিত:" onEdit={isFuture ? undefined : () => setIsDawahPubModalOpen(true)} buttonText="দাওয়াহ এডিট" icon={Library}>
                      <div className="overflow-x-auto">
                         <table className="w-full border-collapse border border-gray-200 text-sm">
                            <thead>
@@ -645,24 +781,24 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                            <tbody>
                               <tr>
                                  <td className="border border-gray-200 p-2">পাঠাগার/ বই/ বই বিলি</td>
-                                 <td className="border border-gray-200 p-2 text-center">{formatVal(compReport.publication?.libraryCount)} / {formatVal(compReport.publication?.bookCount)} / {formatVal(compReport.publication?.bookDistributedCount)}</td>
-                                 <td className="border border-gray-200 p-2 text-center">{formatVal(compReport.publication?.libraryIncrease)} / {formatVal(compReport.publication?.bookIncrease)} / {formatVal(compReport.publication?.bookDistributedIncrease)}</td>
+                                 <td className="border border-gray-200 p-2 text-center">{formatVal(compReport.dawahPublication?.libraryCount)} / {formatVal(compReport.dawahPublication?.bookCount)} / {formatVal(compReport.dawahPublication?.bookDistributedCount)}</td>
+                                 <td className="border border-gray-200 p-2 text-center">{formatVal(compReport.dawahPublication?.libraryIncrease)} / {formatVal(compReport.dawahPublication?.bookIncrease)} / {formatVal(compReport.dawahPublication?.bookDistributedIncrease)}</td>
                                  <td className="border border-gray-200 p-2">বইয়ের সফট কপি বিলি</td>
-                                 <td className="border border-gray-200 p-2 text-center font-bold">{formatVal(compReport.publication?.softCopyDistributed)}</td>
+                                 <td className="border border-gray-200 p-2 text-center font-bold">{formatVal(compReport.dawahPublication?.softCopyDistributed)}</td>
                               </tr>
                               <tr>
-                                 <td className="border border-gray-200 p-2">ইউনিটে বই বিলিকেন্দ্র/বই বিলি</td>
-                                 <td className="border border-gray-200 p-2 text-center">{formatVal(compReport.publication?.unitCenterCount)} / {formatVal(compReport.publication?.unitBookDistributed)}</td>
-                                 <td className="border border-gray-200 p-2 text-center">-</td>
+                                 <td className="border border-gray-200 p-2 text-left">ইউনিটে বই বিলিকেন্দ্র/বই বিলি</td>
+                                 <td className="border border-gray-200 p-2 text-center">{formatVal(compReport.dawahPublication?.unitCenterCount)} / {formatVal(compReport.dawahPublication?.unitBookDistributed)}</td>
+                                 <td className="border border-gray-200 p-2 text-center">{formatVal(compReport.dawahPublication?.unitCenterIncrease)} / {formatVal(compReport.dawahPublication?.unitBookDistributedIncrease)}</td>
                                  <td className="border border-gray-200 p-2">দাওয়াতী লিংক বিতরণ</td>
-                                 <td className="border border-gray-200 p-2 text-center font-bold">{formatVal(compReport.publication?.dawatLinkDistributed)}</td>
+                                 <td className="border border-gray-200 p-2 text-center font-bold">{formatVal(compReport.dawahPublication?.dawatLinkDistributed)}</td>
                               </tr>
                               <tr>
-                                 <td className="border border-gray-200 p-2">ওয়ার্ডে বই বিক্রয় কেন্দ্র /বই বিক্রয়</td>
-                                 <td className="border border-gray-200 p-2 text-center">{formatVal(compReport.publication?.wardCenterCount)} / {formatVal(compReport.publication?.wardBookSold)}</td>
-                                 <td className="border border-gray-200 p-2 text-center">-</td>
+                                 <td className="border border-gray-200 p-2 text-left">ওয়ার্ডে বই বিক্রয় কেন্দ্র /বই বিক্রয়</td>
+                                 <td className="border border-gray-200 p-2 text-center">{formatVal(compReport.dawahPublication?.wardCenterCount)} / {formatVal(compReport.dawahPublication?.wardBookSold)}</td>
+                                 <td className="border border-gray-200 p-2 text-center">{formatVal(compReport.dawahPublication?.wardCenterIncrease)} / {formatVal(compReport.dawahPublication?.wardBookSoldIncrease)}</td>
                                  <td className="border border-gray-200 p-2">সোনার বাংলা/সংগ্রাম/পৃথিবী</td>
-                                 <td className="border border-gray-200 p-2 text-center font-bold">{formatVal(compReport.publication?.sonarBanglaCount)} / {formatVal(compReport.publication?.sangramCount)} / {formatVal(compReport.publication?.prithibiCount)}</td>
+                                 <td className="border border-gray-200 p-2 text-center font-bold">{formatVal(compReport.dawahPublication?.sonarBanglaCount)} / {formatVal(compReport.dawahPublication?.sangramCount)} / {formatVal(compReport.dawahPublication?.prithibiCount)}</td>
                               </tr>
                            </tbody>
                         </table>
@@ -670,7 +806,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                   </ReportAccordionSection>
 
                   {/* Section: Program Implementation */}
-                  <ReportAccordionSection title="ঘ) কর্মসূচি বাস্তবায়ন" onEdit={() => setIsProgramModalOpen(true)}>
+                  <ReportAccordionSection title="ঘ) কর্মসূচি বাস্তবায়ন" onEdit={isFuture ? undefined : () => setIsProgramModalOpen(true)} buttonText="কর্মসূচি এডিট" icon={CalendarCheck}>
                      <div className="overflow-x-auto">
                         <table className="w-full border-collapse border border-gray-200 text-sm">
                            <thead>
@@ -728,9 +864,9 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                     </div>
                   </ReportAccordionSection>
 
-                  <ReportAccordionSection title="২. সংগঠনঃ">
+                  <ReportAccordionSection title="২. সংগঠনঃ" icon={Users2}>
                     <div className="space-y-6">
-                      <ReportAccordionSection title="১. জনশক্তি" onEdit={() => setIsManpowerModalOpen(true)}>
+                      <ReportAccordionSection title="১. জনশক্তি" onEdit={isFuture ? undefined : () => setIsManpowerModalOpen(true)} buttonText="জনশক্তি এডিট" icon={UserPlus}>
                          <div className="overflow-x-auto">
                             <table className="w-full border-collapse border border-gray-200 text-sm text-center">
                                <thead>
@@ -764,7 +900,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                          </div>
                       </ReportAccordionSection>
 
-                      <ReportAccordionSection title="৩. বিভাগভিত্তিক তথ্য" onEdit={() => setIsDeptManpowerModalOpen(true)}>
+                      <ReportAccordionSection title="৩. বিভাগভিত্তিক তথ্য" onEdit={isFuture ? undefined : () => setIsDeptManpowerModalOpen(true)} buttonText="বিভাগীয় জনশক্তি এডিট" icon={PieChart}>
                          <div className="overflow-x-auto">
                             <table className="w-full border-collapse border border-gray-200 text-xs text-center">
                                <thead>
@@ -812,7 +948,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                       </ReportAccordionSection>
 
                       {/* ৫. দাওয়াতী ও পারিবারিক ইউনিট */}
-                      <ReportAccordionSection title="৫. দাওয়াতী ও পারিবারিক ইউনিট" onEdit={() => setIsUnitModalOpen(true)}>
+                      <ReportAccordionSection title="৫. দাওয়াতী ও পারিবারিক ইউনিট" onEdit={isFuture ? undefined : () => setIsUnitModalOpen(true)} buttonText="ইউনিট তথ্য এডিট" icon={Home}>
                          <div className="overflow-x-auto">
                             <table className="w-full border-collapse border border-gray-200 text-sm text-center">
                                <thead>
@@ -842,7 +978,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                       </ReportAccordionSection>
 
                       {/* ৬. বিদায়ী ছাত্র জনশক্তি */}
-                      <ReportAccordionSection title="৬. বিদায়ী ছাত্র জনশক্তির সংগঠনে যোগদান:" onEdit={() => setIsStudentModalOpen(true)}>
+                      <ReportAccordionSection title="৬. বিদায়ী ছাত্র জনশক্তির সংগঠনে যোগদান:" onEdit={isFuture ? undefined : () => setIsStudentModalOpen(true)} buttonText="ছাত্র তথ্য এডিট" icon={GraduationCap}>
                          <div className="grid grid-cols-3 gap-4">
                             <div className="bg-white p-4 border rounded shadow-sm text-center">
                                <div className="text-xs text-gray-500 font-bold uppercase mb-1">সদস্য</div>
@@ -860,7 +996,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                       </ReportAccordionSection>
 
                       {/* ৭. সফর */}
-                      <ReportAccordionSection title="৭. সফর:" onEdit={() => setIsSafarModalOpen(true)}>
+                      <ReportAccordionSection title="৭. সফর:" onEdit={isFuture ? undefined : () => setIsSafarModalOpen(true)} buttonText="সফর এডিট" icon={MapPin}>
                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div className="flex justify-between items-center p-3 border rounded bg-white">
                                <span className="text-sm font-medium">উর্ধ্বতন দায়িত্বশীলদের সফর:</span>
@@ -878,7 +1014,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                       </ReportAccordionSection>
 
                       {/* ৮. ইয়ানত দাতা */}
-                      <ReportAccordionSection title="৮. ইয়ানত দাতা (সহযোগী সদস্য/সুধী):" onEdit={() => setIsDonorModalOpen(true)}>
+                      <ReportAccordionSection title="৮. ইয়ানত দাতা (সহযোগী সদস্য/সুধী):" onEdit={isFuture ? undefined : () => setIsDonorModalOpen(true)} buttonText="দাতা তথ্য এডিট" icon={HandCoins}>
                          <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col items-center p-4 border rounded bg-amber-50/30">
                                <span className="text-xs text-amber-700 font-bold uppercase mb-2">নতুন ইয়ানত দাতা (সংখ্যা)</span>
@@ -892,7 +1028,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                       </ReportAccordionSection>
 
                       {/* ৯. সাংগঠনিক বৈঠকাদি */}
-                      <ReportAccordionSection title="৯. সাংগঠনিক বৈঠকাদি:" onEdit={() => setIsOrgMeetingModalOpen(true)}>
+                      <ReportAccordionSection title="৯. সাংগঠনিক বৈঠকাদি:" onEdit={isFuture ? undefined : () => setIsOrgMeetingModalOpen(true)} buttonText="বৈঠক এডিট" icon={MessagesSquare}>
                          <div className="overflow-x-auto">
                             <table className="w-full border-collapse border border-gray-200 text-xs text-center">
                                <thead>
@@ -952,9 +1088,9 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                     </div>
                   </ReportAccordionSection>
 
-                  <ReportAccordionSection title="৩. প্রশিক্ষণঃ">
+                  <ReportAccordionSection title="৩. প্রশিক্ষণঃ" icon={GraduationCap}>
                     <div className="space-y-6">
-                      <ReportAccordionSection title="ক) তারবিয়াত (নৈতিক শিক্ষা ও সাংগঠনিক প্রশিক্ষণ):" onEdit={() => setIsTarbiyatModalOpen(true)}>
+                      <ReportAccordionSection title="ক) তারবিয়াত (নৈতিক শিক্ষা ও সাংগঠনিক প্রশিক্ষণ):" onEdit={isFuture ? undefined : () => setIsTarbiyatModalOpen(true)} buttonText="তারবিয়াত এডিট" icon={Heart}>
                          <div className="overflow-x-auto">
                             <table className="w-full border-collapse border border-gray-200 text-xs text-center">
                                <thead>
@@ -1010,7 +1146,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                          </div>
                       </ReportAccordionSection>
 
-                      <ReportAccordionSection title="খ) মানবসম্পদ উন্নয়ন কোর্স সমূহ:" onEdit={() => setIsHRDModalOpen(true)}>
+                      <ReportAccordionSection title="খ) মানবসম্পদ উন্নয়ন কোর্স সমূহ:" onEdit={isFuture ? undefined : () => setIsHRDModalOpen(true)} buttonText="কোর্স এডিট" icon={Award}>
                          <div className="overflow-x-auto">
                             <table className="w-full border-collapse border border-gray-200 text-xs text-center">
                                <thead>
@@ -1050,9 +1186,9 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                     </div>
                   </ReportAccordionSection>
 
-                  <ReportAccordionSection title="৪. সমাজ সংস্কার ও সমাজ সেবাঃ">
+                  <ReportAccordionSection title="৪. সমাজ সংস্কার ও সমাজ সেবাঃ" icon={HeartHandshake}>
                     <div className="space-y-6">
-                      <ReportAccordionSection title="১. ব্যক্তিগত উদ্যোগে সামাজিক কাজ:" onEdit={() => setIsSocialPersonalModalOpen(true)}>
+                      <ReportAccordionSection title="১. ব্যক্তিগত উদ্যোগে সামাজিক কাজ:" onEdit={isFuture ? undefined : () => setIsSocialPersonalModalOpen(true)} buttonText="ব্যক্তিগত কাজ এডিট" icon={User}>
                          <div className="grid grid-cols-2 gap-4">
                             <div className="bg-blue-50/30 p-4 border rounded text-center">
                                <div className="text-xs text-blue-700 font-bold uppercase mb-1">মোট অংশগ্রহণকারী</div>
@@ -1065,7 +1201,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                          </div>
                       </ReportAccordionSection>
 
-                      <ReportAccordionSection title="২. সামষ্টিক/সেবা টীমের মাধ্যমে সামাজিক কাজ:" onEdit={() => setIsSocialGroupModalOpen(true)}>
+                      <ReportAccordionSection title="২. সামষ্টিক/সেবা টীমের মাধ্যমে সামাজিক কাজ:" onEdit={isFuture ? undefined : () => setIsSocialGroupModalOpen(true)} buttonText="সামষ্টিক কাজ এডিট" icon={Users}>
                          <div className="space-y-4">
                             <div className="grid grid-cols-3 gap-2">
                                <div className="p-2 border rounded bg-gray-50 text-center">
@@ -1142,7 +1278,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                          </div>
                       </ReportAccordionSection>
 
-                      <ReportAccordionSection title="৩. স্বাস্থ্য ও পরিবার কল্যাণমূলক কাজ:" onEdit={() => setIsSocialHealthModalOpen(true)}>
+                      <ReportAccordionSection title="৩. স্বাস্থ্য ও পরিবার কল্যাণমূলক কাজ:" onEdit={isFuture ? undefined : () => setIsSocialHealthModalOpen(true)} buttonText="স্বাস্থ্যসেবা এডিট" icon={Stethoscope}>
                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div className="p-3 border rounded bg-amber-50/30">
                                <div className="text-xs font-bold text-amber-700 uppercase">স্বাস্থ্যকর্মী প্রশিক্ষণ</div>
@@ -1159,7 +1295,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                          </div>
                       </ReportAccordionSection>
 
-                      <ReportAccordionSection title="৪. প্রাতিষ্ঠানিক উদ্যোগে সামাজিক কাজ:" onEdit={() => setIsSocialInstModalOpen(true)}>
+                      <ReportAccordionSection title="৪. প্রাতিষ্ঠানিক উদ্যোগে সামাজিক কাজ:" onEdit={isFuture ? undefined : () => setIsSocialInstModalOpen(true)} buttonText="প্রতিষ্ঠান এডিট" icon={Building2}>
                          <div className="grid grid-cols-3 gap-4">
                             <div className="p-3 border rounded bg-indigo-50/30 text-center">
                                <div className="text-xs font-bold text-indigo-700 uppercase">মোট প্রতিষ্ঠান</div>
@@ -1178,9 +1314,9 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                     </div>
                   </ReportAccordionSection>
 
-                  <ReportAccordionSection title="৫. রাষ্ট্রীয় সংস্কার ও সংশোধনঃ">
+                  <ReportAccordionSection title="৫. রাষ্ট্রীয় সংস্কার ও সংশোধনঃ" icon={Scale}>
                     <div className="space-y-6">
-                      <ReportAccordionSection title="১. রাজনৈতিক ও প্রশাসনিক যোগাযোগ:" onEdit={() => setIsPoliticalCommModalOpen(true)}>
+                      <ReportAccordionSection title="১. রাজনৈতিক ও প্রশাসনিক যোগাযোগ:" onEdit={isFuture ? undefined : () => setIsPoliticalCommModalOpen(true)} buttonText="যোগাযোগ এডিট" icon={PhoneCall}>
                          <div className="overflow-x-auto">
                             <table className="w-full border-collapse border border-gray-200 text-xs text-center">
                                <thead>
@@ -1206,7 +1342,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                          </div>
                       </ReportAccordionSection>
 
-                      <ReportAccordionSection title="২. কর্মসূচি বাস্তবায়ন:" onEdit={() => setIsPoliticalProgModalOpen(true)}>
+                      <ReportAccordionSection title="২. কর্মসূচি বাস্তবায়ন:" onEdit={isFuture ? undefined : () => setIsPoliticalProgModalOpen(true)} buttonText="কর্মসূচি এডিট" icon={Flag}>
                          <div className="overflow-x-auto">
                             <table className="w-full border-collapse border border-gray-200 text-xs text-center">
                                <thead>
@@ -1247,7 +1383,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                          </div>
                       </ReportAccordionSection>
 
-                      <ReportAccordionSection title="৩. জাতীয় ও আন্তর্জাতিক দিবস পালন:" onEdit={() => setIsNationalDayModalOpen(true)}>
+                      <ReportAccordionSection title="৩. জাতীয় ও আন্তর্জাতিক দিবস পালন:" onEdit={isFuture ? undefined : () => setIsNationalDayModalOpen(true)} buttonText="দিবস তথ্য এডিট" icon={Calendar}>
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {[
                                { id: 'independenceDay', label: 'স্বাধীনতা ও জাতীয় দিবস' },
@@ -1272,7 +1408,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                          </div>
                       </ReportAccordionSection>
 
-                      <ReportAccordionSection title="৪. জাতীয় ও স্থানীয় নির্বাচনভিত্তিক কার্যক্রম:" onEdit={() => setIsElectionModalOpen(true)}>
+                      <ReportAccordionSection title="৪. জাতীয় ও স্থানীয় নির্বাচনভিত্তিক কার্যক্রম:" onEdit={isFuture ? undefined : () => setIsElectionModalOpen(true)} buttonText="নির্বাচন এডিট" icon={Vote}>
                          <div className="space-y-4">
                             <div className="p-3 border rounded bg-blue-50/30">
                                <div className="text-xs font-bold text-blue-700 uppercase mb-2">কাউন্সিলর নির্বাচন</div>
@@ -1316,7 +1452,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                     </div>
                   </ReportAccordionSection>
 
-                  <ReportAccordionSection title="৬. বায়তুলমাল" onEdit={() => setIsBaitulmalModalOpen(true)}>
+                  <ReportAccordionSection title="৬. বায়তুলমাল" onEdit={isFuture ? undefined : () => setIsBaitulmalModalOpen(true)} buttonText="ফিন্যান্স এডিট" icon={Wallet}>
                     <div className="space-y-4">
                        <div className="flex justify-between font-bold text-xs text-gray-600 bg-gray-50 p-2 rounded">
                           <span>ধার্যকৃত নিছাব: {formatVal(compReport.finance?.nisab?.allocated)} /=</span>
@@ -1396,7 +1532,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                     </div>
                   </ReportAccordionSection>
 
-                  <ReportAccordionSection title="৭. ওয়ার্ড সভাপতির মন্তব্যঃ" onEdit={() => setIsRemarksModalOpen(true)}>
+                  <ReportAccordionSection title="৭. ওয়ার্ড সভাপতির মন্তব্যঃ" onEdit={isFuture ? undefined : () => setIsRemarksModalOpen(true)} buttonText="মন্তব্য এডিট" icon={ClipboardList}>
                     <div className="space-y-6">
                        <p className="text-xs italic text-gray-500 border-l-2 border-gray-100 pl-3 py-1">
                           এ মাসের মাসিক প্রতিবেদন পেশ করতে সক্ষম হওয়ায় মহান রবের দরবারে শুকরিয়া আদায় করছি। পরিকল্পনা অনুযায়ী যেসব কাজ সম্পন্ন হয়েছে, তা একান্তই মহান প্রভুর রহমতেই সম্ভব হয়েছে। আর যেসব কাজ এখনো সম্পন্ন করা সম্ভব হয়নি, সেক্ষেত্রে প্রধান দায়িত্বশীল হিসেবে আমার সীমাবদ্ধতা ও দুর্বলতাই মূলত দায়ী। পাশাপাশি যে সকল বাস্তব কারণ প্রতিবন্ধকতা সৃষ্টি করেছে, সেগুলোর বিবরণ এবং ময়দানের বিদ্যমান সম্ভাবনাসমূহ নিচে উল্লেখ করা হলো।
@@ -1404,7 +1540,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                           <div className="space-y-2">
                              <h4 className="font-bold text-xs text-red-700 flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                                <span className="w-2 h-2 rounded-full bg-red-500 shrink-0"></span>
                                 সমস্যাঃ
                              </h4>
                              <ul className="space-y-1 text-xs text-gray-600">
@@ -1418,7 +1554,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                           </div>
                           <div className="space-y-2">
                              <h4 className="font-bold text-xs text-emerald-700 flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
                                 সম্ভাবনাঃ
                              </h4>
                              <ul className="space-y-1 text-xs text-gray-600">
@@ -1525,8 +1661,8 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
       <DawahPublicationModal 
         isOpen={isDawahPubModalOpen} 
         onClose={() => setIsDawahPubModalOpen(false)} 
-        onSave={(data) => handleSaveCompSection('publication', data.publication)}
-        initialData={{ publication: compReport.publication }}
+        onSave={(data) => handleSaveCompSection('dawahPublication', data.publication)}
+        initialData={{ publication: compReport.dawahPublication }}
         saving={saving}
       />
 

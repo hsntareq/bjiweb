@@ -63,6 +63,10 @@ export const DawahPublicationModal: React.FC<DawahPublicationModalProps> = ({
                   <div><label className="text-xs block font-bold">বিলিকেন্দ্র</label><input type="number" value={data.publication?.unitCenterCount || 0} onChange={(e) => handleChange('publication', 'unitCenterCount', parseInt(e.target.value) || 0)} className="w-full border rounded p-1" /></div>
                   <div><label className="text-xs block font-bold">বই বিলি</label><input type="number" value={data.publication?.unitBookDistributed || 0} onChange={(e) => handleChange('publication', 'unitBookDistributed', parseInt(e.target.value) || 0)} className="w-full border rounded p-1" /></div>
                </div>
+               <div className="grid grid-cols-2 gap-2 mt-2">
+                  <div><label className="text-xs block font-bold">বৃদ্ধি (বিলিকেন্দ্র)</label><input type="number" value={data.publication?.unitCenterIncrease || 0} onChange={(e) => handleChange('publication', 'unitCenterIncrease', parseInt(e.target.value) || 0)} className="w-full border rounded p-1" /></div>
+                  <div><label className="text-xs block font-bold">বৃদ্ধি (বই বিলি)</label><input type="number" value={data.publication?.unitBookDistributedIncrease || 0} onChange={(e) => handleChange('publication', 'unitBookDistributedIncrease', parseInt(e.target.value) || 0)} className="w-full border rounded p-1" /></div>
+               </div>
             </div>
 
             <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
@@ -70,6 +74,10 @@ export const DawahPublicationModal: React.FC<DawahPublicationModalProps> = ({
                <div className="grid grid-cols-2 gap-2">
                   <div><label className="text-xs block font-bold">বিক্রয় কেন্দ্র</label><input type="number" value={data.publication?.wardCenterCount || 0} onChange={(e) => handleChange('publication', 'wardCenterCount', parseInt(e.target.value) || 0)} className="w-full border rounded p-1" /></div>
                   <div><label className="text-xs block font-bold">বই বিক্রয়</label><input type="number" value={data.publication?.wardBookSold || 0} onChange={(e) => handleChange('publication', 'wardBookSold', parseInt(e.target.value) || 0)} className="w-full border rounded p-1" /></div>
+               </div>
+               <div className="grid grid-cols-2 gap-2 mt-2">
+                  <div><label className="text-xs block font-bold">বৃদ্ধি (বিক্রয় কেন্দ্র)</label><input type="number" value={data.publication?.wardCenterIncrease || 0} onChange={(e) => handleChange('publication', 'wardCenterIncrease', parseInt(e.target.value) || 0)} className="w-full border rounded p-1" /></div>
+                  <div><label className="text-xs block font-bold">বৃদ্ধি (বই বিক্রয়)</label><input type="number" value={data.publication?.wardBookSoldIncrease || 0} onChange={(e) => handleChange('publication', 'wardBookSoldIncrease', parseInt(e.target.value) || 0)} className="w-full border rounded p-1" /></div>
                </div>
             </div>
           </div>

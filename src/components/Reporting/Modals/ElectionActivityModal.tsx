@@ -53,15 +53,15 @@ export const ElectionActivityModal: React.FC<ElectionActivityModalProps> = ({
              <div className="grid grid-cols-3 gap-4">
                 <div>
                    <label className="block font-bold mb-1">মোট প্রার্থী সংখ্যা</label>
-                   <input type="number" value={data.councilor?.candidateCount || 0} onChange={(e) => handleDeepChange('councilor', 'candidateCount', 'val', parseInt(e.target.value) || 0)} className="w-full border rounded p-2" />
+                   <input type="number" value={data.councilor?.candidateCount?.val || 0} onChange={(e) => handleDeepChange('councilor', 'candidateCount', 'val', parseInt(e.target.value) || 0)} className="w-full border rounded p-2" />
                 </div>
                 <div>
                    <label className="block font-bold mb-1">নির্বাচিত সংখ্যা</label>
-                   <input type="number" value={data.councilor?.electedCount || 0} onChange={(e) => handleDeepChange('councilor', 'electedCount', 'val', parseInt(e.target.value) || 0)} className="w-full border rounded p-2" />
+                   <input type="number" value={data.councilor?.electedCount?.val || 0} onChange={(e) => handleDeepChange('councilor', 'electedCount', 'val', parseInt(e.target.value) || 0)} className="w-full border rounded p-2" />
                 </div>
                 <div>
                    <label className="block font-bold mb-1">দ্বিতীয় অবস্থান</label>
-                   <input type="number" value={data.councilor?.secondPlaceCount || 0} onChange={(e) => handleDeepChange('councilor', 'secondPlaceCount', 'val', parseInt(e.target.value) || 0)} className="w-full border rounded p-2" />
+                   <input type="number" value={data.councilor?.secondPlaceCount?.val || 0} onChange={(e) => handleDeepChange('councilor', 'secondPlaceCount', 'val', parseInt(e.target.value) || 0)} className="w-full border rounded p-2" />
                 </div>
              </div>
           </div>

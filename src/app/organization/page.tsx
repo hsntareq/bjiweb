@@ -17,7 +17,7 @@ return (
 <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
 <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
 <div className="flex items-center gap-3">
-<div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center shadow-md shadow-indigo-400/20">
+<div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center shadow-md shadow-indigo-400/20 shrink-0">
 <Package className="w-4 h-4 text-white" />
 </div>
 <span className="font-bold text-gray-900 text-lg">BJI OMS</span>

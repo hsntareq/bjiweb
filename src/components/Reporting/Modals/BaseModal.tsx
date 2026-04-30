@@ -28,8 +28,8 @@ export const BaseModal: React.FC<BaseModalProps> = ({
       <div className={`relative bg-white rounded-3xl shadow-2xl w-full ${width} overflow-hidden animate-in fade-in zoom-in duration-200`}>
         <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
           <h2 className="text-xl font-bold text-gray-900">{title}</h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-            <X className="w-5 h-5 text-gray-500" />
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors shrink-0">
+            <X className="w-5 h-5 text-gray-500 shrink-0" />
           </button>
         </div>
         <div className="p-8 max-h-[70vh] overflow-y-auto">
