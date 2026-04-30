@@ -2714,33 +2714,28 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c9" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{dawahUnitPrevious}}</span>
 </p>
 </td>
 <td class="c38" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{dawahUnitCurrent}}</span>
 </p>
 </td>
 <td class="c0" colspan="2" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{dawahUnitIncrease}}</span>
 </p>
 </td>
 <td class="c21" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{dawahUnitDeficit}}</span>
 </p>
 </td>
 <td class="c120" colspan="2" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{dawahUnitTarget}}</span>
 </p>
 </td>
 </tr>
@@ -2752,29 +2747,27 @@ export const templateHtml = `
 </td>
 <td class="c9" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2542;</span>
+<span class="c3">{{familyUnitPrevious}}</span>
 </p>
 </td>
 <td class="c38" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2542;</span>
+<span class="c3">{{familyUnitCurrent}}</span>
 </p>
 </td>
 <td class="c0" colspan="2" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{familyUnitIncrease}}</span>
 </p>
 </td>
 <td class="c21" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{familyUnitDeficit}}</span>
 </p>
 </td>
 <td class="c120" colspan="2" rowspan="1">
 <p class="c1">
-<span class="c3">&#2539;</span>
+<span class="c3">{{familyUnitTarget}}</span>
 </p>
 </td>
 </tr>

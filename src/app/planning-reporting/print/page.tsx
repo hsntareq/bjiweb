@@ -242,6 +242,28 @@ function ReportPrintContent() {
       output = output.replace(new RegExp(`{{unitOrg${type.key}Rate}}`, 'g'), toBengaliNumber(rate));
     });
 
+    // Dawah and Family Units
+    const units = report.unit || {};
+    const unitTypes = [
+      { id: 'dawahUnit', key: 'DawahUnit' },
+      { id: 'familyUnit', key: 'FamilyUnit' }
+    ];
+
+    unitTypes.forEach(type => {
+      const data = units[type.id] || {};
+      const previous = data.previousCount || 0;
+      const current = data.currentCount || 0;
+      const increase = data.increase || 0;
+      const deficit = data.deficit || 0;
+      const target = data.target || 0;
+
+      output = output.replace(new RegExp(`{{${type.id}Previous}}`, 'g'), toBengaliNumber(previous) || "০");
+      output = output.replace(new RegExp(`{{${type.id}Current}}`, 'g'), toBengaliNumber(current) || "০");
+      output = output.replace(new RegExp(`{{${type.id}Increase}}`, 'g'), toBengaliNumber(increase) || "০");
+      output = output.replace(new RegExp(`{{${type.id}Deficit}}`, 'g'), toBengaliNumber(deficit) || "০");
+      output = output.replace(new RegExp(`{{${type.id}Target}}`, 'g'), toBengaliNumber(target) || "০");
+    });
+
     // 3. Department-wise Info
     const depts = ['labor', 'ulama', 'pro', 'youth', 'nonMuslim'];
     const deptTypes = ['rokon', 'karmi', 'associate'];
