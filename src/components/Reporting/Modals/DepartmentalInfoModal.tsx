@@ -58,16 +58,19 @@ export const DepartmentalInfoModal: React.FC<DepartmentalInfoModalProps> = ({
               <div>
                 <label className="block text-xs font-semibold mb-1">কুরআন শিক্ষা প্রদান করেছেন (রুকন)</label>
                 <input type="number" value={data.quranTalim?.rokonTeacherCount || 0} onChange={(e) => handleChange('quranTalim', 'rokonTeacherCount', parseInt(e.target.value) || 0)} className="w-full border rounded-lg p-2" />
+                <span className="text-[10px] text-blue-400 mt-1 block italic">Var: {"{{"}quranTeacherRokon{"}}"}</span>
               </div>
               <div>
                 <label className="block text-xs font-semibold mb-1">কুরআন শিক্ষা প্রদান করেছেন (কর্মী)</label>
                 <input type="number" value={data.quranTalim?.karmiTeacherCount || 0} onChange={(e) => handleChange('quranTalim', 'karmiTeacherCount', parseInt(e.target.value) || 0)} className="w-full border rounded-lg p-2" />
+                <span className="text-[10px] text-blue-400 mt-1 block italic">Var: {"{{"}quranTeacherKarmi{"}}"}</span>
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                <div>
                 <label className="block text-xs font-semibold mb-1">কুরআন শিক্ষার গ্রুপ</label>
                 <input type="number" value={data.quranTalim?.groupCount || 0} onChange={(e) => handleChange('quranTalim', 'groupCount', parseInt(e.target.value) || 0)} className="w-full border rounded-lg p-2" />
+                <span className="text-[10px] text-blue-400 mt-1 block italic">Var: {"{{"}quranGroupCount{"}}"}</span>
               </div>
               <div>
                 <label className="block text-xs font-semibold mb-1">মক্তব/ফোরকানিয়া মাদ্রাসা</label>
@@ -82,6 +85,7 @@ export const DepartmentalInfoModal: React.FC<DepartmentalInfoModalProps> = ({
                <div>
                 <label className="block text-xs font-semibold mb-1">দাওয়াত পৌঁছানো হয়েছে (জন)</label>
                 <input type="number" value={data.quranTalim?.reachedCount || 0} onChange={(e) => handleChange('quranTalim', 'reachedCount', parseInt(e.target.value) || 0)} className="w-full border rounded-lg p-2" />
+                <span className="text-[10px] text-blue-400 mt-1 block italic">Var: {"{{"}quranReachedCount{"}}"}</span>
               </div>
               <div>
                 <label className="block text-xs font-semibold mb-1">সহযোগী সদস্য হয়েছেন</label>

@@ -88,7 +88,7 @@ export const templateHtml = `
 </td>
 <td style="width: 95.22pt;" class="c169" colspan="1" rowspan="1">
 <p class="c19 c11">
-<span class="c3">&#2463;&#2494;&#2480;&#2509;&#2455;&#2503;&#2463; (&#2478;&#2494;&#2488;&#2495;&#2453;): {{totalDawahReached}}&#2534;</span>
+<span class="c3">&#2463;&#2494;&#2480;&#2509;&#2455;&#2503;&#2463; (&#2478;&#2494;&#2488;&#2495;&#2453;): {{totalDawahTarget}}</span>
 </p>
 </td>
 </tr>
@@ -122,25 +122,22 @@ export const templateHtml = `
 <tr class="c32">
 <td class="c160" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{groupDawahCount}}</span>
 </p>
 </td>
 <td class="c94" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{groupDawahParticipants}}</span>
 </p>
 </td>
 <td class="c184" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{groupDawahReached}}</span>
 </p>
 </td>
 <td class="c179" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">-</span>
+<span class="c3">{{groupDawahNewAssociate}}</span>
 </p>
 </td>
 </tr>
@@ -184,12 +181,12 @@ export const templateHtml = `
 </td>
 <td class="c56" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">{{rokonPrevious}}</span>
+<span class="c3">{{personalDawahRokonTotal}}</span>
 </p>
 </td>
 <td class="c139" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">{{karmiCurrent}}</span>
+<span class="c3">{{personalDawahKarmiTotal}}</span>
 </p>
 </td>
 <td class="c126" colspan="1" rowspan="1">
@@ -199,7 +196,7 @@ export const templateHtml = `
 </td>
 <td class="c152" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2542;&#2539;</span>
+<span class="c3">{{personalDawahReached}}</span>
 </p>
 </td>
 </tr>
@@ -211,12 +208,12 @@ export const templateHtml = `
 </td>
 <td class="c56" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">{{wardTeamMeetingAttendance}}</span>
+<span class="c3">{{personalDawahRokonWorked}}</span>
 </p>
 </td>
 <td class="c139" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2535;&#2539;</span>
+<span class="c3">{{personalDawahKarmiWorked}}</span>
 </p>
 </td>
 <td class="c126" colspan="1" rowspan="1">
@@ -226,7 +223,7 @@ export const templateHtml = `
 </td>
 <td class="c152" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2535;&#2534;</span>
+<span class="c3">{{personalDawahNewAssociate}}</span>
 </p>
 </td>
 </tr>
@@ -242,9 +239,8 @@ export const templateHtml = `
 </p>
 </td>
 <td style="width: 86.22pt;" class="c163" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{generalMeetingReached}}</span>
 </p>
 </td>
 <td style="width: 141.03pt;" class="c105" colspan="2" rowspan="1">
@@ -253,33 +249,8 @@ export const templateHtml = `
 </p>
 </td>
 <td style="width: 101.22pt;" class="c89" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
-</p>
-</td>
-</tr>
-<tr class="c32">
-<td class="c46" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2535;&#2534;</span>
-</p>
-</td>
-<td class="c163" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
-</p>
-</td>
-<td class="c105" colspan="2" rowspan="1">
-<p class="c1">
-<span class="c3">&#2536;</span>
-</p>
-</td>
-<td class="c89" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{generalMeetingNewAssociate}}</span>
 </p>
 </td>
 </tr>
@@ -324,149 +295,130 @@ export const templateHtml = `
 </td>
 <td class="c65" colspan="1" rowspan="1">
 <p class="c1 c11">
-<span class="c2">/</span>
+<span class="c3">{{prDecadeGroup}}</span>
 </p>
 </td>
 <td class="c31" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{prDecadeParticipant}}</span>
 </p>
 </td>
 <td class="c89" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{prDecadeReached}}</span>
 </p>
 </td>
 <td class="c67" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{prDecadeAssociate}}</span>
 </p>
 </td>
 </tr>
 <tr class="c32">
 <td class="c23" colspan="1" rowspan="1">
 <p class="c13 c11">
-<span class="c2">&#2460;&#2503;&#2482;&#2494;/&#2478;&#2489;&#2494;: &#2456;&#2507;&#2487;&#2495;&#2468; &#2455;&#2467;&#2488;&#2434;&#2479;&#2507;&#2455; &#2451; &#2470;&#2494;&#2451;:&#2437;&#2477;&#2495;&#2479;&#2494;&#2472;</span>
+<span class="c2">&#2460;&#2503;&#2482;&#2494;/&#2478;&#2489;&#2435; &#2455;&#2507;&#2487;&#2495;&#2468; &#2437;&#2477;&#2495;&#2479;&#2494;&#2472;</span>
 </p>
 </td>
 <td class="c65" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{districtCampaignGroup}}</span>
 </p>
 </td>
 <td class="c31" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{districtCampaignParticipant}}</span>
 </p>
 </td>
 <td class="c89" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{districtCampaignReached}}</span>
 </p>
 </td>
 <td class="c67" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{districtCampaignAssociate}}</span>
 </p>
 </td>
 </tr>
 <tr class="c32">
 <td class="c23" colspan="1" rowspan="1">
 <p class="c13 c11">
-<span class="c2">&#2472;&#2495;&#2480;&#2509;&#2476;&#2494;&#2458;&#2472;&#2496; &#2438;&#2488;&#2472;&#2503; &#2455;&#2467;&#2488;&#2434;&#2479;&#2507;&#2455; &#2488;&#2474;&#2509;&#2468;&#2494;&#2489;</span>
+<span class="c2">&#2472;&#2495;&#2480;&#2509;&#2476;&#2494;&#2458;&#2472;&#2496; &#2438;&#2488;&#2472;&#2503; &#2455;&#2467;&#2488;&#2434;&#2479;&#2507;&#2455; &#2488;&#2474;&#2509;&#2468;&#2494;&#2488;</span>
 </p>
 </td>
 <td class="c65" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{electionWeekGroup}}</span>
 </p>
 </td>
 <td class="c31" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{electionWeekParticipant}}</span>
 </p>
 </td>
 <td class="c89" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{electionWeekReached}}</span>
 </p>
 </td>
 <td class="c67" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{electionWeekAssociate}}</span>
 </p>
 </td>
 </tr>
 <tr class="c32">
 <td class="c23" colspan="1" rowspan="1">
 <p class="c13 c11">
-<span class="c2">&#2441;&#2482;&#2494;&#2478;&#2494;/&#2474;&#2503;&#2486;&#2494;&#2460;&#2496;&#2476;&#2496; &#2455;&#2467;&#2488;&#2434;&#2479;&#2507;&#2455; &#2488;&#2474;&#2509;&#2468;&#2494;&#2489;</span>
+<span class="c2">&#2441;&#2482;&#2494;&#2478;&#2494;/&#2474;&#2503;&#2486;&#2494;&#2460;&#2496;&#2476;&#2496; &#2455;&#2467;&#2488;&#2434;&#2479;&#2507;&#2455; &#2488;&#2474;&#2509;&#2468;&#2494;&#2488;</span>
 </p>
 </td>
 <td class="c65" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{proWeekGroup}}</span>
 </p>
 </td>
 <td class="c31" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{proWeekParticipant}}</span>
 </p>
 </td>
 <td class="c89" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{proWeekReached}}</span>
 </p>
 </td>
 <td class="c67" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{proWeekAssociate}}</span>
 </p>
 </td>
 </tr>
 <tr class="c32">
 <td class="c23" colspan="1" rowspan="1">
 <p class="c13 c11">
-<span class="c2">&#2437;&#2472;&#2509;&#2479;&#2494;&#2472;&#2509;&#2479; (&#2476;&#2495;&#2488;&#2509;&#2468;&#2494;&#2480;&#2495;&#2468; &#2438;&#2482;&#2494;&#2470;&#2494; &#2453;&#2494;&#2455;&#2460;&#2503; &#2470;&#2503;&#2527;&#2494; &#2479;&#2494;&#2476;&#2503;)</span>
+<span class="c2">&#2437;&#2472;&#2509;&#2479;&#2494;&#2472;&#2509;&#2479;</span>
 </p>
 </td>
 <td class="c65" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{otherGroup}}</span>
 </p>
 </td>
 <td class="c31" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{otherParticipant}}</span>
 </p>
 </td>
 <td class="c89" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{otherReached}}</span>
 </p>
 </td>
 <td class="c67" colspan="1" rowspan="1">
-<p class="c1 c11 c4">
-<span class="c2">
-</span>
+<p class="c1 c11">
+<span class="c3">{{otherAssociate}}</span>
 </p>
 </td>
 </tr>
@@ -522,19 +474,18 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c53" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{quranTeacherRokon}}</span>
 </p>
 </td>
 <td class="c133" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">{{wardTeamMeetingCount}}</span>
+<span class="c3">{{quranTeacherKarmi}}</span>
 </p>
 </td>
 <td class="c118" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2540;</span>
+<span class="c3">{{quranTeacherTotal}}</span>
 </p>
 </td>
 <td class="c181" colspan="1" rowspan="1">
@@ -543,9 +494,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c131" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{quranGroupCount}}</span>
 </p>
 </td>
 <td class="c17" colspan="1" rowspan="1">
@@ -569,12 +519,12 @@ export const templateHtml = `
 </td>
 <td class="c133" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">{{skillMeetingCount}}</span>
+<span class="c3"></span>
 </p>
 </td>
 <td class="c118" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2540;</span>
+<span class="c3">{{quranReachedCount}}</span>
 </p>
 </td>
 <td class="c181" colspan="1" rowspan="1">
@@ -583,9 +533,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c131" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{quranMaktubCount}}</span>
 </p>
 </td>
 <td class="c17" colspan="1" rowspan="1">
@@ -615,17 +564,17 @@ export const templateHtml = `
 <tr class="c27">
 <td class="c16" colspan="2" rowspan="1">
 <p class="c1">
-<span class="c3">&#2536;</span>
+<span class="c3">{{quranSahihLearnedCount}}</span>
 </p>
 </td>
 <td class="c16" colspan="3" rowspan="1">
 <p class="c1">
-<span class="c3">{{skillMeetingAttendance}}</span>
+<span class="c3">{{quranReachedCount}}</span>
 </p>
 </td>
 <td class="c86" colspan="2" rowspan="1">
 <p class="c1">
-<span class="c3">&#2535;</span>
+<span class="c3">{{quranNewAssociate}}</span>
 </p>
 </td>
 </tr>
@@ -637,12 +586,12 @@ export const templateHtml = `
 </td>
 <td class="c16" colspan="3" rowspan="1">
 <p class="c1">
-<span class="c2">/</span>
+<span class="c3">{{quranMuallimCount}}</span>
 </p>
 </td>
 <td class="c86" colspan="2" rowspan="1">
 <p class="c1">
-<span class="c2">&#2476;&#2499;&#2470;&#2509;&#2471;&#2495; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494;: /</span>
+<span class="c3">&#2476;&#2499;&#2470;&#2509;&#2471;&#2495; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494;: {{quranMuallimIncrease}}</span>
 </p>
 </td>
 </tr>
@@ -662,14 +611,13 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c55" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{mahallaGovtCount}}</span>
 </p>
 </td>
 <td class="c49" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2476;&#2499;&#2470;&#2509;&#2471;&#2495;</span>
+<span class="c3">&#2476;&#2499;&#2470;&#2509;&#2471;&#2495;: {{mahallaGovtIncrease}}</span>
 </p>
 </td>
 <td class="c59" colspan="1" rowspan="1">
@@ -678,9 +626,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c155" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{mahallaReachedCount}}</span>
 </p>
 </td>
 </tr>
@@ -691,9 +638,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c55" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{mahallaCommitteeCount}}</span>
 </p>
 </td>
 <td class="c49" colspan="1" rowspan="1">
@@ -708,9 +654,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c155" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{mahallaAssociateCount}}</span>
 </p>
 </td>
 </tr>
@@ -721,9 +666,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c55" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{mahallaSpecialDawatCount}}</span>
 </p>
 </td>
 <td class="c49" colspan="1" rowspan="1">
@@ -785,9 +729,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c93" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{youthReachedCount}}</span>
 </p>
 </td>
 <td class="c105" colspan="1" rowspan="1">
@@ -908,21 +851,18 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c84" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{professionsPoliticalReached}}</span>
 </p>
 </td>
 <td class="c76" colspan="2" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{professionsPoliticalAssociate}}</span>
 </p>
 </td>
 <td class="c21" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{professionsPoliticalTarget}}</span>
 </p>
 </td>
 <td class="c15" colspan="1" rowspan="1">
@@ -939,20 +879,18 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c84" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{professionsProfessionalReached}}</span>
 </p>
 </td>
 <td class="c76" colspan="2" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{professionsProfessionalAssociate}}</span>
 </p>
 </td>
 <td class="c21" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{professionsProfessionalTarget}}</span>
 </p>
 </td>
 <td class="c15" colspan="1" rowspan="1">
@@ -969,21 +907,18 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c84" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{professionsLaborerReached}}</span>
 </p>
 </td>
 <td class="c76" colspan="2" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{professionsLaborerAssociate}}</span>
 </p>
 </td>
 <td class="c21" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{professionsLaborerTarget}}</span>
 </p>
 </td>
 <td class="c15" colspan="1" rowspan="1">
@@ -1000,21 +935,18 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c84" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{professionsMarginalizedReached}}</span>
 </p>
 </td>
 <td class="c76" colspan="2" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{professionsMarginalizedAssociate}}</span>
 </p>
 </td>
 <td class="c21" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{professionsMarginalizedTarget}}</span>
 </p>
 </td>
 <td class="c15" colspan="1" rowspan="1">
@@ -1032,19 +964,17 @@ export const templateHtml = `
 </td>
 <td class="c84" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{professionsNonMuslimReached}}</span>
 </p>
 </td>
 <td class="c76" colspan="2" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{professionsNonMuslimAssociate}}</span>
 </p>
 </td>
 <td class="c21" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{professionsNonMuslimTarget}}</span>
 </p>
 </td>
 <td class="c15" colspan="1" rowspan="1">
@@ -1066,9 +996,8 @@ export const templateHtml = `
 </p>
 </td>
 <td style="width: 94.23pt;" class="c55" colspan="2" rowspan="1">
-<p class="c1 c4">
-<span class="c2">
-</span>
+<p class="c1">
+<span class="c2">{{familyTotalCount}}</span>
 </p>
 </td>
 <td style="width: 188.45pt;" class="c112" colspan="2" rowspan="1">
@@ -1077,9 +1006,8 @@ export const templateHtml = `
 </p>
 </td>
 <td style="width: 85.95pt;" class="c129" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c2">
-</span>
+<p class="c1">
+<span class="c2">{{familyNewCount}}</span>
 </p>
 </td>
 </tr>
@@ -1128,14 +1056,12 @@ export const templateHtml = `
 </td>
 <td class="c25" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{mosqueTotalCount}}</span>
 </p>
 </td>
 <td class="c155" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{mosqueTotalIncrease}}</span>
 </p>
 </td>
 <td class="c127" colspan="2" rowspan="1">
@@ -1145,14 +1071,12 @@ export const templateHtml = `
 </td>
 <td class="c103" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{mosqueCenterCount}}</span>
 </p>
 </td>
 <td class="c143" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">/</span>
 </p>
 </td>
 </tr>
@@ -1164,14 +1088,12 @@ export const templateHtml = `
 </td>
 <td class="c25" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{mosqueDawatCount}}</span>
 </p>
 </td>
 <td class="c155" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">/</span>
 </p>
 </td>
 <td class="c127" colspan="2" rowspan="1">
@@ -1181,18 +1103,18 @@ export const templateHtml = `
 </td>
 <td class="c103" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{mosqueInfoCenterCount}}</span>
 </p>
 </td>
 <td class="c143" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{mosqueInfoCenterIncrease}}</span>
 </p>
 </td>
 </tr>
 </table>
 <p class="c13 c11">
-<span class="c2">&#2541;. &#2468;&#2469;&#2509;&#2479;&#2474;&#2509;&#2480;&#2479;&#2497;&#2453;&#2509;&#2468;&#2495;&#2480; &#2478;&#2494;&#2471;&#2509;&#2479;&#2478;&#2503; &#2470;&#2494;&#2451;&#2527;&#2494;&#2468;&#2496; &#2453;&#2494;&#2460;&#2503;&#2480; &#2460;&#2472;&#2509;&#2479; &#2441;&#2474;&#2479;&#2497;&#2453;&#2509;&#2468; &#2460;&#2472;&#2486;&#2453;&#2509;&#2468;&#2495; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494;: &nbsp; &#2543;&#2534; &nbsp; &#2437;&#2434;&#2486;&#2455;&#2509;&#2480;&#2489;&#2467;&#2453;&#2494;&#2480;&#2496; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494; : &#2541;&#2534;</span>
+<span class="c2">&#2541;. &#2468;&#2469;&#2509;&#2479;&#2474;&#2509;&#2480;&#2479;&#2497;&#2453;&#2509;&#2468;&#2495;&#2480; &#2478;&#2494;&#2471;&#2509;&#2479;&#2478;&#2503; &#2470;&#2494;&#2451;&#2527;&#2494;&#2468;&#2496; &#2453;&#2494;&#2460;&#2503;&#2480; &#2460;&#2472;&#2509;&#2479; &#2441;&#2474;&#2479;&#2497;&#2453;&#2509;&#2468; &#2460;&#2472;&#2486;&#2453;&#2509;&#2468;&#2495; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494;: &nbsp; {{itManpowerCount}} &nbsp; &#2437;&#2434;&#2486;&#2455;&#2509;&#2480;&#2489;&#2467;&#2453;&#2494;&#2480;&#2496; &#2488;&#2434;&#2454;&#2509;&#2479;&#2494; : {{itParticipantCount}}</span>
 </p>
 <p class="c13 c11">
 <span class="c97 c42">&#2455;) &#2470;&#2494;&#2451;&#2527;&#2494;&#2489;&#2509; &#2451; &#2474;&#2509;&#2480;&#2453;&#2494;&#2486;&#2472;&#2494;:*&#2488;&#2434;&#2455;&#2464;&#2472; &#2437;&#2472;&#2497;&#2478;&#2507;&#2470;&#2495;&#2468;:</span>
@@ -1233,12 +1155,12 @@ export const templateHtml = `
 </td>
 <td class="c12" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2535; / &#2537;&#2534; / &#2539;</span>
+<span class="c3">{{dawahPubLibraryCount}} / {{dawahPubBookCount}} / {{dawahPubBookDistributedCount}}</span>
 </p>
 </td>
 <td class="c153" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp; &nbsp; &nbsp;/</span>
+<span class="c3">{{dawahPubLibraryIncrease}} / {{dawahPubBookIncrease}} / {{dawahPubBookDistributedIncrease}}</span>
 </p>
 </td>
 <td class="c122" colspan="5" rowspan="1">
@@ -1247,9 +1169,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c15" colspan="2" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{dawahPubSoftCopyDistributed}}</span>
 </p>
 </td>
 </tr>
@@ -1261,12 +1182,12 @@ export const templateHtml = `
 </td>
 <td class="c12" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2537; /&#2540;</span>
+<span class="c3">{{dawahPubUnitCenterCount}} / {{dawahPubUnitBookDistributed}}</span>
 </p>
 </td>
 <td class="c153" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{dawahPubUnitCenterIncrease}} / {{dawahPubUnitBookDistributedIncrease}}</span>
 </p>
 </td>
 <td class="c122" colspan="5" rowspan="1">
@@ -1276,7 +1197,7 @@ export const templateHtml = `
 </td>
 <td class="c15" colspan="2" rowspan="1">
 <p class="c1">
-<span class="c3">&#2538;&#2534;</span>
+<span class="c3">{{dawahPubDawatLinkDistributed}}</span>
 </p>
 </td>
 </tr>
@@ -1288,12 +1209,12 @@ export const templateHtml = `
 </td>
 <td class="c12" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2535; /</span>
+<span class="c3">{{dawahPubWardCenterCount}} / {{dawahPubWardBookSold}}</span>
 </p>
 </td>
 <td class="c153" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{dawahPubWardCenterIncrease}} / {{dawahPubWardBookSoldIncrease}}</span>
 </p>
 </td>
 <td class="c122" colspan="5" rowspan="1">
@@ -1303,7 +1224,7 @@ export const templateHtml = `
 </td>
 <td class="c15" colspan="2" rowspan="1">
 <p class="c1">
-<span class="c3">&#2535; / &#2535; / &#2535;</span>
+<span class="c3">{{dawahPubSonarBanglaCount}} / {{dawahPubSangramCount}} / {{dawahPubPrithibiCount}}</span>
 </p>
 </td>
 </tr>
@@ -1352,17 +1273,17 @@ export const templateHtml = `
 </td>
 <td class="c79" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2535; /</span>
+<span class="c3">{{progMonthlyMeetingGeneralCount}} / {{progMonthlyMeetingFamilyCount}}</span>
 </p>
 </td>
 <td class="c52" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2539; /</span>
+<span class="c3">{{progMonthlyMeetingGeneralTarget}} / {{progMonthlyMeetingFamilyTarget}}</span>
 </p>
 </td>
 <td class="c92" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2539; /</span>
+<span class="c3">{{progMonthlyMeetingGeneralAttendance}} / {{progMonthlyMeetingFamilyAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -1379,17 +1300,17 @@ export const templateHtml = `
 </td>
 <td class="c79" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp;/</span>
+<span class="c3">{{progDawahMeetingDawahCount}} / {{progDawahMeetingDiscussionCount}} / {{progDawahMeetingGatheringCount}}</span>
 </p>
 </td>
 <td class="c52" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp;/</span>
+<span class="c3">{{progDawahMeetingDawahTarget}} / {{progDawahMeetingDiscussionTarget}} / {{progDawahMeetingGatheringTarget}}</span>
 </p>
 </td>
 <td class="c92" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp;/</span>
+<span class="c3">{{progDawahMeetingDawahAttendance}} / {{progDawahMeetingDiscussionAttendance}} / {{progDawahMeetingGatheringAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -1406,17 +1327,17 @@ export const templateHtml = `
 </td>
 <td class="c79" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{progSiratunnabiSiratCount}} / {{progSiratunnabiEidCount}}</span>
 </p>
 </td>
 <td class="c52" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{progSiratunnabiSiratTarget}} / {{progSiratunnabiEidTarget}}</span>
 </p>
 </td>
 <td class="c92" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{progSiratunnabiSiratAttendance}} / {{progSiratunnabiEidAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -1433,17 +1354,17 @@ export const templateHtml = `
 </td>
 <td class="c79" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp;/ &nbsp;/</span>
+<span class="c3">{{progDarsTafsirDarsCount}} / {{progDarsTafsirTafsirCount}} / {{progDarsTafsirPublicCount}}</span>
 </p>
 </td>
 <td class="c52" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp;/ &nbsp;/</span>
+<span class="c3">{{progDarsTafsirDarsTarget}} / {{progDarsTafsirTafsirTarget}} / {{progDarsTafsirPublicTarget}}</span>
 </p>
 </td>
 <td class="c92" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp;/ &nbsp;/</span>
+<span class="c3">{{progDarsTafsirDarsAttendance}} / {{progDarsTafsirTafsirAttendance}} / {{progDarsTafsirPublicAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -1460,17 +1381,17 @@ export const templateHtml = `
 </td>
 <td class="c79" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &#2535;</span>
+<span class="c3">{{progIftarPersonalCount}} / {{progIftarOrgCount}}</span>
 </p>
 </td>
 <td class="c52" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &#2539;</span>
+<span class="c3">{{progIftarPersonalTarget}} / {{progIftarOrgTarget}}</span>
 </p>
 </td>
 <td class="c92" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &#2535;&#2539;</span>
+<span class="c3">{{progIftarPersonalAttendance}} / {{progIftarOrgAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -1487,17 +1408,17 @@ export const templateHtml = `
 </td>
 <td class="c79" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp;/</span>
+<span class="c3">{{progTeaCircleTeaCount}} / {{progTeaCircleLunchCount}} / {{progTeaCircleTourCount}}</span>
 </p>
 </td>
 <td class="c52" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp;/</span>
+<span class="c3">{{progTeaCircleTeaTarget}} / {{progTeaCircleLunchTarget}} / {{progTeaCircleTourTarget}}</span>
 </p>
 </td>
 <td class="c92" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp;/</span>
+<span class="c3">{{progTeaCircleTeaAttendance}} / {{progTeaCircleLunchAttendance}} / {{progTeaCircleTourAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -1514,17 +1435,17 @@ export const templateHtml = `
 </td>
 <td class="c79" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp;/</span>
+<span class="c3">{{progCompetitionCompCount}} / {{progCompetitionOtherCount}}</span>
 </p>
 </td>
 <td class="c52" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp;/</span>
+<span class="c3">{{progCompetitionCompTarget}} / {{progCompetitionOtherTarget}}</span>
 </p>
 </td>
 <td class="c92" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp;/</span>
+<span class="c3">{{progCompetitionCompAttendance}} / {{progCompetitionOtherAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -1593,44 +1514,39 @@ export const templateHtml = `
 <span class="c3">&#2488;&#2480;&#2509;&#2476;&#2478;&#2507;&#2463; &#2488;&#2470;&#2488;&#2509;&#2479; (&#2480;&#2497;&#2453;&#2472;)</span>
 </p>
 </td>
-<td class="c9" colspan="1" rowspan="1">
+<td class="c17" colspan="1" rowspan="1">
+<p class="c1">
+<span class="c3">{{rokonPrevious}}</span>
+</p>
+</td>
+<td class="c93" colspan="1" rowspan="1">
 <p class="c1">
 <span class="c3">{{rokonCurrent}}</span>
 </p>
 </td>
-<td class="c38" colspan="1" rowspan="1">
-<p class="c1">
-<span class="c3">&#2541;</span>
-</p>
-</td>
 <td class="c143" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{rokonIncrease}}</span>
 </p>
 </td>
 <td class="c41" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{rokonArrived}}</span>
 </p>
 </td>
-<td class="c21" colspan="1" rowspan="1">
+<td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{rokonDeficit}}</span>
 </p>
 </td>
-<td class="c25" colspan="1" rowspan="1">
+<td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{rokonTarget}}</span>
 </p>
 </td>
-<td class="c15" colspan="1" rowspan="1">
+<td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{rokonRate}}</span>
 </p>
 </td>
 </tr>
@@ -1640,46 +1556,39 @@ export const templateHtml = `
 <span class="c3">&#2488;&#2480;&#2509;&#2476;&#2478;&#2507;&#2463; &#2488;&#2470;&#2488;&#2509;&#2479;(&#2480;&#2497;&#2453;&#2472;) &#2474;&#2509;&#2480;&#2494;&#2480;&#2509;&#2469;&#2496;</span>
 </p>
 </td>
-<td class="c9" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<td class="c17" colspan="1" rowspan="1">
+<p class="c1">
+<span class="c3">{{rokonCandidatePrevious}}</span>
 </p>
 </td>
-<td class="c38" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<td class="c93" colspan="1" rowspan="1">
+<p class="c1">
+<span class="c3">{{rokonCandidateCurrent}}</span>
 </p>
 </td>
 <td class="c143" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{rokonCandidateIncrease}}</span>
 </p>
 </td>
 <td class="c41" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{rokonCandidateArrived}}</span>
 </p>
 </td>
-<td class="c21" colspan="1" rowspan="1">
+<td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{rokonCandidateDeficit}}</span>
 </p>
 </td>
-<td class="c25" colspan="1" rowspan="1">
+<td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{rokonCandidateTarget}}</span>
 </p>
 </td>
-<td class="c15" colspan="1" rowspan="1">
+<td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{rokonCandidateRate}}</span>
 </p>
 </td>
 </tr>
@@ -1689,43 +1598,39 @@ export const templateHtml = `
 <span class="c3">&#2488;&#2480;&#2509;&#2476;&#2478;&#2507;&#2463; &#2453;&#2480;&#2509;&#2478;&#2496;</span>
 </p>
 </td>
-<td class="c9" colspan="1" rowspan="1">
+<td class="c17" colspan="1" rowspan="1">
 <p class="c1">
 <span class="c3">{{karmiPrevious}}</span>
 </p>
 </td>
-<td class="c38" colspan="1" rowspan="1">
+<td class="c93" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2537;&#2535;</span>
+<span class="c3">{{karmiCurrent}}</span>
 </p>
 </td>
 <td class="c143" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2535;</span>
+<span class="c3">{{karmiIncrease}}</span>
 </p>
 </td>
 <td class="c41" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{karmiArrived}}</span>
 </p>
 </td>
-<td class="c21" colspan="1" rowspan="1">
+<td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{karmiDeficit}}</span>
 </p>
 </td>
-<td class="c25" colspan="1" rowspan="1">
+<td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{karmiTarget}}</span>
 </p>
 </td>
-<td class="c15" colspan="1" rowspan="1">
+<td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{karmiRate}}</span>
 </p>
 </td>
 </tr>
@@ -1735,43 +1640,81 @@ export const templateHtml = `
 <span class="c3">&#2488;&#2480;&#2509;&#2476;&#2478;&#2507;&#2463; &#2488;&#2453;&#2509;&#2480;&#2495;&#2527; &#2488;&#2489;&#2479;&#2507;&#2455;&#2496; &#2488;&#2470;&#2488;&#2509;&#2479;</span>
 </p>
 </td>
-<td class="c9" colspan="1" rowspan="1">
+<td class="c17" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2535;&#2534;</span>
+<span class="c3">{{associatePrevious}}</span>
 </p>
 </td>
-<td class="c38" colspan="1" rowspan="1">
+<td class="c93" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2536;&#2534;</span>
+<span class="c3">{{associateCurrent}}</span>
 </p>
 </td>
 <td class="c143" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2535;&#2534;</span>
+<span class="c3">{{associateIncrease}}</span>
 </p>
 </td>
 <td class="c41" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{associateArrived}}</span>
 </p>
 </td>
-<td class="c21" colspan="1" rowspan="1">
+<td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{associateDeficit}}</span>
 </p>
 </td>
-<td class="c25" colspan="1" rowspan="1">
+<td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{associateTarget}}</span>
 </p>
 </td>
-<td class="c15" colspan="1" rowspan="1">
+<td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{associateRate}}</span>
+</p>
+</td>
+</tr>
+<tr class="c27">
+<td class="c40" colspan="1" rowspan="1">
+<p class="c13">
+<span class="c3">&#2488;&#2489;&#2479;&#2507;&#2455;&#2496; &#2488;&#2470;&#2488;&#2509;&#2479;</span>
+</p>
+</td>
+<td class="c17" colspan="1" rowspan="1">
+<p class="c1">
+<span class="c3">{{generalAssociatePrevious}}</span>
+</p>
+</td>
+<td class="c93" colspan="1" rowspan="1">
+<p class="c1">
+<span class="c3">{{generalAssociateCurrent}}</span>
+</p>
+</td>
+<td class="c143" colspan="1" rowspan="1">
+<p class="c1">
+<span class="c3">{{generalAssociateIncrease}}</span>
+</p>
+</td>
+<td class="c41" colspan="1" rowspan="1">
+<p class="c1 c4">
+<span class="c3">{{generalAssociateArrived}}</span>
+</p>
+</td>
+<td class="c53" colspan="1" rowspan="1">
+<p class="c1 c4">
+<span class="c3">{{generalAssociateDeficit}}</span>
+</p>
+</td>
+<td class="c45" colspan="1" rowspan="1">
+<p class="c1 c4">
+<span class="c3">{{generalAssociateTarget}}</span>
+</p>
+</td>
+<td class="c69" colspan="1" rowspan="1">
+<p class="c1 c4">
+<span class="c3">{{generalAssociateRate}}</span>
 </p>
 </td>
 </tr>
@@ -1810,27 +1753,27 @@ export const templateHtml = `
 <tr class="c32">
 <td class="c40" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2535;&#2543;&#2543;&#2536;</span>
+<span class="c3">{{generalAssociatePrevious}}</span>
 </p>
 </td>
 <td class="c9" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2536;&#2534;&#2534;&#2534;</span>
+<span class="c3">{{generalAssociateCurrent}}</span>
 </p>
 </td>
 <td class="c38" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2542;</span>
+<span class="c3">{{generalAssociateIncrease}}</span>
 </p>
 </td>
 <td class="c51" colspan="3" rowspan="1">
 <p class="c1">
-<span class="c3">{{totalDawahReached}}</span>
+<span class="c3">{{generalAssociateTarget}}</span>
 </p>
 </td>
 <td class="c120" colspan="2" rowspan="1">
 <p class="c1">
-<span class="c3">&#2542;%</span>
+<span class="c3">{{generalAssociateRate}}</span>
 </p>
 </td>
 </tr>
@@ -1896,32 +1839,27 @@ export const templateHtml = `
 </td>
 <td class="c93" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{laborRokonPrevious}}</span>
 </p>
 </td>
 <td class="c35" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{laborRokonCurrent}}</span>
 </p>
 </td>
 <td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{laborRokonIncrease}}</span>
 </p>
 </td>
 <td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{laborRokonDeficit}}</span>
 </p>
 </td>
 <td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{laborRokonTarget}}</span>
 </p>
 </td>
 </tr>
@@ -1933,32 +1871,27 @@ export const templateHtml = `
 </td>
 <td class="c93" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{laborKarmiPrevious}}</span>
 </p>
 </td>
 <td class="c35" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{laborKarmiCurrent}}</span>
 </p>
 </td>
 <td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{laborKarmiIncrease}}</span>
 </p>
 </td>
 <td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{laborKarmiDeficit}}</span>
 </p>
 </td>
 <td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{laborKarmiTarget}}</span>
 </p>
 </td>
 </tr>
@@ -1970,32 +1903,27 @@ export const templateHtml = `
 </td>
 <td class="c93" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{laborAssociatePrevious}}</span>
 </p>
 </td>
 <td class="c35" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{laborAssociateCurrent}}</span>
 </p>
 </td>
 <td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{laborAssociateIncrease}}</span>
 </p>
 </td>
 <td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{laborAssociateDeficit}}</span>
 </p>
 </td>
 <td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{laborAssociateTarget}}</span>
 </p>
 </td>
 </tr>
@@ -2012,32 +1940,27 @@ export const templateHtml = `
 </td>
 <td class="c93" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{ulamaRokonPrevious}}</span>
 </p>
 </td>
 <td class="c35" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{ulamaRokonCurrent}}</span>
 </p>
 </td>
 <td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{ulamaRokonIncrease}}</span>
 </p>
 </td>
 <td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{ulamaRokonDeficit}}</span>
 </p>
 </td>
 <td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{ulamaRokonTarget}}</span>
 </p>
 </td>
 </tr>
@@ -2049,32 +1972,27 @@ export const templateHtml = `
 </td>
 <td class="c93" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{ulamaKarmiPrevious}}</span>
 </p>
 </td>
 <td class="c35" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{ulamaKarmiCurrent}}</span>
 </p>
 </td>
 <td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{ulamaKarmiIncrease}}</span>
 </p>
 </td>
 <td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{ulamaKarmiDeficit}}</span>
 </p>
 </td>
 <td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{ulamaKarmiTarget}}</span>
 </p>
 </td>
 </tr>
@@ -2086,32 +2004,27 @@ export const templateHtml = `
 </td>
 <td class="c93" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{ulamaAssociatePrevious}}</span>
 </p>
 </td>
 <td class="c35" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{ulamaAssociateCurrent}}</span>
 </p>
 </td>
 <td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{ulamaAssociateIncrease}}</span>
 </p>
 </td>
 <td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{ulamaAssociateDeficit}}</span>
 </p>
 </td>
 <td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{ulamaAssociateTarget}}</span>
 </p>
 </td>
 </tr>
@@ -2128,32 +2041,27 @@ export const templateHtml = `
 </td>
 <td class="c93" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{proRokonPrevious}}</span>
 </p>
 </td>
 <td class="c35" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{proRokonCurrent}}</span>
 </p>
 </td>
 <td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{proRokonIncrease}}</span>
 </p>
 </td>
 <td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{proRokonDeficit}}</span>
 </p>
 </td>
 <td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{proRokonTarget}}</span>
 </p>
 </td>
 </tr>
@@ -2165,32 +2073,27 @@ export const templateHtml = `
 </td>
 <td class="c93" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{proKarmiPrevious}}</span>
 </p>
 </td>
 <td class="c35" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{proKarmiCurrent}}</span>
 </p>
 </td>
 <td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{proKarmiIncrease}}</span>
 </p>
 </td>
 <td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{proKarmiDeficit}}</span>
 </p>
 </td>
 <td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{proKarmiTarget}}</span>
 </p>
 </td>
 </tr>
@@ -2202,32 +2105,27 @@ export const templateHtml = `
 </td>
 <td class="c93" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{proAssociatePrevious}}</span>
 </p>
 </td>
 <td class="c35" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{proAssociateCurrent}}</span>
 </p>
 </td>
 <td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{proAssociateIncrease}}</span>
 </p>
 </td>
 <td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{proAssociateDeficit}}</span>
 </p>
 </td>
 <td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{proAssociateTarget}}</span>
 </p>
 </td>
 </tr>
@@ -2244,32 +2142,27 @@ export const templateHtml = `
 </td>
 <td class="c93" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{youthRokonPrevious}}</span>
 </p>
 </td>
 <td class="c35" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{youthRokonCurrent}}</span>
 </p>
 </td>
 <td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{youthRokonIncrease}}</span>
 </p>
 </td>
 <td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{youthRokonDeficit}}</span>
 </p>
 </td>
 <td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{youthRokonTarget}}</span>
 </p>
 </td>
 </tr>
@@ -2281,32 +2174,27 @@ export const templateHtml = `
 </td>
 <td class="c93" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{youthKarmiPrevious}}</span>
 </p>
 </td>
 <td class="c35" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{youthKarmiCurrent}}</span>
 </p>
 </td>
 <td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{youthKarmiIncrease}}</span>
 </p>
 </td>
 <td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{youthKarmiDeficit}}</span>
 </p>
 </td>
 <td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{youthKarmiTarget}}</span>
 </p>
 </td>
 </tr>
@@ -2318,32 +2206,27 @@ export const templateHtml = `
 </td>
 <td class="c93" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{youthAssociatePrevious}}</span>
 </p>
 </td>
 <td class="c35" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{youthAssociateCurrent}}</span>
 </p>
 </td>
 <td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{youthAssociateIncrease}}</span>
 </p>
 </td>
 <td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{youthAssociateDeficit}}</span>
 </p>
 </td>
 <td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{youthAssociateTarget}}</span>
 </p>
 </td>
 </tr>
@@ -2360,32 +2243,27 @@ export const templateHtml = `
 </td>
 <td class="c93" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{nonMuslimRokonPrevious}}</span>
 </p>
 </td>
 <td class="c35" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{nonMuslimRokonCurrent}}</span>
 </p>
 </td>
 <td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{nonMuslimRokonIncrease}}</span>
 </p>
 </td>
 <td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{nonMuslimRokonDeficit}}</span>
 </p>
 </td>
 <td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{nonMuslimRokonTarget}}</span>
 </p>
 </td>
 </tr>
@@ -2397,32 +2275,27 @@ export const templateHtml = `
 </td>
 <td class="c93" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{nonMuslimKarmiPrevious}}</span>
 </p>
 </td>
 <td class="c35" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{nonMuslimKarmiCurrent}}</span>
 </p>
 </td>
 <td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{nonMuslimKarmiIncrease}}</span>
 </p>
 </td>
 <td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{nonMuslimKarmiDeficit}}</span>
 </p>
 </td>
 <td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{nonMuslimKarmiTarget}}</span>
 </p>
 </td>
 </tr>
@@ -2434,32 +2307,27 @@ export const templateHtml = `
 </td>
 <td class="c93" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{nonMuslimAssociatePrevious}}</span>
 </p>
 </td>
 <td class="c35" colspan="2" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{nonMuslimAssociateCurrent}}</span>
 </p>
 </td>
 <td class="c53" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{nonMuslimAssociateIncrease}}</span>
 </p>
 </td>
 <td class="c45" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{nonMuslimAssociateDeficit}}</span>
 </p>
 </td>
 <td class="c69" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{nonMuslimAssociateTarget}}</span>
 </p>
 </td>
 </tr>
@@ -3128,20 +2996,17 @@ export const templateHtml = `
 </td>
 <td class="c55" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{meetingWardTeamCount}}</span>
 </p>
 </td>
 <td class="c85" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3"></span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{meetingWardTeamAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -3158,17 +3023,17 @@ export const templateHtml = `
 </td>
 <td class="c55" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2535;</span>
+<span class="c3">{{meetingWardCount}}</span>
 </p>
 </td>
 <td class="c85" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2535;</span>
+<span class="c3"></span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2540;</span>
+<span class="c3">{{meetingWardAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -3185,20 +3050,17 @@ export const templateHtml = `
 </td>
 <td class="c55" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{meetingRokonCount}}</span>
 </p>
 </td>
 <td class="c85" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3"></span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{meetingRokonAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -3215,17 +3077,17 @@ export const templateHtml = `
 </td>
 <td class="c55" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2536; / &#2539;</span>
+<span class="c3">{{meetingKarmiCount}}</span>
 </p>
 </td>
 <td class="c85" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2539; / &#2535;&#2534;</span>
+<span class="c3"></span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2539; / &#2537;</span>
+<span class="c3">{{meetingKarmiAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -3299,17 +3161,17 @@ export const templateHtml = `
 </td>
 <td class="c55" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{meetingAssociateCount}}</span>
 </p>
 </td>
 <td class="c85" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3"></span>
 </p>
 </td>
 <td class="c72" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{meetingAssociateAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -3934,7 +3796,7 @@ export const templateHtml = `
 </td>
 <td style="width: 110.53pt;" class="c173" colspan="2" rowspan="1">
 <p class="c1">
-<span class="c2">&#2536;&#2534;</span>
+<span class="c2">{{socialPersonalCount}}</span>
 </p>
 </td>
 <td style="width: 82.85pt;" class="c157" colspan="2" rowspan="1">
@@ -3944,7 +3806,7 @@ export const templateHtml = `
 </td>
 <td style="width: 89.62pt;" class="c171" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c2">&#2539;&#2534;</span>
+<span class="c2">{{socialPersonalServiceCount}}</span>
 </p>
 </td>
 </tr>
@@ -4007,7 +3869,7 @@ export const templateHtml = `
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &#2535;</span>
+<span class="c3">{{socialDevWork}}</span>
 </p>
 </td>
 <td class="c24" colspan="1" rowspan="1">
@@ -4016,9 +3878,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c39" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{socialEducation}}</span>
 </p>
 </td>
 </tr>
@@ -4030,7 +3891,7 @@ export const templateHtml = `
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2539; / &#2539;</span>
+<span class="c3">{{socialSocialEvent}}</span>
 </p>
 </td>
 <td class="c24" colspan="1" rowspan="1">
@@ -4040,19 +3901,19 @@ export const templateHtml = `
 </td>
 <td class="c39" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2539; / &#2535;&#2534;</span>
+<span class="c3">{{socialTechnical}}</span>
 </p>
 </td>
 </tr>
 <tr class="c27">
 <td class="c80" colspan="1" rowspan="1">
 <p class="c13">
-<span class="c3">&#2478;&#2494;&#2472;&#2476;&#2495;&#2453; &#2488;&#2489;&#2494;&#2527;&#2468;&#2494; / &#2453;&#2480;&#2509;&#2460;&#2503; &#2489;&#2494;&#2488;&#2494;&#2472;&#2494; &#2474;&#2509;&#2480;&#2470;&#2494;&#2472; (&#2478;&#2507;&#2463; &#2453;&#2468;&#2460;&#2472;&#2453;&#2503;)</span>
+<span class="c3">&#2478;&#2494;&#2472;&#2476;&#2495;&#2455;&#2468; &#2488;&#2489;&#2494;&#2527;&#2468;&#2494; / &#2453;&#2480;&#2509;&#2460;&#2503; &#2489;&#2494;&#2488;&#2494;&#2472;&#2494; &#2474;&#2509;&#2480;&#2470;&#2494;&#2472; (&#2478;&#2507;&#2463; &#2453;&#2468;&#2460;&#2472;&#2453;&#2503;)</span>
 </p>
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2537; / &#2541;</span>
+<span class="c3">{{socialHumanitarian}}</span>
 </p>
 </td>
 <td class="c24" colspan="1" rowspan="1">
@@ -4074,7 +3935,7 @@ export const templateHtml = `
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&nbsp;/ </span>
+<span class="c3">{{socialCleaning}}</span>
 </p>
 </td>
 <td class="c24" colspan="1" rowspan="1">
@@ -4084,7 +3945,7 @@ export const templateHtml = `
 </td>
 <td class="c39" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{socialTrees}}</span>
 </p>
 </td>
 </tr>
@@ -4096,7 +3957,7 @@ export const templateHtml = `
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2536; / &#2537;</span>
+<span class="c3">{{socialMedical}}</span>
 </p>
 </td>
 <td class="c24" colspan="1" rowspan="1">
@@ -4106,7 +3967,7 @@ export const templateHtml = `
 </td>
 <td class="c39" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{socialAwareness}}</span>
 </p>
 </td>
 </tr>
@@ -4118,7 +3979,7 @@ export const templateHtml = `
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{socialBlood}}</span>
 </p>
 </td>
 <td class="c24" colspan="1" rowspan="1">
@@ -4128,7 +3989,7 @@ export const templateHtml = `
 </td>
 <td class="c39" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{socialDisaster}}</span>
 </p>
 </td>
 </tr>
@@ -4140,7 +4001,7 @@ export const templateHtml = `
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{socialMaternity}}</span>
 </p>
 </td>
 <td class="c24" colspan="1" rowspan="1">
@@ -4150,7 +4011,7 @@ export const templateHtml = `
 </td>
 <td class="c39" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{socialNewborn}}</span>
 </p>
 </td>
 </tr>
@@ -4184,7 +4045,7 @@ export const templateHtml = `
 </td>
 <td class="c6" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/</span>
+<span class="c3">{{socialMaktub}}</span>
 </p>
 </td>
 <td class="c24" colspan="1" rowspan="1">
@@ -4194,7 +4055,7 @@ export const templateHtml = `
 </td>
 <td class="c39" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &#2538;</span>
+<span class="c3">{{socialBurial}}</span>
 </p>
 </td>
 </tr>
@@ -4244,19 +4105,18 @@ export const templateHtml = `
 </tr>
 <tr class="c27">
 <td class="c168" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3"> - </span>
+<p class="c1">
+<span class="c3">{{socialHealthTrainingParticipantCount}}</span>
 </p>
 </td>
 <td class="c87" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3"> - </span>
+<p class="c1">
+<span class="c3">{{socialHealthServiceParticipantCount}}</span>
 </p>
 </td>
 <td class="c101" colspan="1" rowspan="1">
-<p class="c13 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{socialHealthBeneficiaryCount}}</span>
 </p>
 </td>
 </tr>
@@ -4284,21 +4144,18 @@ export const templateHtml = `
 </tr>
 <tr class="c27">
 <td class="c63" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3"> -
-</span>
+<p class="c1">
+<span class="c3">{{socialInstTotalInstitutions}}</span>
 </p>
 </td>
 <td class="c62" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3"> -
-</span>
+<p class="c1">
+<span class="c3">{{socialInstActiveInstitutions}}</span>
 </p>
 </td>
 <td class="c81" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{socialInstNewInstitutions}}</span>
 </p>
 </td>
 </tr>
@@ -4335,12 +4192,12 @@ export const templateHtml = `
 </td>
 <td class="c95" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2536;</span>
+<span class="c3">{{politicalCommPoliticalCount}}</span>
 </p>
 </td>
 <td class="c5" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2537;</span>
+<span class="c3">{{politicalCommPoliticalReached}}</span>
 </p>
 </td>
 </tr>
@@ -4351,15 +4208,13 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c95" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{politicalCommAdminCount}}</span>
 </p>
 </td>
 <td class="c5" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{politicalCommAdminReached}}</span>
 </p>
 </td>
 </tr>
@@ -4393,29 +4248,29 @@ export const templateHtml = `
 </td>
 <td class="c124" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2536;</span>
+<span class="c3">{{politicalProgCentralCount}}</span>
 </p>
 </td>
 <td class="c58" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2539;</span>
+<span class="c3">{{politicalProgCentralAttendance}}</span>
 </p>
 </td>
 </tr>
 <tr class="c27">
 <td class="c24" colspan="1" rowspan="1">
 <p class="c13">
-<span class="c3">&#2488;&#2509;&#2469;&#2494;&#2472;&#2496;&#2527;&#2477;&#2494;&#2476;&#2503; &#2456;&#2507;&#2487;&#2495;&#2468; &#2453;&#2480;&#2509;&#2478;&#2488;&#2498;&#2458;&#2496;: &#2460;&#2472;&#2488;&#2477;&#2494;/&#2488;&#2478;&#2494;&#2476;&#2503;&#2486;/&#2478;&#2495;&#2459;&#2495;&#2482;</span>
+<span class="c3">&#2488;&#2509;&#2469;&#2494;&#2472;&#2495;&#2527;&#2477;&#2494;&#2476;&#2503; &#2456;&#2507;&#2487;&#2495;&#2468; &#2453;&#2480;&#2509;&#2478;&#2488;&#2498;&#2458;&#2496;: &#2460;&#2472;&#2488;&#2477;&#2494;/&#2488;&#2478;&#2494;&#2476;&#2503;&#2486;/&#2478;&#2495;&#2459;&#2495;&#2482;</span>
 </p>
 </td>
 <td class="c124" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&nbsp;/ &nbsp;/ </span>
+<span class="c3">{{politicalProgLocalCount}}</span>
 </p>
 </td>
 <td class="c58" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">/ &nbsp; / </span>
+<span class="c3">{{politicalProgLocalAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -4427,12 +4282,12 @@ export const templateHtml = `
 </td>
 <td class="c124" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&nbsp;/ &nbsp; / &nbsp; / </span>
+<span class="c3">{{politicalProgDistributionCount}}</span>
 </p>
 </td>
 <td class="c58" colspan="1" rowspan="1">
-<p class="c13">
-<span class="c3">&#2437;&#2472;&#2509;&#2479;&#2494;&#2472;&#2509;&#2479; (&#2476;&#2495;&#2488;&#2509;&#2468;&#2494;&#2480;&#2495;&#2468; &#2438;&#2482;&#2494;&#2470;&#2494; &#2453;&#2494;&#2455;&#2460;&#2503; &#2470;&#2503;&#2527;&#2494; &#2479;&#2494;&#2476;&#2503;)</span>
+<p class="c1">
+<span class="c3">{{politicalProgDistributionAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -4480,15 +4335,13 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c91" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{dayIndependenceDayCount}}</span>
 </p>
 </td>
 <td class="c144" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{dayIndependenceDayAttendance}}</span>
 </p>
 </td>
 <td class="c161" colspan="1" rowspan="1">
@@ -4497,15 +4350,13 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c26" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{dayMotherLanguageDayCount}}</span>
 </p>
 </td>
 <td class="c44" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{dayMotherLanguageDayAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -4516,15 +4367,13 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c91" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{dayVictoryDayCount}}</span>
 </p>
 </td>
 <td class="c144" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{dayVictoryDayAttendance}}</span>
 </p>
 </td>
 <td class="c161" colspan="1" rowspan="1">
@@ -4533,15 +4382,13 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c26" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{dayOthersCount}}</span>
 </p>
 </td>
 <td class="c44" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{dayOthersAttendance}}</span>
 </p>
 </td>
 </tr>
@@ -4580,20 +4427,17 @@ export const templateHtml = `
 </td>
 <td class="c23" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{electionCouncilorCandidateCount}}</span>
 </p>
 </td>
 <td class="c134" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{electionCouncilorElectedCount}}</span>
 </p>
 </td>
 <td class="c71" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{electionCouncilorSecondPlaceCount}}</span>
 </p>
 </td>
 </tr>
@@ -4627,20 +4471,17 @@ export const templateHtml = `
 </td>
 <td class="c23" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{electionVoteCenterCount}}</span>
 </p>
 </td>
 <td class="c134" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{electionVoteCenterIncrease}}</span>
 </p>
 </td>
 <td class="c71" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{electionVoteCenterTarget}}</span>
 </p>
 </td>
 </tr>
@@ -4652,20 +4493,17 @@ export const templateHtml = `
 </td>
 <td class="c23" colspan="1" rowspan="1">
 <p class="c1 c4">
-<span class="c3">
-</span>
+<span class="c3">{{electionVoteCenterCommitteeCount}}</span>
 </p>
 </td>
 <td class="c134" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{electionVoteCenterCommitteeIncrease}}</span>
 </p>
 </td>
 <td class="c71" colspan="1" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{electionVoteCenterCommitteeTarget}}</span>
 </p>
 </td>
 </tr>
@@ -4677,8 +4515,7 @@ export const templateHtml = `
 </td>
 <td class="c130" colspan="2" rowspan="1">
 <p class="c13 c4">
-<span class="c3">
-</span>
+<span class="c3">{{electionCommitteeMeetingCount}}</span>
 </p>
 </td>
 </tr>
@@ -4718,12 +4555,12 @@ export const templateHtml = `
 <tr class="c20">
 <td class="c82" colspan="4" rowspan="1">
 <p class="c13">
-<span class="c3">&#2471;&#2494;&#2480;&#2509;&#2479;&#2453;&#2499;&#2468; &#2472;&#2495;&#2459;&#2494;&#2476;: &#2535;&#2540;,&#2534;&#2534;&#2534;/=</span>
+<span class="c3">&#2471;&#2494;&#2480;&#2509;&#2479;&#2453;&#2499;&#2468; &#2472;&#2495;&#2459;&#2494;&#2476;: {{baitulmalDharjoNisab}}/=</span>
 </p>
 </td>
 <td class="c82" colspan="4" rowspan="1">
 <p class="c19">
-<span class="c3">&#2451;&#2527;&#2494;&#2470;&#2494;&#2453;&#2499;&#2468; &#2472;&#2495;&#2459;&#2494;&#2476; :&#2535;&#2540;,&#2534;&#2534;&#2534;/=</span>
+<span class="c3">&#2451;&#2527;&#2494;&#2470;&#2494;&#2453;&#2499;&#2468; &#2472;&#2495;&#2459;&#2494;&#2476; :{{baitulmalWadaNisab}}/=</span>
 </p>
 </td>
 </tr>
@@ -4747,7 +4584,7 @@ export const templateHtml = `
 </td>
 <td class="c14" colspan="3" rowspan="1">
 <p class="c19">
-<span class="c3">&#2536;,&#2539;&#2534;&#2534;/=</span>
+<span class="c3">{{baitulmalPraptoNisab}}/=</span>
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
@@ -4757,7 +4594,7 @@ export const templateHtml = `
 </td>
 <td class="c14" colspan="1" rowspan="1">
 <p class="c19">
-<span class="c3">&#2537;,&#2539;&#2534;&#2534;/=</span>
+<span class="c3">{{baitulmalNisabPorishodh}}/=</span>
 </p>
 </td>
 </tr>
@@ -4769,7 +4606,7 @@ export const templateHtml = `
 </td>
 <td class="c14" colspan="3" rowspan="1">
 <p class="c19">
-<span class="c3">&#2535;,&#2534;&#2534;&#2534;/=</span>
+<span class="c3">{{baitulmalSorasoriIyanat}}/=</span>
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
@@ -4779,8 +4616,7 @@ export const templateHtml = `
 </td>
 <td class="c14" colspan="1" rowspan="1">
 <p class="c19 c4">
-<span class="c3">
-</span>
+<span class="c3">{{baitulmalSthaniyoKhoroch}}/=</span>
 </p>
 </td>
 </tr>
@@ -4791,9 +4627,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
-<p class="c19 c4">
-<span class="c3">
-</span>
+<p class="c19">
+<span class="c3">{{baitulmalOneTimeIncome}}/=</span>
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
@@ -4802,9 +4637,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c14" colspan="1" rowspan="1">
-<p class="c19 c4">
-<span class="c3">
-</span>
+<p class="c19">
+<span class="c3">{{baitulmalOneTimeExpense}}/=</span>
 </p>
 </td>
 </tr>
@@ -4815,9 +4649,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
-<p class="c19 c4">
-<span class="c3">
-</span>
+<p class="c19">
+<span class="c3">{{baitulmalElectionFundIncome}}/=</span>
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
@@ -4826,9 +4659,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c14" colspan="1" rowspan="1">
-<p class="c19 c4">
-<span class="c3">
-</span>
+<p class="c19">
+<span class="c3">{{baitulmalElectionFundExpense}}/=</span>
 </p>
 </td>
 </tr>
@@ -4839,9 +4671,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
-<p class="c19 c4">
-<span class="c3">
-</span>
+<p class="c19">
+<span class="c3">{{baitulmalShahidFundIncome}}/=</span>
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
@@ -4850,9 +4681,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c14" colspan="1" rowspan="1">
-<p class="c19 c4">
-<span class="c3">
-</span>
+<p class="c19">
+<span class="c3">{{baitulmalShahidFundExpense}}/=</span>
 </p>
 </td>
 </tr>
@@ -4863,9 +4693,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
-<p class="c19 c4">
-<span class="c3">
-</span>
+<p class="c19">
+<span class="c3">{{baitulmalFloodCollectionIncome}}/=</span>
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
@@ -4874,9 +4703,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c14" colspan="1" rowspan="1">
-<p class="c19 c4">
-<span class="c3">
-</span>
+<p class="c19">
+<span class="c3">{{baitulmalFloodCollectionExpense}}/=</span>
 </p>
 </td>
 </tr>
@@ -4887,9 +4715,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
-<p class="c19 c4">
-<span class="c3">
-</span>
+<p class="c19">
+<span class="c3">{{baitulmalSocialWorkIncome}}/=</span>
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
@@ -4898,9 +4725,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c14" colspan="1" rowspan="1">
-<p class="c19 c4">
-<span class="c3">
-</span>
+<p class="c19">
+<span class="c3">{{baitulmalSocialWorkExpense}}/=</span>
 </p>
 </td>
 </tr>
@@ -4955,9 +4781,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
-<p class="c19 c4">
-<span class="c3">
-</span>
+<p class="c19">
+<span class="c3">{{baitulmalIftarIncome}}/=</span>
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
@@ -4966,9 +4791,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c14" colspan="1" rowspan="1">
-<p class="c19 c4">
-<span class="c3">
-</span>
+<p class="c19">
+<span class="c3">{{baitulmalIftarExpense}}/=</span>
 </p>
 </td>
 </tr>
@@ -4979,9 +4803,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
-<p class="c19 c4">
-<span class="c3">
-</span>
+<p class="c19">
+<span class="c3">{{baitulmalDelegateFeeIncome}}/=</span>
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
@@ -4990,9 +4813,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c14" colspan="1" rowspan="1">
-<p class="c19 c4">
-<span class="c3">
-</span>
+<p class="c19">
+<span class="c3">{{baitulmalDelegateFeeExpense}}/=</span>
 </p>
 </td>
 </tr>
@@ -5004,7 +4826,7 @@ export const templateHtml = `
 </td>
 <td class="c14" colspan="3" rowspan="1">
 <p class="c19">
-<span class="c2">&#2541;,&#2539;&#2534;&#2534;/=</span>
+<span class="c2">{{baitulmalTotalIncome}}/=</span>
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
@@ -5014,7 +4836,7 @@ export const templateHtml = `
 </td>
 <td class="c14" colspan="1" rowspan="1">
 <p class="c19">
-<span class="c2">&#2541;,&#2539;&#2534;&#2534;/=</span>
+<span class="c2">{{baitulmalTotalExpense}}/=</span>
 </p>
 </td>
 </tr>
@@ -5025,9 +4847,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
-<p class="c19 c4">
-<span class="c2">
-</span>
+<p class="c19">
+<span class="c2">{{baitulmalPreviousSurplus}}</span>
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
@@ -5036,9 +4857,8 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c14" colspan="1" rowspan="1">
-<p class="c19 c4">
-<span class="c2">
-</span>
+<p class="c19">
+<span class="c2">{{baitulmalMonthlySurplus}}</span>
 </p>
 </td>
 </tr>
@@ -5050,7 +4870,7 @@ export const templateHtml = `
 </td>
 <td class="c14" colspan="3" rowspan="1">
 <p class="c19">
-<span class="c2">&#2541;,&#2539;&#2534;&#2534;/=</span>
+<span class="c2">{{baitulmalGrandTotalIncome}}/=</span>
 </p>
 </td>
 <td class="c14" colspan="3" rowspan="1">
@@ -5060,7 +4880,7 @@ export const templateHtml = `
 </td>
 <td class="c14" colspan="1" rowspan="1">
 <p class="c19">
-<span class="c2">&#2541;,&#2539;&#2534;&#2534;/=</span>
+<span class="c2">{{baitulmalGrandTotalExpense}}/=</span>
 </p>
 </td>
 </tr>
@@ -5078,13 +4898,7 @@ export const templateHtml = `
 <span class="c2">&#2488;&#2478;&#2488;&#2509;&#2479;&#2435;</span>
 </p>
 <p class="c13">
-<span class="c3">&#2535;. &#2453;&#2495;&#2459;&#2497; &#2460;&#2472;&#2486;&#2453;&#2509;&#2468;&#2495;&#2480; &#2478;&#2494;&#2461;&#2503; &#2479;&#2469;&#2494;&#2479;&#2469; &#2470;&#2509;&#2476;&#2496;&#2472;&#2495; &#2458;&#2503;&#2468;&#2472;&#2494;&#2480; &#2437;&#2477;&#2494;&#2476;</span>
-</p>
-<p class="c13">
-<span class="c3">&#2536;. &#2453;&#2495;&#2459;&#2497; &#2460;&#2472;&#2486;&#2453;&#2509;&#2468;&#2495;&#2480; &#2453;&#2480;&#2509;&#2478;&#2453;&#2509;&#2487;&#2503;&#2468;&#2509;&#2480;&#2503;&#2480; &#2476;&#2509;&#2479;&#2488;&#2509;&#2468;&#2468;&#2494;</span>
-</p>
-<p class="c13">
-<span class="c3">&#2537;. &#2453;&#2495;&#2459;&#2497; &#2460;&#2472;&#2486;&#2453;&#2509;&#2468;&#2495; &#2486;&#2494;&#2480;&#2496;&#2480;&#2495;&#2453;&#2477;&#2494;&#2476;&#2503; &#2437;&#2488;&#2497;&#2488;&#2509;&#2469; &#2469;&#2494;&#2453;&#2494;</span>
+<span class="c3" style="white-space: pre-wrap;">{{remarksProblems}}</span>
 </p>
 </td>
 <td class="c78" colspan="1" rowspan="1">
@@ -5092,13 +4906,7 @@ export const templateHtml = `
 <span class="c2">&#2488;&#2478;&#2509;&#2477;&#2494;&#2476;&#2472;&#2494;&#2435;</span>
 </p>
 <p class="c13">
-<span class="c3">&#2535;. &#2478;&#2527;&#2470;&#2494;&#2472; &#2437;&#2468;&#2509;&#2479;&#2494;&#2472;&#2509;&#2468; &#2441;&#2480;&#2509;&#2476;&#2480; &#2451; &#2474;&#2480;&#2495;&#2476;&#2480;&#2509;&#2468;&#2495;&#2468; &#2474;&#2480;&#2495;&#2488;&#2509;&#2469;&#2495;&#2468;&#2495;&#2468;&#2503; &#2472;&#2468;&#2497;&#2472;&#2470;&#2503;&#2480; &#2478;&#2494;&#2461;&#2503; &#2438;&#2455;&#2509;&#2480;&#2489; &#2488;&#2499;&#2487;&#2509;&#2463;&#2495;</span>
-</p>
-<p class="c13">
-<span class="c3">&#2536;. &#2453;&#2495;&#2459;&#2497; &#2453;&#2480;&#2509;&#2478;&#2496;&#2470;&#2503;&#2480; &#2478;&#2494;&#2461;&#2503; &#2478;&#2494;&#2472;&#2503;&#2494;&#2472;&#2509;&#2472;&#2527;&#2472;&#2503;&#2480; &#2471;&#2494;&#2480;&#2494;&#2476;&#2494;&#2489;&#2495;&#2453;&#2468;&#2494; &#2469;&#2494;&#2453;&#2494;</span>
-</p>
-<p class="c13">
-<span class="c3">&#2537;. &#2453;&#2480;&#2509;&#2478;&#2496;&#2470;&#2503;&#2480; &#2472;&#2495;&#2476;&#2495;&#2524;&#2477;&#2494;&#2476;&#2503; &#2468;&#2468;&#2509;&#2476;&#2494;&#2476;&#2471;&#2494;&#2472; &#2453;&#2480;&#2468;&#2503; &#2474;&#2494;&#2480;&#2482;&#2503; &#2479;&#2503;&#2494;&#2455;&#2509;&#2479;&#2468;&#2494;&#2488;&#2478;&#2509;&#2474;&#2472;&#2509;&#2472; &#2460;&#2472;&#2486;&#2453;&#2509;&#2468;&#2495; &#2468;&#2504;&#2480;&#2496; &#2489;&#2476;&#2503;</span>
+<span class="c3" style="white-space: pre-wrap;">{{remarksProspects}}</span>
 </p>
 </td>
 </tr>
@@ -5109,6 +4917,6 @@ export const templateHtml = `
 <div style="display: flex; justify-content: flex-end;margin-top:30px"><div class="flex items-center flex-col">
 <img width="100" src="/signature.png" alt="Signature" style="max-height: 40px; margin-bottom: 5px;" />
 <span style="display:none;" class="c3">১৬/০৫/২০২৬</span>
-<span class="c3">১৬ জুলাই, ২০২৬</span>
+<span class="c3">{{reportDate}}</span>
 <span class="c3">&#2451;&#2527;&#2494;&#2480;&#2509;&#2465; &#2488;&#2477;&#2494;&#2474;&#2468;&#2495;&#2480; &#2488;&#2509;&#2476;&#2494;&#2453;&#2509;&#2487;&#2480; &#2451; &#2468;&#2494;&#2480;&#2495;&#2454;</span></div>
 </div>`;

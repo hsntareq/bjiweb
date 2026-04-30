@@ -47,18 +47,22 @@ export const PersonalDawatModal: React.FC<PersonalDawatModalProps> = ({
             <div>
               <label className="block text-xs font-semibold text-gray-500 mb-1">মোট জনশক্তি সংখ্যা</label>
               <input type="number" value={data.rokon?.total || 0} onChange={(e) => handleChange('rokon', 'total', parseInt(e.target.value) || 0)} className="w-full border border-gray-200 rounded-lg p-2 text-sm" />
+              <span className="text-[10px] text-indigo-400 mt-1 block">Variable: {"{{personalDawahRokonTotal}}"}</span>
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-500 mb-1">ব্যক্তিগতভাবে কাজ করেছেন</label>
               <input type="number" value={data.rokon?.worked || 0} onChange={(e) => handleChange('rokon', 'worked', parseInt(e.target.value) || 0)} className="w-full border border-gray-200 rounded-lg p-2 text-sm" />
+              <span className="text-[10px] text-indigo-400 mt-1 block">Variable: {"{{personalDawahRokonWorked}}"}</span>
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-500 mb-1">কতজনের নিকট পৌঁছানো হয়েছে</label>
               <input type="number" value={data.rokon?.reached || 0} onChange={(e) => handleChange('rokon', 'reached', parseInt(e.target.value) || 0)} className="w-full border border-gray-200 rounded-lg p-2 text-sm" />
+              <span className="text-[10px] text-indigo-400 mt-1 block">Variable: {"{{personalDawahReached}}"} (Aggregate)</span>
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-500 mb-1">সহযোগী সদস্য হয়েছেন</label>
               <input type="number" value={data.rokon?.associate || 0} onChange={(e) => handleChange('rokon', 'associate', parseInt(e.target.value) || 0)} className="w-full border border-gray-200 rounded-lg p-2 text-sm" />
+              <span className="text-[10px] text-indigo-400 mt-1 block">Variable: {"{{personalDawahNewAssociate}}"} (Aggregate)</span>
             </div>
           </div>
         </div>
@@ -70,10 +74,12 @@ export const PersonalDawatModal: React.FC<PersonalDawatModalProps> = ({
             <div>
               <label className="block text-xs font-semibold text-gray-500 mb-1">মোট জনশক্তি সংখ্যা</label>
               <input type="number" value={data.karmi?.total || 0} onChange={(e) => handleChange('karmi', 'total', parseInt(e.target.value) || 0)} className="w-full border border-gray-200 rounded-lg p-2 text-sm" />
+              <span className="text-[10px] text-emerald-500 mt-1 block">Variable: {"{{personalDawahKarmiTotal}}"}</span>
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-500 mb-1">ব্যক্তিগতভাবে কাজ করেছেন</label>
               <input type="number" value={data.karmi?.worked || 0} onChange={(e) => handleChange('karmi', 'worked', parseInt(e.target.value) || 0)} className="w-full border border-gray-200 rounded-lg p-2 text-sm" />
+              <span className="text-[10px] text-emerald-500 mt-1 block">Variable: {"{{personalDawahKarmiWorked}}"}</span>
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-500 mb-1">কতজনের নিকট পৌঁছানো হয়েছে</label>

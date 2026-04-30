@@ -50,48 +50,293 @@ function ReportPrintContent() {
     output = output.replace(/{{month}}/g, month ? monthNames[parseInt(month) - 1] : "মার্চ");
     output = output.replace(/{{year}}/g, toBengaliNumber(year) || "২০২৪");
     output = output.replace(/{{orgName}}/g, orgName || "যুব ওয়ার্ড");
-    output = output.replace(/{{thana}}/g, report.thana || "খিলগাঁও উত্তর থানা");
-    output = output.replace(/{{president}}/g, report.presidentName || "মোঃ ইমতিয়াজ উদ্দিন");
+    output = output.replace(/{{thana}}/g, report.thana || "");
+    output = output.replace(/{{president}}/g, report.presidentName || "");
+    output = output.replace(/{{reportDate}}/g, new Date().toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' }));
 
-    // Dawah Section A
-    output = output.replace(/{{totalDawahReached}}/g, toBengaliNumber(report.dawah?.totalDawahCount) || "-");
-    output = output.replace(/{{totalPopulation}}/g, toBengaliNumber(report.dawah?.totalPopulation) || "২,০০,০০০");
-    output = output.replace(/{{monthlyTarget}}/g, toBengaliNumber(report.dawah?.totalDawahTarget) || "১০০০");
+    // 6. Departmental Info
+    const quranTalim = report.departmentalInfo?.quranTalim || {};
+    output = output.replace(/{{quranTeacherRokon}}/g, toBengaliNumber(quranTalim.rokonTeacherCount) || "০");
+    output = output.replace(/{{quranTeacherKarmi}}/g, toBengaliNumber(quranTalim.karmiTeacherCount) || "০");
+    output = output.replace(/{{quranTeacherTotal}}/g, toBengaliNumber((quranTalim.rokonTeacherCount || 0) + (quranTalim.karmiTeacherCount || 0)) || "০");
+    output = output.replace(/{{quranGroupCount}}/g, toBengaliNumber(quranTalim.groupCount) || "০");
+    output = output.replace(/{{quranReachedCount}}/g, toBengaliNumber(quranTalim.reachedCount) || "০");
+    output = output.replace(/{{quranNewAssociate}}/g, toBengaliNumber(quranTalim.associateCount) || "০");
+    output = output.replace(/{{quranSahihLearnedCount}}/g, toBengaliNumber(quranTalim.sahihLearnedCount) || "০");
+    output = output.replace(/{{quranMaktubCount}}/g, toBengaliNumber(quranTalim.maktubCount) || "০");
+    output = output.replace(/{{quranMuallimCount}}/g, toBengaliNumber(quranTalim.muallimCount) || "০");
+    output = output.replace(/{{quranMuallimIncrease}}/g, toBengaliNumber(quranTalim.muallimIncreaseCount) || "০");
 
-    // Group Dawah (A1)
-    output = output.replace(/{{groupDawahCount}}/g, toBengaliNumber(report.dawah?.groupDawah?.groupsOut) || "-");
-    output = output.replace(/{{groupDawahParticipants}}/g, toBengaliNumber(report.dawah?.groupDawah?.participants) || "-");
-    output = output.replace(/{{groupDawahReached}}/g, toBengaliNumber(report.dawah?.groupDawah?.dawahReached) || "-");
-    output = output.replace(/{{groupDawahNewAssociate}}/g, toBengaliNumber(report.dawah?.groupDawah?.newAssociateMembers) || "-");
+    // Mahalla
+    const mahalla = report.departmentalInfo?.mahalla || {};
+    output = output.replace(/{{mahallaGovtCount}}/g, toBengaliNumber(mahalla.govtCount) || "০");
+    output = output.replace(/{{mahallaGovtIncrease}}/g, toBengaliNumber(mahalla.govtIncreaseCount) || "০");
+    output = output.replace(/{{mahallaCommitteeCount}}/g, toBengaliNumber(mahalla.committeeCount) || "০");
+    output = output.replace(/{{mahallaSpecialDawatCount}}/g, toBengaliNumber(mahalla.specialDawatCount) || "০");
+    output = output.replace(/{{mahallaReachedCount}}/g, toBengaliNumber(mahalla.reachedCount) || "০");
+    output = output.replace(/{{mahallaAssociateCount}}/g, toBengaliNumber(mahalla.associateCount) || "০");
 
-    // Personal Dawah (A2)
-    output = output.replace(/{{personalDawahManpowerTotal}}/g, toBengaliNumber(report.dawah?.personal?.manpowerTotal) || "-");
-    output = output.replace(/{{personalDawahManpowerWorked}}/g, toBengaliNumber(report.dawah?.personal?.manpowerWorked) || "-");
-    output = output.replace(/{{personalDawahReached}}/g, toBengaliNumber(report.dawah?.personal?.reached) || "-");
-    output = output.replace(/{{personalDawahNewAssociate}}/g, toBengaliNumber(report.dawah?.personal?.associateIncrease) || "-");
+    // Youth
+    const youth = report.departmentalInfo?.youth || {};
+    output = output.replace(/{{youthReachedCount}}/g, toBengaliNumber(youth.reachedCount) || "০");
+    output = output.replace(/{{youthAssociateCount}}/g, toBengaliNumber(youth.associateCount) || "০");
+    output = output.replace(/{{youthCommitteeCount}}/g, toBengaliNumber(youth.committeeCount) || "০");
+    output = output.replace(/{{youthCommitteeIncrease}}/g, toBengaliNumber(youth.committeeIncreaseCount) || "০");
+    output = output.replace(/{{youthClubCount}}/g, toBengaliNumber(youth.clubCount) || "০");
+    output = output.replace(/{{youthClubIncrease}}/g, toBengaliNumber(youth.clubIncreaseCount) || "০");
 
-    // General Meetings (A3)
-    output = output.replace(/{{generalMeetingReached}}/g, toBengaliNumber(report.dawah?.tabligh?.generalMeetingAttendance) || "-");
-    output = output.replace(/{{generalMeetingNewAssociate}}/g, toBengaliNumber(report.dawah?.tabligh?.generalMeetingAssociateIncrease) || "-");
-
-    // Manpower (Section 2.1)
-    ['rokon', 'karmi', 'associate'].forEach(key => {
-      output = output.replace(new RegExp(`{{${key}Previous}}`, 'g'), toBengaliNumber(report.organization?.manpower?.[key]?.previous) || "-");
-      output = output.replace(new RegExp(`{{${key}Increase}}`, 'g'), toBengaliNumber(report.organization?.manpower?.[key]?.increase) || "-");
-      output = output.replace(new RegExp(`{{${key}Deficit}}`, 'g'), toBengaliNumber(report.organization?.manpower?.[key]?.deficit) || "-");
-      output = output.replace(new RegExp(`{{${key}Current}}`, 'g'), toBengaliNumber(report.organization?.manpower?.[key]?.current) || "-");
+    // Professions
+    const professions = report.departmentalInfo?.professions || {};
+    const profKeys = ['political', 'professional', 'laborer', 'marginalized', 'nonMuslim'];
+    profKeys.forEach(key => {
+      output = output.replace(new RegExp(`{{professions${key.charAt(0).toUpperCase() + key.slice(1)}Reached}}`, 'g'), toBengaliNumber(professions[key]?.reached) || "০");
+      output = output.replace(new RegExp(`{{professions${key.charAt(0).toUpperCase() + key.slice(1)}Associate}}`, 'g'), toBengaliNumber(professions[key]?.associate) || "০");
+      output = output.replace(new RegExp(`{{professions${key.charAt(0).toUpperCase() + key.slice(1)}Target}}`, 'g'), toBengaliNumber(professions[key]?.target) || "০");
     });
 
-    // Organizational Meetings (Section 2.9)
-    output = output.replace(/{{wardTeamMeetingCount}}/g, toBengaliNumber(report.organization?.meetings?.wardTeam?.count) || "-");
-    output = output.replace(/{{wardTeamMeetingAttendance}}/g, toBengaliNumber(report.organization?.meetings?.wardTeam?.attendance) || "-");
+    // Family
+    output = output.replace(/{{familyTotalCount}}/g, toBengaliNumber(report.departmentalInfo?.family?.totalCount) || "০");
+    output = output.replace(/{{familyNewCount}}/g, toBengaliNumber(report.departmentalInfo?.family?.newCount) || "০");
 
-    // Training (Section 3)
-    output = output.replace(/{{skillMeetingCount}}/g, toBengaliNumber(report.training?.hrd?.skillMeetingCount) || "-");
-    output = output.replace(/{{skillMeetingAttendance}}/g, toBengaliNumber(report.training?.hrd?.skillMeetingAttendance) || "-");
+    // Mosque
+    const mosque = report.departmentalInfo?.mosque || {};
+    output = output.replace(/{{mosqueTotalCount}}/g, toBengaliNumber(mosque.totalCount) || "০");
+    output = output.replace(/{{mosqueTotalIncrease}}/g, toBengaliNumber(mosque.totalIncreaseCount) || "০");
+    output = output.replace(/{{mosqueDawatCount}}/g, toBengaliNumber(mosque.dawatCount) || "০");
+    output = output.replace(/{{mosqueCenterCount}}/g, toBengaliNumber(mosque.centerCount) || "০");
+    output = output.replace(/{{mosqueInfoCenterCount}}/g, toBengaliNumber(mosque.infoCenterCount) || "০");
+    output = output.replace(/{{mosqueInfoCenterIncrease}}/g, toBengaliNumber(mosque.infoCenterIncreaseCount) || "০");
 
-    // Social Work (Section 4)
-    output = output.replace(/{{socialSickCarePersonal}}/g, toBengaliNumber(report.socialWork?.personal?.sickCare) || "-");
+    // IT
+    output = output.replace(/{{itManpowerCount}}/g, toBengaliNumber(report.departmentalInfo?.it?.manpowerCount) || "০");
+    output = output.replace(/{{itParticipantCount}}/g, toBengaliNumber(report.departmentalInfo?.it?.participantCount) || "০");
+
+    // 5. Header / Summary Info
+    output = output.replace(/{{totalDawahReached}}/g, toBengaliNumber(report.headerInfo?.totalReachedCount) || "০");
+    output = output.replace(/{{totalPopulation}}/g, toBengaliNumber(report.headerInfo?.totalPopulationCount) || "০");
+    output = output.replace(/{{totalDawahTarget}}/g, toBengaliNumber(report.headerInfo?.monthlyTargetCount) || "০");
+
+    // A1. Group Dawah
+    output = output.replace(/{{groupDawahCount}}/g, toBengaliNumber(report.unitDawat?.groupCount) || "০");
+    output = output.replace(/{{groupDawahParticipants}}/g, toBengaliNumber(report.unitDawat?.participantCount) || "০");
+    output = output.replace(/{{groupDawahReached}}/g, toBengaliNumber(report.unitDawat?.reachedCount) || "০");
+    output = output.replace(/{{groupDawahNewAssociate}}/g, toBengaliNumber(report.unitDawat?.associateCount) || "০");
+
+    // A2. Personal Dawah
+    output = output.replace(/{{personalDawahRokonTotal}}/g, toBengaliNumber(report.personalDawat?.rokon?.total) || "০");
+    output = output.replace(/{{personalDawahKarmiTotal}}/g, toBengaliNumber(report.personalDawat?.karmi?.total) || "০");
+    output = output.replace(/{{personalDawahRokonWorked}}/g, toBengaliNumber(report.personalDawat?.rokon?.worked) || "০");
+    output = output.replace(/{{personalDawahKarmiWorked}}/g, toBengaliNumber(report.personalDawat?.karmi?.worked) || "০");
+    output = output.replace(/{{personalDawahRokonReached}}/g, toBengaliNumber(report.personalDawat?.rokon?.reached) || "০");
+    output = output.replace(/{{personalDawahKarmiReached}}/g, toBengaliNumber(report.personalDawat?.karmi?.reached) || "০");
+    output = output.replace(/{{personalDawahRokonAssociate}}/g, toBengaliNumber(report.personalDawat?.rokon?.associate) || "০");
+    output = output.replace(/{{personalDawahKarmiAssociate}}/g, toBengaliNumber(report.personalDawat?.karmi?.associate) || "০");
+    output = output.replace(/{{personalDawahReached}}/g, toBengaliNumber((report.personalDawat?.rokon?.reached || 0) + (report.personalDawat?.karmi?.reached || 0)) || "০");
+    output = output.replace(/{{personalDawahNewAssociate}}/g, toBengaliNumber((report.personalDawat?.rokon?.associate || 0) + (report.personalDawat?.karmi?.associate || 0)) || "০");
+
+    // A3. General Meeting
+    output = output.replace(/{{generalMeetingReached}}/g, toBengaliNumber(report.generalMeeting?.totalReached) || "০");
+    output = output.replace(/{{generalMeetingTotalReached}}/g, toBengaliNumber(report.generalMeeting?.totalReached) || "০");
+    output = output.replace(/{{generalMeetingNewAssociate}}/g, toBengaliNumber(report.generalMeeting?.associateCount) || "০");
+
+    // A4. PR Campaigns
+    const prCampaignKeys = ['prDecade', 'districtCampaign', 'electionWeek', 'proWeek', 'other'];
+    prCampaignKeys.forEach(key => {
+      output = output.replace(new RegExp(`{{${key}Group}}`, 'g'), toBengaliNumber(report.prCampaign?.[key]?.groupCount) || "০");
+      output = output.replace(new RegExp(`{{${key}Participant}}`, 'g'), toBengaliNumber(report.prCampaign?.[key]?.participantCount) || "০");
+      output = output.replace(new RegExp(`{{${key}Reached}}`, 'g'), toBengaliNumber(report.prCampaign?.[key]?.reachedCount) || "০");
+      output = output.replace(new RegExp(`{{${key}Associate}}`, 'g'), toBengaliNumber(report.prCampaign?.[key]?.associateCount) || "০");
+    });
+
+    // 1. Dawah & Publication
+    const dawahPub = report.dawahPublication || {};
+    const dawahPubKeys = [
+      'libraryCount', 'bookCount', 'bookDistributedCount',
+      'libraryIncrease', 'bookIncrease', 'bookDistributedIncrease',
+      'softCopyDistributed', 'unitCenterCount', 'unitBookDistributed',
+      'unitCenterIncrease', 'unitBookDistributedIncrease', 'dawatLinkDistributed',
+      'wardCenterCount', 'wardBookSold', 'wardCenterIncrease', 'wardBookSoldIncrease',
+      'sonarBanglaCount', 'sangramCount', 'prithibiCount'
+    ];
+    dawahPubKeys.forEach(key => {
+      output = output.replace(new RegExp(`{{dawahPub${key.charAt(0).toUpperCase() + key.slice(1)}}}`, 'g'), toBengaliNumber(dawahPub[key]) || "০");
+    });
+
+    // Program Implementation
+    const programData = report.programs || report.programImplementation || {};
+    const progKeys = [
+      { id: 'monthlyMeeting', fields: ['general', 'family'] },
+      { id: 'dawahMeeting', fields: ['dawah', 'discussion', 'gathering'] },
+      { id: 'siratunnabi', fields: ['sirat', 'eid'] },
+      { id: 'darsTafsir', fields: ['dars', 'tafsir', 'public'] },
+      { id: 'iftar', fields: ['personal', 'org'] },
+      { id: 'teaCircle', fields: ['tea', 'lunch', 'tour'] },
+      { id: 'competition', fields: ['comp', 'other'] }
+    ];
+
+    progKeys.forEach(prog => {
+      const p = programData[prog.id] || {};
+      prog.fields.forEach(field => {
+        const count = p.total?.[field] ?? p[field]?.total ?? p[field] ?? 0;
+        const target = p.target?.[field] ?? p[field]?.target ?? 0;
+        const attendance = p.avgAttendance?.[field] ?? p[field]?.avgAttendance ?? 0;
+        
+        const baseKey = `prog${prog.id.charAt(0).toUpperCase() + prog.id.slice(1)}${field.charAt(0).toUpperCase() + field.slice(1)}`;
+        
+        output = output.replace(new RegExp(`{{${baseKey}Count}}`, 'g'), toBengaliNumber(count) || "০");
+        output = output.replace(new RegExp(`{{${baseKey}Target}}`, 'g'), toBengaliNumber(target) || "০");
+        output = output.replace(new RegExp(`{{${baseKey}Attendance}}`, 'g'), toBengaliNumber(attendance) || "০");
+      });
+    });
+
+    // 2. Organization Section
+    // Manpower
+    const manpowerKeys = ['rokon', 'rokonCandidate', 'karmi', 'associate', 'generalAssociate'];
+    manpowerKeys.forEach(key => {
+      const data = report.manpower?.[key] || {};
+      const previous = data.previousCount || 0;
+      const current = data.currentCount || 0;
+      const increase = data.promotionIncrease || 0;
+      const arrived = data.arrivedIncrease || 0;
+      const deficit = data.deficit || 0;
+      const target = data.target || 0;
+      
+      const rate = target > 0 ? Math.round((increase / target) * 100) : 0;
+
+      output = output.replace(new RegExp(`{{${key}Previous}}`, 'g'), toBengaliNumber(previous) || "০");
+      output = output.replace(new RegExp(`{{${key}Current}}`, 'g'), toBengaliNumber(current) || "০");
+      output = output.replace(new RegExp(`{{${key}Increase}}`, 'g'), toBengaliNumber(increase) || "০");
+      output = output.replace(new RegExp(`{{${key}Arrived}}`, 'g'), toBengaliNumber(arrived) || "০");
+      output = output.replace(new RegExp(`{{${key}Deficit}}`, 'g'), toBengaliNumber(deficit) || "০");
+      output = output.replace(new RegExp(`{{${key}Target}}`, 'g'), toBengaliNumber(target) || "০");
+      output = output.replace(new RegExp(`{{${key}Rate}}`, 'g'), toBengaliNumber(rate) + "%");
+    });
+
+    // 3. Department-wise Info
+    const depts = ['labor', 'ulama', 'pro', 'youth', 'nonMuslim'];
+    const deptTypes = ['rokon', 'karmi', 'associate'];
+    depts.forEach(dept => {
+      const deptData = report.deptManpower?.[dept] || report[dept] || report.departmentalInfo?.[dept] || {};
+      deptTypes.forEach(type => {
+        const data = deptData[type] || {};
+        const previous = data.previousCount || 0;
+        const current = data.currentCount || 0;
+        const increase = data.increase || 0;
+        const deficit = data.deficit || 0;
+        const target = data.target || 0;
+        
+        const baseKey = `${dept}${type.charAt(0).toUpperCase() + type.slice(1)}`;
+        output = output.replace(new RegExp(`{{${baseKey}Previous}}`, 'g'), toBengaliNumber(previous) || "০");
+        output = output.replace(new RegExp(`{{${baseKey}Current}}`, 'g'), toBengaliNumber(current) || "০");
+        output = output.replace(new RegExp(`{{${baseKey}Increase}}`, 'g'), toBengaliNumber(increase) || "০");
+        output = output.replace(new RegExp(`{{${baseKey}Deficit}}`, 'g'), toBengaliNumber(deficit) || "০");
+        output = output.replace(new RegExp(`{{${baseKey}Target}}`, 'g'), toBengaliNumber(target) || "০");
+      });
+    });
+
+    // Meetings
+    const meetingKeys = ['wardTeam', 'wardMeeting', 'memberMeeting', 'karmiMeeting', 'associateGathering', 'unit'];
+    meetingKeys.forEach(key => {
+      const templateKey = key === 'wardMeeting' ? 'Ward' : key === 'memberMeeting' ? 'Rokon' : key === 'karmiMeeting' ? 'Karmi' : key === 'associateGathering' ? 'Associate' : key.charAt(0).toUpperCase() + key.slice(1);
+      output = output.replace(new RegExp(`{{meeting${templateKey}Count}}`, 'g'), toBengaliNumber(report.orgMeetings?.[key]?.count?.val || report.orgMeetings?.[key]?.count?.karmi) || "০");
+      output = output.replace(new RegExp(`{{meeting${templateKey}Attendance}}`, 'g'), toBengaliNumber(report.orgMeetings?.[key]?.avgAttendance?.val || report.orgMeetings?.[key]?.avgAttendance?.karmi) || "০");
+    });
+
+    // 4. Social Work
+    const socialWork = report.socialWork || {};
+    const socialKeys = ['devWork', 'socialEvent', 'humanitarian', 'cleaning', 'medical', 'blood', 'maternity', 'newborn', 'maktub', 'education', 'technical', 'trees', 'awareness', 'disaster', 'burial'];
+    socialKeys.forEach(key => {
+      output = output.replace(new RegExp(`{{social${key.charAt(0).toUpperCase() + key.slice(1)}}}`, 'g'), toBengaliNumber(socialWork[key]) || "০");
+    });
+    output = output.replace(/{{socialPersonalCount}}/g, toBengaliNumber(report.socialWork?.personal?.totalParticipants) || "০");
+    output = output.replace(/{{socialPersonalServiceCount}}/g, toBengaliNumber(report.socialWork?.personal?.totalServices) || "০");
+
+    // Health & Institutional Social Work
+    const health = report.socialWork?.health || {};
+    output = output.replace(/{{socialHealthTrainingParticipantCount}}/g, toBengaliNumber(health.trainingParticipantCount) || "০");
+    output = output.replace(/{{socialHealthServiceParticipantCount}}/g, toBengaliNumber(health.serviceParticipantCount) || "০");
+    output = output.replace(/{{socialHealthBeneficiaryCount}}/g, toBengaliNumber(health.beneficiaryCount) || "০");
+
+    const inst = report.socialWork?.inst || {};
+    output = output.replace(/{{socialInstTotalInstitutions}}/g, toBengaliNumber(inst.totalInstitutions) || "০");
+    output = output.replace(/{{socialInstActiveInstitutions}}/g, toBengaliNumber(inst.activeInstitutions) || "০");
+    output = output.replace(/{{socialInstNewInstitutions}}/g, toBengaliNumber(inst.newInstitutions) || "০");
+
+    // 5. Political & Election
+    const political = report.political || {};
+    output = output.replace(/{{electionCouncilorCandidateCount}}/g, toBengaliNumber(political.councilor?.candidateCount?.val) || "০");
+    output = output.replace(/{{electionCouncilorElectedCount}}/g, toBengaliNumber(political.councilor?.electedCount?.val) || "০");
+    output = output.replace(/{{electionCouncilorSecondPlaceCount}}/g, toBengaliNumber(political.councilor?.secondPlaceCount?.val) || "০");
+    output = output.replace(/{{electionVoteCenterCount}}/g, toBengaliNumber(political.preparatory?.voteCenter?.count) || "০");
+    output = output.replace(/{{electionVoteCenterIncrease}}/g, toBengaliNumber(political.preparatory?.voteCenter?.increase) || "০");
+    output = output.replace(/{{electionVoteCenterTarget}}/g, toBengaliNumber(political.preparatory?.voteCenter?.target) || "০");
+    output = output.replace(/{{electionVoteCenterCommitteeCount}}/g, toBengaliNumber(political.preparatory?.voteCenterCommittee?.count) || "০");
+    output = output.replace(/{{electionVoteCenterCommitteeIncrease}}/g, toBengaliNumber(political.preparatory?.voteCenterCommittee?.increase) || "০");
+    output = output.replace(/{{electionVoteCenterCommitteeTarget}}/g, toBengaliNumber(political.preparatory?.voteCenterCommittee?.target) || "০");
+    output = output.replace(/{{electionCommitteeMeetingCount}}/g, toBengaliNumber(political.electionCommitteeMeetingCount) || "০");
+
+    // State Reform & Correction (Communication & Programs)
+    const politicalComm = political.communication || {};
+    output = output.replace(/{{politicalCommPoliticalCount}}/g, toBengaliNumber(politicalComm.political?.count) || "০");
+    output = output.replace(/{{politicalCommPoliticalReached}}/g, toBengaliNumber(politicalComm.political?.reached) || "০");
+    output = output.replace(/{{politicalCommAdminCount}}/g, toBengaliNumber(politicalComm.admin?.count) || "০");
+    output = output.replace(/{{politicalCommAdminReached}}/g, toBengaliNumber(politicalComm.admin?.reached) || "০");
+
+    const politicalProg = political.program || {};
+    output = output.replace(/{{politicalProgCentralCount}}/g, toBengaliNumber(politicalProg.central?.count) || "০");
+    output = output.replace(/{{politicalProgCentralAttendance}}/g, toBengaliNumber(politicalProg.central?.avgAttendance) || "০");
+    output = output.replace(/{{politicalProgLocalCount}}/g, toBengaliNumber(politicalProg.local?.count) || "০");
+    output = output.replace(/{{politicalProgLocalAttendance}}/g, toBengaliNumber(politicalProg.local?.avgAttendance) || "০");
+    output = output.replace(/{{politicalProgDistributionCount}}/g, toBengaliNumber(politicalProg.distribution?.count) || "০");
+    output = output.replace(/{{politicalProgDistributionAttendance}}/g, toBengaliNumber(politicalProg.distribution?.avgAttendance) || "০");
+
+    // 6. Baitulmal
+    const baitulmal = report.finance || {};
+    output = output.replace(/{{baitulmalDharjoNisab}}/g, toBengaliNumber(baitulmal.nisab?.allocated) || "০");
+    output = output.replace(/{{baitulmalWadaNisab}}/g, toBengaliNumber(baitulmal.nisab?.promised) || "০");
+    
+    const baitulmalItems = ['receivedNisab', 'directIanat', 'oneTime', 'electionFund', 'shahidFund', 'floodCollection', 'socialWork', 'zakat', 'fitra', 'iftar', 'delegateFee'];
+    baitulmalItems.forEach(item => {
+      const templateKey = item.charAt(0).toUpperCase() + item.slice(1);
+      output = output.replace(new RegExp(`{{baitulmal${templateKey}Income}}`, 'g'), toBengaliNumber(baitulmal.income?.[item]) || "০");
+      output = output.replace(new RegExp(`{{baitulmal${templateKey}Expense}}`, 'g'), toBengaliNumber(baitulmal.expense?.[item]) || "০");
+    });
+    
+    // Explicit mapping for specific baitulmal keys that might have different names in template
+    output = output.replace(/{{baitulmalPraptoNisab}}/g, toBengaliNumber(baitulmal.income?.receivedNisab) || "০");
+    output = output.replace(/{{baitulmalNisabPorishodh}}/g, toBengaliNumber(baitulmal.expense?.nisabPaid) || "০");
+    output = output.replace(/{{baitulmalSorasoriIyanat}}/g, toBengaliNumber(baitulmal.income?.directIanat) || "০");
+    output = output.replace(/{{baitulmalSthaniyoKhoroch}}/g, toBengaliNumber(baitulmal.expense?.localExpense) || "০");
+    
+    output = output.replace(/{{baitulmalTotalIncome}}/g, toBengaliNumber(baitulmal.income?.totalIncome) || "০");
+    output = output.replace(/{{baitulmalTotalExpense}}/g, toBengaliNumber(baitulmal.expense?.totalExpense) || "০");
+    output = output.replace(/{{baitulmalPreviousSurplus}}/g, toBengaliNumber(baitulmal.income?.previousMonthSurplus) || "০");
+    output = output.replace(/{{baitulmalMonthlySurplus}}/g, toBengaliNumber(baitulmal.expense?.monthlySurplus) || "০");
+    output = output.replace(/{{baitulmalGrandTotalIncome}}/g, toBengaliNumber(baitulmal.income?.grandTotalIncome) || "০");
+    output = output.replace(/{{baitulmalGrandTotalExpense}}/g, toBengaliNumber(baitulmal.income?.grandTotalIncome) || "০"); // Using income total for grand total expense as per logic
+
+    // 7. National Days
+    const nationalDays = report.nationalDays || {};
+    const dayKeys = ['independenceDay', 'victoryDay', 'motherLanguageDay', 'others'];
+    dayKeys.forEach(key => {
+      const templateKey = key.charAt(0).toUpperCase() + key.slice(1);
+      output = output.replace(new RegExp(`{{day${templateKey}Count}}`, 'g'), toBengaliNumber(nationalDays[key]?.programCount) || "০");
+      output = output.replace(new RegExp(`{{day${templateKey}Attendance}}`, 'g'), toBengaliNumber(nationalDays[key]?.avgAttendance) || "০");
+    });
+
+    // 8. Remarks (already done via PlanningReportingClient but making sure)
+    output = output.replace(/{{remarksProblems}}/g, report.remarks?.problems || "নেই");
+    output = output.replace(/{{remarksProspects}}/g, report.remarks?.prospects || "নেই");
+
+    // 9. Metadata & Date
+    const reportDate = report.reportDate || new Date().toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' });
+    output = output.replace(/{{reportDate}}/g, reportDate);
+
+    // 7. Remarks
+    const problemsText = Array.isArray(report.remarks?.problems) ? report.remarks.problems.filter((p: string) => p).join('\n') : report.remarks?.problems;
+    const prospectsText = Array.isArray(report.remarks?.opportunities) ? report.remarks.opportunities.filter((p: string) => p).join('\n') : report.remarks?.prospects;
+    output = output.replace(/{{remarksProblems}}/g, problemsText || "কোনো সমস্যা উল্লেখ করা হয়নি।");
+    output = output.replace(/{{remarksProspects}}/g, prospectsText || "কোনো সম্ভাবনা উল্লেখ করা হয়নি।");
 
     return output;
   };

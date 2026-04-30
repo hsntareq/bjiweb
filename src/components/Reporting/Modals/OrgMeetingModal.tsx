@@ -69,7 +69,14 @@ export const OrgMeetingModal: React.FC<OrgMeetingModalProps> = ({
                 {rows.map(row => (
                    <tr key={row.id} className="border-b">
                       <td className="p-2 text-center">{row.sl}</td>
-                      <td className="p-2 font-medium">{row.label}</td>
+                      <td className="p-2 font-medium">
+                        {row.label}
+                        {['wardTeam', 'wardMeeting', 'memberMeeting', 'karmiMeeting', 'associateGathering', 'unit'].includes(row.id) && (
+                          <div className="text-[9px] text-gray-400 font-normal mt-0.5 italic">
+                            Vars: {"{{"}meeting{row.id === 'wardMeeting' ? 'Ward' : row.id === 'memberMeeting' ? 'Rokon' : row.id === 'karmiMeeting' ? 'Karmi' : row.id === 'associateGathering' ? 'Associate' : row.id.charAt(0).toUpperCase() + row.id.slice(1)}Count{"}}"}
+                          </div>
+                        )}
+                      </td>
                       <td className="p-2">
                          <div className="flex gap-1 justify-center">
                             {row.f.map(sub => (
