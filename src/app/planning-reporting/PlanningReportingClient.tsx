@@ -15,6 +15,7 @@ import { BaitulmalModal } from '../../components/Reporting/Modals/BaitulmalModal
 import { RemarksModal } from '../../components/Reporting/Modals/RemarksModal';
 import { DepartmentalInfoModal } from '../../components/Reporting/Modals/DepartmentalInfoModal';
 import { MeetingsTrainingModal } from '../../components/Reporting/Modals/MeetingsTrainingModal';
+import { UnitOrganizationModal } from '../../components/Reporting/Modals/UnitOrganizationModal';
 import { SocialWorkModal } from '../../components/Reporting/Modals/SocialWorkModal';
 import { MiscellaneousModal } from '../../components/Reporting/Modals/MiscellaneousModal';
 import { DawatTablighModal } from '../../components/Reporting/Modals/DawatTablighModal';
@@ -133,7 +134,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
   const [isBaitulmalModalOpen, setIsBaitulmalModalOpen] = useState(false);
   const [isRemarksModalOpen, setIsRemarksModalOpen] = useState(false);
   const [isDeptModalOpen, setIsDeptModalOpen] = useState(false);
-  const [isMeetingsModalOpen, setIsMeetingsModalOpen] = useState(false);
+  const [isUnitOrgModalOpen, setIsUnitOrgModalOpen] = useState(false);
   const [isSocialModalOpen, setIsSocialModalOpen] = useState(false);
   const [isMiscModalOpen, setIsMiscModalOpen] = useState(false);
   const [isDawatTablighModalOpen, setIsDawatTablighModalOpen] = useState(false);
@@ -337,7 +338,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
         setIsPersonalDawatModalOpen(false);
         setIsBaitulmalModalOpen(false);
         setIsDeptModalOpen(false);
-        setIsMeetingsModalOpen(false);
+        setIsUnitOrgModalOpen(false);
         setIsSocialModalOpen(false);
         setIsMiscModalOpen(false);
         setIsDawatTablighModalOpen(false);
@@ -970,6 +971,38 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                          </div>
                       </ReportAccordionSection>
 
+                      <ReportAccordionSection title="২. দাওয়াতী ও পারিবারিক ইউনিট" onEdit={isFuture ? undefined : () => setIsUnitModalOpen(true)} buttonText="ইউনিট এডিট" icon={Layers}>
+                         <div className="overflow-x-auto">
+                            <table className="w-full border-collapse border border-gray-200 text-xs text-center">
+                               <thead>
+                                  <tr className="bg-gray-50 text-gray-700">
+                                     <th className="border border-gray-200 p-2 text-left">ইউনিটের ধরণ</th>
+                                     <th className="border border-gray-200 p-2">বিগত</th>
+                                     <th className="border border-gray-200 p-2">বর্তমান</th>
+                                     <th className="border border-gray-200 p-2">বৃদ্ধি</th>
+                                     <th className="border border-gray-200 p-2">ঘাটতি</th>
+                                     <th className="border border-gray-200 p-2">টার্গেট</th>
+                                  </tr>
+                               </thead>
+                               <tbody>
+                                  {[
+                                     { id: 'dawahUnit', label: 'দাওয়াতী ইউনিট' },
+                                     { id: 'familyUnit', label: 'পারিবারিক ইউনিট' }
+                                  ].map(row => (
+                                     <tr key={row.id}>
+                                        <td className="border border-gray-200 p-2 text-left font-medium">{row.label}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unit?.[row.id]?.previousCount)}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unit?.[row.id]?.currentCount)}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unit?.[row.id]?.increase)}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unit?.[row.id]?.deficit)}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unit?.[row.id]?.target)}</td>
+                                     </tr>
+                                  ))}
+                               </tbody>
+                            </table>
+                         </div>
+                      </ReportAccordionSection>
+
                       <ReportAccordionSection title="৩. বিভাগভিত্তিক তথ্য: শ্রম বিভাগ শ্রমিক কল্যাণের রিপোর্ট অনুযায়ী হবে।" onEdit={isFuture ? undefined : () => setIsDeptManpowerModalOpen(true)} buttonText="বিভাগীয় জনশক্তি এডিট" icon={PieChart}>
                          <div className="overflow-x-auto">
                             <table className="w-full border-collapse border border-gray-200 text-xs text-center">
@@ -1012,32 +1045,37 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
                          </div>
                       </ReportAccordionSection>
 
-                      <ReportAccordionSection title="৪. বৈঠক ও প্রশিক্ষণঃ" onEdit={isFuture ? undefined : () => setIsMeetingsModalOpen(true)} buttonText="বৈঠক এডিট" icon={ClipboardList}>
+                      <ReportAccordionSection title="৪. ইউনিট সংগঠন:" onEdit={isFuture ? undefined : () => setIsUnitOrgModalOpen(true)} buttonText="ইউনিট সংগঠন এডিট" icon={LayoutGrid}>
                          <div className="overflow-x-auto">
                             <table className="w-full border-collapse border border-gray-200 text-xs text-center">
                                <thead>
                                   <tr className="bg-gray-50 text-gray-700">
-                                     <th className="border border-gray-200 p-2 text-left">বৈঠক ও প্রশিক্ষণের ধরন</th>
-                                     <th className="border border-gray-200 p-2">সংখ্যা</th>
-                                     <th className="border border-gray-200 p-2">উপস্থিতি</th>
-                                     <th className="border border-gray-200 p-2 text-left">মন্তব্য</th>
+                                     <th className="border border-gray-200 p-2 text-left">ইউনিটের ধরণ</th>
+                                     <th className="border border-gray-200 p-2">বিগত সংখ্যা</th>
+                                     <th className="border border-gray-200 p-2">বর্তমান সংখ্যা</th>
+                                     <th className="border border-gray-200 p-2">বৃদ্ধি</th>
+                                     <th className="border border-gray-200 p-2">ঘাটতি</th>
+                                     <th className="border border-gray-200 p-2">টার্গেট</th>
                                   </tr>
                                </thead>
                                <tbody>
                                   {[
-                                     { id: 'rokonMeeting', label: 'সদস্য বৈঠক (রুকন)' },
-                                     { id: 'karmiMeeting', label: 'কর্মী বৈঠক' },
-                                     { id: 'associateGathering', label: 'সহযোগী সমাবেশ' },
-                                     { id: 'rokonEducation', label: 'সদস্য (রুকন) শিক্ষা বৈঠক' },
-                                     { id: 'karmiEducation', label: 'কর্মী শিক্ষা বৈঠক' },
-                                     { id: 'wardTeamMeeting', label: 'ওয়ার্ড/উপশাখা টিম বৈঠক' },
-                                     { id: 'unitMeeting', label: 'ইউনিট বৈঠক' }
+                                     { id: 'generalMale', label: 'সাধারণ ইউনিট (পুরুষ)' },
+                                     { id: 'ulama', label: 'উলামা ইউনিট' },
+                                     { id: 'business', label: 'ব্যবসায়ী ইউনিট' },
+                                     { id: 'laborWelfare', label: 'শ্রমিক কল্যাণ ইউনিট' },
+                                     { id: 'youth', label: 'যুব ইউনিট' },
+                                     { id: 'media', label: 'মিডিয়া ইউনিট' },
+                                     { id: 'culture', label: 'সাহিত্য ও সংস্কৃতি ইউনিট' },
+                                     { id: 'total', label: 'সর্বমোট ইউনিট সংখ্যা' }
                                   ].map(row => (
                                      <tr key={row.id}>
-                                        <td className="border border-gray-200 p-2 text-left">{row.label}</td>
-                                        <td className="border border-gray-200 p-2">{formatVal(compReport.training?.[row.id]?.count)}</td>
-                                        <td className="border border-gray-200 p-2">{formatVal(compReport.training?.[row.id]?.attendance)}</td>
-                                        <td className="border border-gray-200 p-2 text-left">{formatVal(compReport.training?.[row.id]?.remarks)}</td>
+                                        <td className="border border-gray-200 p-2 text-left font-medium">{row.label}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unitOrganization?.[row.id]?.previousCount)}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unitOrganization?.[row.id]?.currentCount)}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unitOrganization?.[row.id]?.increase)}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unitOrganization?.[row.id]?.deficit)}</td>
+                                        <td className="border border-gray-200 p-2">{formatVal(compReport.unitOrganization?.[row.id]?.target)}</td>
                                      </tr>
                                   ))}
                                </tbody>
@@ -1380,11 +1418,11 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
         saving={saving}
       />
 
-      <MeetingsTrainingModal 
-        isOpen={isMeetingsModalOpen} 
-        onClose={() => setIsMeetingsModalOpen(false)} 
-        onSave={(data) => handleSaveCompSection('training', data)}
-        initialData={compReport.training}
+      <UnitOrganizationModal 
+        isOpen={isUnitOrgModalOpen} 
+        onClose={() => setIsUnitOrgModalOpen(false)} 
+        onSave={(data) => handleSaveCompSection('unitOrganization', data)}
+        initialData={compReport.unitOrganization || {}}
         saving={saving}
       />
 

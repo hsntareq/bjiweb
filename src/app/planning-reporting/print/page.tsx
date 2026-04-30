@@ -212,6 +212,36 @@ function ReportPrintContent() {
       output = output.replace(new RegExp(`{{${key}Rate}}`, 'g'), toBengaliNumber(rate) + "%");
     });
 
+    // Unit Organization
+    const unitOrg = report.unitOrganization || {};
+    const unitOrgTypes = [
+      { id: 'generalMale', key: 'GeneralMale' },
+      { id: 'ulama', key: 'Ulama' },
+      { id: 'business', key: 'Business' },
+      { id: 'laborWelfare', key: 'LaborWelfare' },
+      { id: 'youth', key: 'Youth' },
+      { id: 'media', key: 'Media' },
+      { id: 'culture', key: 'Culture' },
+      { id: 'total', key: 'Total' }
+    ];
+
+    unitOrgTypes.forEach(type => {
+      const data = unitOrg[type.id] || {};
+      const previous = data.previousCount || 0;
+      const current = data.currentCount || 0;
+      const increase = data.increase || 0;
+      const deficit = data.deficit || 0;
+      const target = data.target || 0;
+      const rate = target > 0 ? Math.round((increase / target) * 100) : 0;
+
+      output = output.replace(new RegExp(`{{unitOrg${type.key}Previous}}`, 'g'), toBengaliNumber(previous) || "০");
+      output = output.replace(new RegExp(`{{unitOrg${type.key}Current}}`, 'g'), toBengaliNumber(current) || "০");
+      output = output.replace(new RegExp(`{{unitOrg${type.key}Increase}}`, 'g'), toBengaliNumber(increase) || "০");
+      output = output.replace(new RegExp(`{{unitOrg${type.key}Deficit}}`, 'g'), toBengaliNumber(deficit) || "০");
+      output = output.replace(new RegExp(`{{unitOrg${type.key}Target}}`, 'g'), toBengaliNumber(target) || "০");
+      output = output.replace(new RegExp(`{{unitOrg${type.key}Rate}}`, 'g'), toBengaliNumber(rate));
+    });
+
     // 3. Department-wise Info
     const depts = ['labor', 'ulama', 'pro', 'youth', 'nonMuslim'];
     const deptTypes = ['rokon', 'karmi', 'associate'];

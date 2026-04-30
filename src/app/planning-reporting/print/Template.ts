@@ -2333,7 +2333,7 @@ export const templateHtml = `
 </tr>
 </table>
 <p class="c13 c11">
-<span class="c2">&#2538;. &#2439;&#2441;&#2472;&#2495;&#2463; &#2488;&#2434;&#2455;&#2464;&#2472;:</span>
+<span class="c2">&#2534;. &#2439;&#2441;&#2472;&#2495;&#2463; &#2488;&#2434;&#2455;&#2464;&#2472;:</span>
 </p>
 <table class="c18">
 <tr class="c32">
@@ -2381,35 +2381,32 @@ export const templateHtml = `
 </td>
 <td class="c9" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">{{socialSickCarePersonal}}</span>
+<span class="c3">{{unitOrgGeneralMalePrevious}}</span>
 </p>
 </td>
 <td class="c38" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2539;</span>
+<span class="c3">{{unitOrgGeneralMaleCurrent}}</span>
 </p>
 </td>
 <td class="c0" colspan="2" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgGeneralMaleIncrease}}</span>
 </p>
 </td>
 <td class="c21" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgGeneralMaleDeficit}}</span>
 </p>
 </td>
 <td class="c25" colspan="1" rowspan="1">
 <p class="c1">
-<span class="c3">&#2535;</span>
+<span class="c3">{{unitOrgGeneralMaleTarget}}</span>
 </p>
 </td>
 <td class="c15" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgGeneralMaleRate}}%</span>
 </p>
 </td>
 </tr>
@@ -2420,39 +2417,33 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c9" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgUlamaPrevious}}</span>
 </p>
 </td>
 <td class="c38" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgUlamaCurrent}}</span>
 </p>
 </td>
 <td class="c0" colspan="2" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgUlamaIncrease}}</span>
 </p>
 </td>
 <td class="c21" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgUlamaDeficit}}</span>
 </p>
 </td>
 <td class="c25" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgUlamaTarget}}</span>
 </p>
 </td>
 <td class="c15" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgUlamaRate}}%</span>
 </p>
 </td>
 </tr>
@@ -2463,39 +2454,33 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c9" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgBusinessPrevious}}</span>
 </p>
 </td>
 <td class="c38" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgBusinessCurrent}}</span>
 </p>
 </td>
 <td class="c0" colspan="2" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgBusinessIncrease}}</span>
 </p>
 </td>
 <td class="c21" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgBusinessDeficit}}</span>
 </p>
 </td>
 <td class="c25" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgBusinessTarget}}</span>
 </p>
 </td>
 <td class="c15" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgBusinessRate}}%</span>
 </p>
 </td>
 </tr>
@@ -2506,39 +2491,33 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c9" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgLaborWelfarePrevious}}</span>
 </p>
 </td>
 <td class="c38" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgLaborWelfareCurrent}}</span>
 </p>
 </td>
 <td class="c0" colspan="2" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgLaborWelfareIncrease}}</span>
 </p>
 </td>
 <td class="c21" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgLaborWelfareDeficit}}</span>
 </p>
 </td>
 <td class="c25" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgLaborWelfareTarget}}</span>
 </p>
 </td>
 <td class="c15" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgLaborWelfareRate}}%</span>
 </p>
 </td>
 </tr>
@@ -2549,39 +2528,33 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c9" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgYouthPrevious}}</span>
 </p>
 </td>
 <td class="c38" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgYouthCurrent}}</span>
 </p>
 </td>
 <td class="c0" colspan="2" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgYouthIncrease}}</span>
 </p>
 </td>
 <td class="c21" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgYouthDeficit}}</span>
 </p>
 </td>
 <td class="c25" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgYouthTarget}}</span>
 </p>
 </td>
 <td class="c15" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgYouthRate}}%</span>
 </p>
 </td>
 </tr>
@@ -2592,39 +2565,33 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c9" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgMediaPrevious}}</span>
 </p>
 </td>
 <td class="c38" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgMediaCurrent}}</span>
 </p>
 </td>
 <td class="c0" colspan="2" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgMediaIncrease}}</span>
 </p>
 </td>
 <td class="c21" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgMediaDeficit}}</span>
 </p>
 </td>
 <td class="c25" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgMediaTarget}}</span>
 </p>
 </td>
 <td class="c15" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgMediaRate}}%</span>
 </p>
 </td>
 </tr>
@@ -2635,39 +2602,33 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c9" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgCulturePrevious}}</span>
 </p>
 </td>
 <td class="c38" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgCultureCurrent}}</span>
 </p>
 </td>
 <td class="c0" colspan="2" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgCultureIncrease}}</span>
 </p>
 </td>
 <td class="c21" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgCultureDeficit}}</span>
 </p>
 </td>
 <td class="c25" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgCultureTarget}}</span>
 </p>
 </td>
 <td class="c15" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgCultureRate}}%</span>
 </p>
 </td>
 </tr>
@@ -2678,39 +2639,33 @@ export const templateHtml = `
 </p>
 </td>
 <td class="c9" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgTotalPrevious}}</span>
 </p>
 </td>
 <td class="c38" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgTotalCurrent}}</span>
 </p>
 </td>
 <td class="c0" colspan="2" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgTotalIncrease}}</span>
 </p>
 </td>
 <td class="c21" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgTotalDeficit}}</span>
 </p>
 </td>
 <td class="c25" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgTotalTarget}}</span>
 </p>
 </td>
 <td class="c15" colspan="1" rowspan="1">
-<p class="c1 c4">
-<span class="c3">
-</span>
+<p class="c1">
+<span class="c3">{{unitOrgTotalRate}}%</span>
 </p>
 </td>
 </tr>
