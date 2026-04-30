@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { Target, Users, BookOpen, Layers, Coins, Calendar, ChevronLeft, ChevronRight, Save, Building, FileText, Printer } from 'lucide-react';
 import { ReportAccordionSection } from '../../components/Reporting/ReportAccordionSection';
 import { UnitDawatModal } from '../../components/Reporting/Modals/UnitDawatModal';
@@ -120,11 +121,18 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
         const response = await fetch('http://localhost:3001/organization/hierarchy/tree', {
           headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
         });
+        if (response.status === 401 || response.status === 403) {
+           console.error("Unauthorized access to organizations");
+           return;
+        }
         if (response.ok) {
-          const data = await response.json();
-          const flatList = flattenOrganizations(data);
-          setOrganizations(flatList);
-          if (flatList.length > 0) setSelectedOrgId(flatList[0].id);
+          const text = await response.text();
+          const data = text ? JSON.parse(text) : null;
+          if (data) {
+            const flatList = flattenOrganizations(data);
+            setOrganizations(flatList);
+            if (flatList.length > 0) setSelectedOrgId(flatList[0].id);
+          }
         }
       } catch (err) {
         console.error("Failed to fetch organizations", err);
@@ -136,13 +144,17 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
   const fetchData = async () => {
     if (!selectedOrgId) return;
     setLoading(true);
+    // Clear previous data while loading to ensure we don't show stale data for the new month/year
+    setPlan({ year, month, dawatTarget: 0, dawatAchieved: 0, activistTarget: 0, activistAchieved: 0, memberTarget: 0, memberAchieved: 0, programTarget: 0, programAchieved: 0, programDetails: '', donationTarget: 0, donationAchieved: 0 });
+    setCompReport({ unitDawat: {}, personalDawat: {}, generalMeeting: {}, publicRelations: {}, departmentalInfo: {}, dawahPublication: {}, finance: {}, miscellaneous: {}, prCampaign: {} });
     try {
       // Fetch Basic Plan
       const planRes = await fetch(`http://localhost:3001/planning/organization/${selectedOrgId}?year=${year}&month=${month}`, {
         headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {}
       });
       if (planRes.ok) {
-        const data = await planRes.json();
+        const text = await planRes.text();
+        const data = text ? JSON.parse(text) : null;
         if (data && data.length > 0) setPlan(data[0]);
         else setPlan({ year, month, dawatTarget: 0, dawatAchieved: 0, activistTarget: 0, activistAchieved: 0, memberTarget: 0, memberAchieved: 0, programTarget: 0, programAchieved: 0, programDetails: '', donationTarget: 0, donationAchieved: 0 });
       }
@@ -152,9 +164,10 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
         headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {}
       });
       if (compRes.ok) {
-        const data = await compRes.json();
+        const text = await compRes.text();
+        const data = text ? JSON.parse(text) : null;
         if (data) setCompReport(data);
-        else setCompReport({ unitDawat: {}, personalDawat: {}, generalMeeting: {}, publicRelations: {}, departmentalInfo: {}, dawahPublication: {}, finance: {}, miscellaneous: {} });
+        else setCompReport({ unitDawat: {}, personalDawat: {}, generalMeeting: {}, publicRelations: {}, departmentalInfo: {}, dawahPublication: {}, finance: {}, miscellaneous: {}, prCampaign: {} });
       }
     } catch (e) {
       console.error(e);
@@ -176,10 +189,21 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
         headers: { 'Content-Type': 'application/json', ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
         body: JSON.stringify({ organizationId: selectedOrgId, ...plan })
       });
+      if (res.status === 401 || res.status === 403) {
+        toast.error("Session expired. Please login again.");
+        window.location.href = "/login";
+        return;
+      }
       if (res.ok) {
-        const data = await res.json();
-        setPlan(data);
-        alert("Plan saved successfully!");
+        const text = await res.text();
+        const data = text ? JSON.parse(text) : null;
+        if (data) {
+          setPlan(data);
+          toast.success("Plan saved successfully!");
+        }
+      } else {
+        const text = await res.text();
+        toast.error(`Failed to save plan: ${res.status} ${text}`);
       }
     } catch (e) {
       console.error(e);
@@ -190,7 +214,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 
   const handleSaveCompSection = async (sectionName: string, sectionData: any) => {
     if (!selectedOrgId) {
-      alert('Error: No organization selected!');
+      toast.error('Error: No organization selected!');
       return;
     }
     try {
@@ -205,9 +229,16 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
           [sectionName]: sectionData
         })
       });
+      if (res.status === 401 || res.status === 403) {
+        toast.error("Session expired. Please login again.");
+        window.location.href = "/login";
+        return;
+      }
       if (res.ok) {
-        const data = await res.json();
-        setCompReport(data);
+        const text = await res.text();
+        const data = text ? JSON.parse(text) : null;
+        if (data) setCompReport(data);
+        
         setIsUnitDawatModalOpen(false);
         setIsPersonalDawatModalOpen(false);
         setIsBaitulmalModalOpen(false);
@@ -237,14 +268,15 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
         setIsElectionModalOpen(false);
         setIsBaitulmalModalOpen(false);
         setIsRemarksModalOpen(false);
+        toast.success(`${sectionName} saved successfully!`);
       } else {
         const errorText = await res.text();
         console.error('Save failed:', res.status, errorText);
-        alert(`Failed to save! Status: ${res.status}. Error: ${errorText}`);
+        toast.error(`Failed to save! Status: ${res.status}. Error: ${errorText}`);
       }
     } catch (e) {
       console.error(e);
-      alert('An error occurred while saving.');
+      toast.error('An error occurred while saving.');
     } finally {
       setSaving(false);
     }
@@ -252,7 +284,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 
   const handleSaveMultipleCompSections = async (updates: any) => {
     if (!selectedOrgId) {
-      alert('Error: No organization selected!');
+      toast.error('Error: No organization selected!');
       return;
     }
     try {
@@ -267,14 +299,21 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
           ...updates
         })
       });
+      if (res.status === 401 || res.status === 403) {
+        toast.error("Session expired. Please login again.");
+        window.location.href = "/login";
+        return;
+      }
       if (res.ok) {
-        const data = await res.json();
-        setCompReport(data);
+        const text = await res.text();
+        const data = text ? JSON.parse(text) : null;
+        if (data) setCompReport(data);
         setIsDawatTablighModalOpen(false);
+        toast.success("Saved successfully!");
       } else {
         const errorText = await res.text();
         console.error('Save failed:', res.status, errorText);
-        alert(`Failed to save! Status: ${res.status}. Error: ${errorText}`);
+        toast.error(`Failed to save! Status: ${res.status}. Error: ${errorText}`);
       }
     } catch (e) {
       console.error(e);
