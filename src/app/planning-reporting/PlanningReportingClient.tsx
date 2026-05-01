@@ -1562,10 +1562,10 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 																		<tr key={row.id}>
 																			<td className="border border-gray-200 p-2 text-left">{row.label}</td>
 																			<td className="border border-gray-200 p-2 text-center">
-																				{formatVal(compReport.political?.prog?.[row.id]?.count)}
+																				{Object.values(compReport.political?.prog?.[row.id]?.count || {}).join(' / ') || '-'}
 																			</td>
 																			<td className="border border-gray-200 p-2 text-center">
-																				{formatVal(compReport.political?.prog?.[row.id]?.avgAttendance)}
+																				{Object.values(compReport.political?.prog?.[row.id]?.avgAttendance || {}).join(' / ') || '-'}
 																			</td>
 																		</tr>
 																	))}
