@@ -1547,29 +1547,34 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 														<table className="w-full border-collapse border border-gray-200 text-xs text-center">
 															<thead>
 																<tr className="bg-gray-50 text-gray-700">
-																	<th className="border border-gray-200 p-2 text-left">বিবরণ</th>
-																	<th className="border border-gray-200 p-2">সংখ্যা</th>
+																	<th className="border border-gray-200 p-2 text-left">কর্মসূচীর বিবরণ</th>
+																	<th className="border border-gray-200 p-2">মোট সংখ্যা</th>
+																	<th className="border border-gray-200 p-2">গড় উপস্থিতি</th>
 																</tr>
 															</thead>
 															<tbody>
-																{[
-																	{ id: 'centerProgram', label: 'কেন্দ্র ঘোষিত কর্মসূচি' },
-																	{ id: 'localProgram', label: 'স্থানীয় ঘোষিত কর্মসূচি' },
-																	{ id: 'distribution', label: 'পোস্টার/লিফলেট বিতরণ' }
-																].map(row => (
-																	<tr key={row.id}>
-																		<td className="border border-gray-200 p-2 text-left">{row.label}</td>
-																		<td className="border border-gray-200 p-2 text-center">
-																			{String(Object.values(compReport.political?.prog?.[row.id]?.count || {}).reduce((a: any, b: any) => (a || 0) + (b || 0), 0))} / {String(Object.values(compReport.political?.prog?.[row.id]?.avgAttendance || {}).reduce((a: any, b: any) => (a || 0) + (b || 0), 0))}
-																		</td>
-																	</tr>
-																))}
+																{
+																	[
+																		{ id: 'centerProgram', label: 'কেন্দ্র ঘোষিত রাজনৈতিক কর্মসূচি পালন' },
+																		{ id: 'localProgram', label: 'স্থানিয়ভাবে ঘোষিত কর্মসূচী: জনসভা/সমাবেশ/মিছিল' },
+																		{ id: 'distribution', label: 'পোস্টার/লিফলেট/বুকলেট/মারকলিপি বিতরণ' }
+																	].map(row => (
+																		<tr key={row.id}>
+																			<td className="border border-gray-200 p-2 text-left">{row.label}</td>
+																			<td className="border border-gray-200 p-2 text-center">
+																				{formatVal(compReport.political?.prog?.[row.id]?.count)}
+																			</td>
+																			<td className="border border-gray-200 p-2 text-center">
+																				{formatVal(compReport.political?.prog?.[row.id]?.avgAttendance)}
+																			</td>
+																		</tr>
+																	))}
 															</tbody>
 														</table>
 													</div>
 												</ReportAccordionSection>
-											</div>
 
+											</div>
 											<div className="space-y-4">
 												<ReportAccordionSection title="৩. জাতীয় ও আন্তর্জাতিক দিবস পালন:" onEdit={isFuture ? undefined : () => setIsNationalDayModalOpen(true)} buttonText="দিবস এডিট" icon={Calendar}>
 													<div className="overflow-x-auto">
