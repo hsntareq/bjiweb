@@ -1658,32 +1658,105 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 									</ReportAccordionSection>
 
 									<ReportAccordionSection title="৬. বায়তুলমাল (আর্থিক কার্যক্রম):" onEdit={isFuture ? undefined : () => setIsBaitulmalModalOpen(true)} buttonText="আর্থিক এডিট" icon={Wallet}>
-										<div className="space-y-6">
-											<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-												<div className="bg-emerald-50 p-4 rounded-xl border border-emerald-100"><p className="text-xs text-emerald-600 font-bold uppercase mb-1">এয়ানত আদায়</p><p className="text-xl font-black text-emerald-700">{formatVal(compReport.finance?.eanotAmount)}</p></div>
-												<div className="bg-blue-50 p-4 rounded-xl border border-blue-100"><p className="text-xs text-blue-600 font-bold uppercase mb-1">সাধারণ দান</p><p className="text-xl font-black text-blue-700">{formatVal(compReport.finance?.generalDonation)}</p></div>
-												<div className="bg-amber-50 p-4 rounded-xl border border-amber-100"><p className="text-xs text-amber-600 font-bold uppercase mb-1">বিশেষ দান</p><p className="text-xl font-black text-amber-700">{formatVal(compReport.finance?.specialDonation)}</p></div>
+										<div className="overflow-x-auto">
+											<div className="flex justify-between text-xs font-semibold text-gray-600 mb-2 px-1">
+												<span>ধার্যকৃত নিছাব: {formatVal(compReport.finance?.nisab?.allocated)} /=</span>
+												<span>ওয়াদাকৃত নিছাব: {formatVal(compReport.finance?.nisab?.promised)} /=</span>
 											</div>
-											<div className="overflow-x-auto">
-												<table className="w-full border-collapse border border-gray-200 text-sm text-center">
-													<thead>
-														<tr className="bg-gray-50 text-gray-700">
-															<th className="border border-gray-200 p-2 text-left">বিবরণ</th>
-															<th className="border border-gray-200 p-2">সদস্য (রুকন)</th>
-															<th className="border border-gray-200 p-2">কর্মী</th>
-															<th className="border border-gray-200 p-2">সহযোগী সদস্য</th>
-														</tr>
-													</thead>
-													<tbody>
-														<tr>
-															<td className="border border-gray-200 p-2 text-left font-medium">কতজন এয়ানত প্রদান করেছেন</td>
-															<td className="border border-gray-200 p-2">{formatVal(compReport.finance?.rokonEanotCount)}</td>
-															<td className="border border-gray-200 p-2">{formatVal(compReport.finance?.karmiEanotCount)}</td>
-															<td className="border border-gray-200 p-2">{formatVal(compReport.finance?.associateEanotCount)}</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
+											<table className="w-full border-collapse border border-gray-200 text-xs">
+											<thead>
+												<tr className="bg-gray-50 text-gray-700 text-center">
+													<th className="border border-gray-200 p-2" colSpan={2}>আয়ের বিবরণ</th>
+													<th className="border border-gray-200 p-2" colSpan={2}>ব্যয়ের বিবরণ</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td className="border border-gray-200 p-2">প্রাপ্ত নিছাব</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.income?.receivedNisab)} /=</td>
+													<td className="border border-gray-200 p-2">নিসাব পরিশোধ</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.expense?.nisabPaid)} /=</td>
+												</tr>
+												<tr>
+													<td className="border border-gray-200 p-2">সরাসরি ইয়ানত</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.income?.directIanat)} /=</td>
+													<td className="border border-gray-200 p-2">স্থানীয় খরচ</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.expense?.localExpense)} /=</td>
+												</tr>
+												<tr>
+													<td className="border border-gray-200 p-2">এককালীন /জরুরী(নির্বাচনী ওয়াদা)</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.income?.oneTime)} /=</td>
+													<td className="border border-gray-200 p-2">এককালীন /জরুরী(নির্বাচনী ওয়াদা)</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.expense?.oneTime)} /=</td>
+												</tr>
+												<tr>
+													<td className="border border-gray-200 p-2">নির্বাচনী ফান্ড</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.income?.electionFund)} /=</td>
+													<td className="border border-gray-200 p-2">নির্বাচনী ফান্ড</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.expense?.electionFund)} /=</td>
+												</tr>
+												<tr>
+													<td className="border border-gray-200 p-2">শহীদ ফান্ড</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.income?.shahidFund)} /=</td>
+													<td className="border border-gray-200 p-2">শহীদ ফান্ড</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.expense?.shahidFund)} /=</td>
+												</tr>
+												<tr>
+													<td className="border border-gray-200 p-2">বিশেষ ও বন্যার্তদের কালেকশন</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.income?.floodCollection)} /=</td>
+													<td className="border border-gray-200 p-2">বিশেষ ও বন্যার্তদের কালেকশন</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.expense?.floodCollection)} /=</td>
+												</tr>
+												<tr>
+													<td className="border border-gray-200 p-2">সমাজকল্যাণ ও সমাজসেবা</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.income?.socialWork)} /=</td>
+													<td className="border border-gray-200 p-2">সমাজকল্যাণ ও সমাজসেবা</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.expense?.socialWork)} /=</td>
+												</tr>
+												<tr>
+													<td className="border border-gray-200 p-2">যাকাত</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.income?.zakat)} /=</td>
+													<td className="border border-gray-200 p-2">যাকাত</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.expense?.zakat)} /=</td>
+												</tr>
+												<tr>
+													<td className="border border-gray-200 p-2">ফিতরা</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.income?.fitra)} /=</td>
+													<td className="border border-gray-200 p-2">ফিতরা</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.expense?.fitra)} /=</td>
+												</tr>
+												<tr>
+													<td className="border border-gray-200 p-2">ইফতার</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.income?.iftar)} /=</td>
+													<td className="border border-gray-200 p-2">ইফতার</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.expense?.iftar)} /=</td>
+												</tr>
+												<tr>
+													<td className="border border-gray-200 p-2">ডেলিগেট ফি</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.income?.delegateFee)} /=</td>
+													<td className="border border-gray-200 p-2">ডেলিগেট ফি</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.expense?.delegateFee)} /=</td>
+												</tr>
+												<tr className="font-bold bg-gray-50">
+													<td className="border border-gray-200 p-2 text-right">মোট আয় =</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.income?.totalIncome)} /=</td>
+													<td className="border border-gray-200 p-2 text-right">মোট ব্যয় =</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.expense?.totalExpense)} /=</td>
+												</tr>
+												<tr className="font-bold">
+													<td className="border border-gray-200 p-2 text-right">গত মাসের উদ্বৃত্ত =</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.income?.previousMonthSurplus)}</td>
+													<td className="border border-gray-200 p-2 text-right">এ মাসের উদ্বৃত্ত =</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.expense?.monthlySurplus)}</td>
+												</tr>
+												<tr className="font-bold bg-gray-50">
+													<td className="border border-gray-200 p-2 text-right">সর্বমোট আয় =</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.income?.grandTotalIncome)} /=</td>
+													<td className="border border-gray-200 p-2 text-right">সর্বমোট ব্যয় =</td>
+													<td className="border border-gray-200 p-2 text-right">{formatVal(compReport.finance?.expense?.grandTotalExpense)} /=</td>
+												</tr>
+											</tbody>
+											</table>
 										</div>
 									</ReportAccordionSection>
 
