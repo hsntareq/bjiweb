@@ -1511,7 +1511,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 
 									<ReportAccordionSection title="৫. রাষ্ট্রীয়, রাজনৈতিক ও নির্বাচনী কার্যক্রমঃ" icon={Scale}>
 										<div className="space-y-6">
-											<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+											<div className="space-y-4">
 												<ReportAccordionSection title="রাজনৈতিক যোগাযোগ" onEdit={isFuture ? undefined : () => setIsPoliticalCommModalOpen(true)} buttonText="যোগাযোগ এডিট" icon={PhoneCall}>
 													<div className="overflow-x-auto">
 														<table className="w-full border-collapse border border-gray-200 text-xs text-center">
@@ -1567,7 +1567,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 												</ReportAccordionSection>
 											</div>
 
-											<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+											<div className="space-y-4">
 												<ReportAccordionSection title="জাতীয় দিবস ও বিশেষ কর্মসূচি" onEdit={isFuture ? undefined : () => setIsNationalDayModalOpen(true)} buttonText="দিবস এডিট" icon={Calendar}>
 													<div className="overflow-x-auto">
 														<table className="w-full border-collapse border border-gray-200 text-xs text-center">
