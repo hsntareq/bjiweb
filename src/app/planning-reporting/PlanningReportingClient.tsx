@@ -1611,29 +1611,45 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 													</div>
 												</ReportAccordionSection>
 
-												<ReportAccordionSection title="নির্বাচনী কার্যক্রম" onEdit={isFuture ? undefined : () => setIsElectionModalOpen(true)} buttonText="নির্বাচন এডিট" icon={Vote}>
+												<ReportAccordionSection title="৪. জাতীয় ও স্থানীয় নির্বাচনভিত্তিক কার্যক্রম" onEdit={isFuture ? undefined : () => setIsElectionModalOpen(true)} buttonText="নির্বাচন এডিট" icon={Vote}>
 													<div className="overflow-x-auto">
 														<table className="w-full border-collapse border border-gray-200 text-xs text-center">
-															<thead>
-																<tr className="bg-gray-50 text-gray-700">
-																	<th className="border border-gray-200 p-2 text-left">বিবরণ</th>
-																	<th className="border border-gray-200 p-2">সংখ্যা</th>
-																</tr>
-															</thead>
-															<tbody>
-																{[
-																	{ id: 'voteCenter', label: 'ভোট কেন্দ্র (জাতীয়/স্থানীয়)' },
-																	{ id: 'voteCenterCommittee', label: 'ভোট কেন্দ্র কমিটি' },
-																	{ label: 'নির্বাচন বৈঠক', val: formatVal(compReport.political?.election?.electionCommitteeMeetingCount) }
-																].map((row, idx) => (
-																	<tr key={idx}>
-																		<td className="border border-gray-200 p-2 text-left">{row.label}</td>
-																		<td className="border border-gray-200 p-2 text-center">
-																			{row.id ? `${formatVal(compReport.political?.election?.preparatory?.[row.id]?.count)} / ${formatVal(compReport.political?.election?.preparatory?.[row.id]?.increase)} / ${formatVal(compReport.political?.election?.preparatory?.[row.id]?.target)}` : row.val}
-																		</td>
-																	</tr>
-																))}
-															</tbody>
+														<tbody>
+															<tr className="bg-gray-50 text-gray-700 font-bold">
+																<td className="border border-gray-200 p-2 text-left font-bold">নির্বাচনের ধরন</td>
+																<td className="border border-gray-200 p-2 font-bold">মোট প্রার্থী সংখ্যা</td>
+																<td className="border border-gray-200 p-2 font-bold">নির্বাচিতী সংখ্যা</td>
+																<td className="border border-gray-200 p-2 font-bold">দ্বিতীয় অবস্থান</td>
+															</tr>
+															<tr>
+																<td className="border border-gray-200 p-2 text-left">কাউন্সিলর</td>
+																<td className="border border-gray-200 p-2">{formatVal(compReport.political?.election?.councilor?.candidateCount?.val)}</td>
+																<td className="border border-gray-200 p-2">{formatVal(compReport.political?.election?.councilor?.electedCount?.val)}</td>
+																<td className="border border-gray-200 p-2">{formatVal(compReport.political?.election?.councilor?.secondPlaceCount?.val)}</td>
+															</tr>
+															<tr className="bg-gray-50 text-gray-700">
+																<td className="border border-gray-200 p-2 text-left font-bold">প্রস্তুতিমূলক কার্যক্রমের ধরন</td>
+																<td className="border border-gray-200 p-2 font-bold">সংখ্যা</td>
+																<td className="border border-gray-200 p-2 font-bold">বৃদ্ধি</td>
+																<td className="border border-gray-200 p-2 font-bold">টার্গেট</td>
+															</tr>
+															<tr>
+																<td className="border border-gray-200 p-2 text-left">ভোট কেন্দ্র (জাতীয়/স্থানীয়)</td>
+																<td className="border border-gray-200 p-2">{formatVal(compReport.political?.election?.preparatory?.voteCenter?.count)}</td>
+																<td className="border border-gray-200 p-2">{formatVal(compReport.political?.election?.preparatory?.voteCenter?.increase)}</td>
+																<td className="border border-gray-200 p-2">{formatVal(compReport.political?.election?.preparatory?.voteCenter?.target)}</td>
+															</tr>
+															<tr>
+																<td className="border border-gray-200 p-2 text-left">ভোট কেন্দ্র কমিটি/কেন্দ্র/বুথভিত্তিক ইউনিট</td>
+																<td className="border border-gray-200 p-2">{formatVal(compReport.political?.election?.preparatory?.voteCenterCommittee?.count)}</td>
+																<td className="border border-gray-200 p-2">{formatVal(compReport.political?.election?.preparatory?.voteCenterCommittee?.increase)}</td>
+																<td className="border border-gray-200 p-2">{formatVal(compReport.political?.election?.preparatory?.voteCenterCommittee?.target)}</td>
+															</tr>
+															<tr>
+																<td className="border border-gray-200 p-2 text-left" colSpan={3}>ওয়ার্ডভিত্তিক নির্বাচন পরিচালনা কমিটির বৈঠক সংখ্যা।</td>
+																<td className="border border-gray-200 p-2">{formatVal(compReport.political?.election?.electionCommitteeMeetingCount)}</td>
+															</tr>
+														</tbody>
 														</table>
 													</div>
 												</ReportAccordionSection>
