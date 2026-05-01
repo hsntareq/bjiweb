@@ -341,23 +341,26 @@ function ReportPrintContent() {
 
     // 4. Social Work
     const socialWork = report.socialWork || {};
-    const socialKeys = ['devWork', 'socialEvent', 'humanitarian', 'cleaning', 'medical', 'blood', 'maternity', 'newborn', 'maktub', 'education', 'technical', 'trees', 'awareness', 'disaster', 'burial'];
+    const socialKeys = [
+      'devWork', 'socialEvent', 'humanitarian', 'cleaning', 'medical', 'blood', 'maternity',
+      'newborn', 'maktub', 'others', 'education', 'technical', 'online', 'trees', 'awareness',
+      'disaster', 'relief', 'nonMuslim', 'burial', 'employment',
+      'generalServiceTeamCount', 'technicalServiceTeamCount', 'volunteerTeamCount'
+    ];
     socialKeys.forEach(key => {
       output = output.replace(new RegExp(`{{social${key.charAt(0).toUpperCase() + key.slice(1)}}}`, 'g'), toBengaliNumber(socialWork[key]) || "০");
     });
-    output = output.replace(/{{socialPersonalCount}}/g, toBengaliNumber(report.socialWork?.personal?.totalParticipants) || "০");
-    output = output.replace(/{{socialPersonalServiceCount}}/g, toBengaliNumber(report.socialWork?.personal?.totalServices) || "০");
+    output = output.replace(/{{socialPersonalCount}}/g, toBengaliNumber(socialWork.personalCount) || "০");
+    output = output.replace(/{{socialPersonalServiceCount}}/g, toBengaliNumber(socialWork.personalServiceCount) || "০");
 
     // Health & Institutional Social Work
-    const health = report.socialWork?.health || {};
-    output = output.replace(/{{socialHealthTrainingParticipantCount}}/g, toBengaliNumber(health.trainingParticipantCount) || "০");
-    output = output.replace(/{{socialHealthServiceParticipantCount}}/g, toBengaliNumber(health.serviceParticipantCount) || "০");
-    output = output.replace(/{{socialHealthBeneficiaryCount}}/g, toBengaliNumber(health.beneficiaryCount) || "০");
+    output = output.replace(/{{socialHealthTrainingCount}}/g, toBengaliNumber(socialWork.healthTrainingCount) || "০");
+    output = output.replace(/{{socialHealthServiceCount}}/g, toBengaliNumber(socialWork.healthServiceCount) || "০");
+    output = output.replace(/{{socialHealthBeneficiaryCount}}/g, toBengaliNumber(socialWork.healthBeneficiaryCount) || "০");
 
-    const inst = report.socialWork?.inst || {};
-    output = output.replace(/{{socialInstTotalInstitutions}}/g, toBengaliNumber(inst.totalInstitutions) || "০");
-    output = output.replace(/{{socialInstActiveInstitutions}}/g, toBengaliNumber(inst.activeInstitutions) || "০");
-    output = output.replace(/{{socialInstNewInstitutions}}/g, toBengaliNumber(inst.newInstitutions) || "০");
+    output = output.replace(/{{socialInstTotalCount}}/g, toBengaliNumber(socialWork.instTotalCount) || "০");
+    output = output.replace(/{{socialInstActiveCount}}/g, toBengaliNumber(socialWork.instActiveCount) || "০");
+    output = output.replace(/{{socialInstNewCount}}/g, toBengaliNumber(socialWork.instNewCount) || "০");
 
     // 5. Political & Election
     const political = report.political || {};
