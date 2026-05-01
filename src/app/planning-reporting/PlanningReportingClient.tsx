@@ -1576,28 +1576,36 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 
 											</div>
 											<div className="space-y-4">
-												<ReportAccordionSection title="৩. জাতীয় ও আন্তর্জাতিক দিবস পালন:" onEdit={isFuture ? undefined : () => setIsNationalDayModalOpen(true)} buttonText="দিবস এডিট" icon={Calendar}>
+												<ReportAccordionSection title="৩. জাতীয় ও আন্তর্জাতিক দিবস পালন:" onEdit={isFuture ? undefined : () => setIsNationalDayModalOpen(true)} buttonText="দিবস এডিট" icon={Calendar}>
 													<div className="overflow-x-auto">
 														<table className="w-full border-collapse border border-gray-200 text-xs text-center">
 															<thead>
 																<tr className="bg-gray-50 text-gray-700">
-																	<th className="border border-gray-200 p-2 text-left">বিবরণ</th>
-																	<th className="border border-gray-200 p-2">সংখ্যা</th>
+																	<th className="border border-gray-200 p-2 text-left">দিবসসমূহ</th>
+																	<th className="border border-gray-200 p-2">মোট প্রোগ্রাম সংখ্যা</th>
+																	<th className="border border-gray-200 p-2">গড় উপস্থিতি</th>
+																	<th className="border border-gray-200 p-2 text-left">দিবসসমূহ</th>
+																	<th className="border border-gray-200 p-2">মোট প্রোগ্রাম সংখ্যা</th>
+																	<th className="border border-gray-200 p-2">গড় উপস্থিতি</th>
 																</tr>
 															</thead>
 															<tbody>
-																{[
-																	{ id: 'independenceDay', label: 'স্বাধীনতা ও জাতীয় দিবস' },
-																	{ id: 'victoryDay', label: 'বিজয় দিবস' },
-																	{ id: 'motherLanguageDay', label: 'আন্তর্জাতিক মাতৃভাষা দিবস' }
-																].map(row => (
-																	<tr key={row.id}>
-																		<td className="border border-gray-200 p-2 text-left">{row.label}</td>
-																		<td className="border border-gray-200 p-2 text-center">
-																			{formatVal(compReport.political?.nationalDay?.[row.id]?.programCount)} / {formatVal(compReport.political?.nationalDay?.[row.id]?.avgAttendance)}
-																		</td>
-																	</tr>
-																))}
+																<tr>
+																	<td className="border border-gray-200 p-2 text-left">স্বাধীনতা ও জাতীয় দিবস</td>
+																	<td className="border border-gray-200 p-2">{formatVal(compReport.political?.nationalDay?.independenceDay?.programCount)}</td>
+																	<td className="border border-gray-200 p-2">{formatVal(compReport.political?.nationalDay?.independenceDay?.avgAttendance)}</td>
+																	<td className="border border-gray-200 p-2 text-left">আন্তর্জাতিক মাতৃভাষা দিবস</td>
+																	<td className="border border-gray-200 p-2">{formatVal(compReport.political?.nationalDay?.motherLanguageDay?.programCount)}</td>
+																	<td className="border border-gray-200 p-2">{formatVal(compReport.political?.nationalDay?.motherLanguageDay?.avgAttendance)}</td>
+																</tr>
+																<tr>
+																	<td className="border border-gray-200 p-2 text-left">বিজয় দিবস</td>
+																	<td className="border border-gray-200 p-2">{formatVal(compReport.political?.nationalDay?.victoryDay?.programCount)}</td>
+																	<td className="border border-gray-200 p-2">{formatVal(compReport.political?.nationalDay?.victoryDay?.avgAttendance)}</td>
+																	<td className="border border-gray-200 p-2 text-left">অন্যান্য(বিস্তারিত আলাদা কাগজে দেয়া যাবে)</td>
+																	<td className="border border-gray-200 p-2">{formatVal(compReport.political?.nationalDay?.others?.programCount)}</td>
+																	<td className="border border-gray-200 p-2">{formatVal(compReport.political?.nationalDay?.others?.avgAttendance)}</td>
+																</tr>
 															</tbody>
 														</table>
 													</div>
