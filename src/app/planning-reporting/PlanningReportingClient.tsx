@@ -1509,28 +1509,31 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 										</div>
 									</ReportAccordionSection>
 
-									<ReportAccordionSection title="৫. রাষ্ট্রীয়, রাজনৈতিক ও নির্বাচনী কার্যক্রমঃ" icon={Scale}>
+									<ReportAccordionSection title="৫. রাষ্ট্রীয় সংস্কার ও সংশোধনঃ" icon={Scale}>
 										<div className="space-y-6">
 											<div className="space-y-4">
-												<ReportAccordionSection title="রাজনৈতিক যোগাযোগ" onEdit={isFuture ? undefined : () => setIsPoliticalCommModalOpen(true)} buttonText="যোগাযোগ এডিট" icon={PhoneCall}>
+												<ReportAccordionSection title="১. রাজনৈতিক ও প্রশাসনিক যোগাযোগ:" onEdit={isFuture ? undefined : () => setIsPoliticalCommModalOpen(true)} buttonText="যোগাযোগ এডিট" icon={PhoneCall}>
 													<div className="overflow-x-auto">
 														<table className="w-full border-collapse border border-gray-200 text-xs text-center">
 															<thead>
 																<tr className="bg-gray-50 text-gray-700">
-																	<th className="border border-gray-200 p-2 text-left">বিবরণ</th>
-																	<th className="border border-gray-200 p-2">সংখ্যা</th>
+																	<th className="border border-gray-200 p-2 text-left">যোগাযোগের ধরন</th>
+																	<th className="border border-gray-200 p-2">মোট কতজন যোগাযোগ করেছেন</th>
+																	<th className="border border-gray-200 p-2">মোট কতজনের সাথে যোগাযোগ হয়েছে</th>
 																</tr>
 															</thead>
 															<tbody>
 																{[
-																	{ id: 'political', label: 'রাজনৈতিক দলের সাথে যোগাযোগ' },
-																	{ id: 'admin', label: 'প্রশাসনের সাথে যোগাযোগ' },
-																	{ id: 'media', label: 'মিডিয়া ব্যক্তিত্বের সাথে যোগাযোগ' }
+																	{ id: 'political', label: 'রাজনৈতিক ব্যক্তিবর্গ' },
+																	{ id: 'admin', label: 'প্রশাসনিক ব্যক্তিবর্গ' }
 																].map(row => (
 																	<tr key={row.id}>
 																		<td className="border border-gray-200 p-2 text-left">{row.label}</td>
 																		<td className="border border-gray-200 p-2 text-center">
-																			{formatVal(compReport.political?.comm?.[row.id]?.communicatedCount)} / {formatVal(compReport.political?.comm?.[row.id]?.reachedCount)}
+																			{formatVal(compReport.political?.comm?.[row.id]?.communicatedCount)}
+																		</td>
+																		<td className="border border-gray-200 p-2 text-center">
+																			{formatVal(compReport.political?.comm?.[row.id]?.reachedCount)}
 																		</td>
 																	</tr>
 																))}
@@ -1539,7 +1542,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 													</div>
 												</ReportAccordionSection>
 
-												<ReportAccordionSection title="রাজনৈতিক কর্মসূচি" onEdit={isFuture ? undefined : () => setIsPoliticalProgModalOpen(true)} buttonText="কর্মসূচি এডিট" icon={Flag}>
+												<ReportAccordionSection title="২. কর্মসূচী বাস্তবায়ন:" onEdit={isFuture ? undefined : () => setIsPoliticalProgModalOpen(true)} buttonText="কর্মসূচি এডিট" icon={Flag}>
 													<div className="overflow-x-auto">
 														<table className="w-full border-collapse border border-gray-200 text-xs text-center">
 															<thead>
@@ -1568,7 +1571,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 											</div>
 
 											<div className="space-y-4">
-												<ReportAccordionSection title="জাতীয় দিবস ও বিশেষ কর্মসূচি" onEdit={isFuture ? undefined : () => setIsNationalDayModalOpen(true)} buttonText="দিবস এডিট" icon={Calendar}>
+												<ReportAccordionSection title="৩. জাতীয় ও আন্তর্জাতিক দিবস পালন:" onEdit={isFuture ? undefined : () => setIsNationalDayModalOpen(true)} buttonText="দিবস এডিট" icon={Calendar}>
 													<div className="overflow-x-auto">
 														<table className="w-full border-collapse border border-gray-200 text-xs text-center">
 															<thead>
