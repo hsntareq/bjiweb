@@ -226,7 +226,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 				fetch(`http://localhost:3001/comprehensive-report/organization/${selectedOrgId}?year=${year}&month=${month}`, {
 					headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
 				}),
-				fetch(`http://localhost:3001/monthly-plan?organizationId=${selectedOrgId}&year=${year}&month=${month}`, {
+				fetch(`http://localhost:3001/monthly-plan?month=${year}-${String(month).padStart(2, '0')}`, {
 					headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
 				})
 			]);
