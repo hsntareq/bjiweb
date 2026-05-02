@@ -461,19 +461,17 @@ function ReportPrintContent() {
       output = output.replace(new RegExp(`{{day${templateKey}Attendance}}`, 'g'), toBengaliNumber(nationalDays[key]?.avgAttendance) || "০");
     });
 
-    // 8. Remarks (already done via PlanningReportingClient but making sure)
-    output = output.replace(/{{remarksProblems}}/g, report.remarks?.problems || "নেই");
-    output = output.replace(/{{remarksProspects}}/g, report.remarks?.prospects || "নেই");
+    // 8. Remarks — build Bengali-numbered HTML lists
+    const buildNumberedList = (items: any): string => {
+      const arr = Array.isArray(items) ? items.filter((p: string) => p && p.trim()) : (items ? [items] : []);
+      if (!arr.length) return "নেই";
+      return arr.map((item: string, i: number) => `${toBengaliNumber(i + 1)}. ${item}`).join('<br/>');
+    };
 
-    // 9. Metadata & Date
-    const reportDate = report.reportDate || new Date().toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' });
-    output = output.replace(/{{reportDate}}/g, reportDate);
-
-    // 7. Remarks
-    const problemsText = Array.isArray(report.remarks?.problems) ? report.remarks.problems.filter((p: string) => p).join('\n') : report.remarks?.problems;
-    const prospectsText = Array.isArray(report.remarks?.opportunities) ? report.remarks.opportunities.filter((p: string) => p).join('\n') : report.remarks?.prospects;
-    output = output.replace(/{{remarksProblems}}/g, problemsText || "কোনো সমস্যা উল্লেখ করা হয়নি।");
-    output = output.replace(/{{remarksProspects}}/g, prospectsText || "কোনো সম্ভাবনা উল্লেখ করা হয়নি।");
+    const problemsList = buildNumberedList(report.remarks?.problems);
+    const prospectsList = buildNumberedList(report.remarks?.prospects ?? report.remarks?.opportunities);
+    output = output.replace(/{{remarksProblems}}/g, problemsList);
+    output = output.replace(/{{remarksProspects}}/g, prospectsList);
 
     return output;
   };
