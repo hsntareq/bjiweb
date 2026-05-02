@@ -517,7 +517,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 										</div>
 									</div>
 
-									<ReportAccordionSection title="১. দাওয়াত ও তাবলীগঃ" onEdit={isFuture ? undefined : () => setIsDawatTablighModalOpen(true)} buttonText="দাওয়াত এডিট" icon={Megaphone}>
+									<ReportAccordionSection title="ক) জনসাধারণের মাঝে সর্বমোট দাওয়াত" onEdit={isFuture ? undefined : () => setIsDawatTablighModalOpen(true)} buttonText="দাওয়াত এডিট" icon={Megaphone}>
 										<div className="space-y-8">
 											{/* Section 1 */}
 											<div>
