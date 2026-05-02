@@ -82,7 +82,15 @@ export const RemarksModal: React.FC<RemarksModalProps> = ({
       isOpen={isOpen} 
       onClose={onClose} 
       title="৭. ওয়ার্ড সভাপতির মন্তব্যঃ" 
-      onSave={() => onSave(data)}
+      onSave={() => {
+        const cleaned: any = {};
+        for (const key of Object.keys(data)) {
+          cleaned[key] = Array.isArray(data[key])
+            ? data[key].filter((v: string) => v && v.trim())
+            : data[key];
+        }
+        onSave(cleaned);
+      }}
       saving={saving}
       width="max-w-4xl"
     >
