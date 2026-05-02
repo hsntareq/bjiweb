@@ -11,6 +11,7 @@ interface UserData {
   organization: string;
   childOrgName?: string;
   rank: string | null;
+  isAdv?: boolean;
 }
 
 interface UserHierarchyData {
@@ -26,18 +27,23 @@ interface OrgOption {
 
 
 const RANK_COLORS: Record<string, string> = {
-  'member': 'bg-blue-100 text-blue-800',
-  'activist': 'bg-green-100 text-green-800',
+  'member':    'bg-blue-100 text-blue-800',
+  'activist':  'bg-green-100 text-green-800',
   'associate': 'bg-yellow-100 text-yellow-800',
-  'adv-activist': 'bg-purple-100 text-purple-800',
-  'adv-associate': 'bg-orange-100 text-orange-800',
 };
 
-function RankBadge({ rank }: { rank: string }) {
+function RankBadge({ rank, isAdv }: { rank: string; isAdv?: boolean }) {
   const cls = RANK_COLORS[rank] ?? 'bg-gray-100 text-gray-700';
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${cls}`}>
-      {rank}
+    <span className="inline-flex items-center gap-1">
+      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${cls}`}>
+        {rank}
+      </span>
+      {isAdv && (
+        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold bg-purple-100 text-purple-700 border border-purple-300">
+          ADV
+        </span>
+      )}
     </span>
   );
 }
@@ -330,7 +336,7 @@ export default function UsersClient({ accessToken = '' }: { accessToken?: string
                               </div>
                             </td>
                             <td className="px-6 py-4 text-gray-600 text-sm">{user.email}</td>
-                            <td className="px-6 py-4 text-sm">{user.rank ? <RankBadge rank={user.rank} /> : '-'}</td>
+                            <td className="px-6 py-4 text-sm">{user.rank ? <RankBadge rank={user.rank} isAdv={user.isAdv} /> : '-'}</td>
                             <td className="px-6 py-4 text-gray-600 text-sm">{user.responsibility || '-'}</td>
                             <td className="px-6 py-4 text-gray-600 text-sm font-medium">{user.childOrgName || '-'}</td>
                           </tr>
