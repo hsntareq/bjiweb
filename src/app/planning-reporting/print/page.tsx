@@ -388,11 +388,11 @@ function ReportPrintContent() {
     output = output.replace(/{{politicalProgCentralCount}}/g, toBengaliNumber(politicalProg.centerProgram?.count?.val) || "০");
     output = output.replace(/{{politicalProgCentralAttendance}}/g, toBengaliNumber(politicalProg.centerProgram?.avgAttendance?.val) || "০");
     // localProgram count is stored as {gathering, meeting, procession}
-    output = output.replace(/{{politicalProgLocalCount}}/g, Object.values(politicalProg.localProgram?.count || {}).join(' / ') || "০");
-    output = output.replace(/{{politicalProgLocalAttendance}}/g, Object.values(politicalProg.localProgram?.avgAttendance || {}).join(' / ') || "০");
+    output = output.replace(/{{politicalProgLocalCount}}/g, Object.values(politicalProg.localProgram?.count || {}).map(v => toBengaliNumber(v) || "০").join(' / ') || "০");
+    output = output.replace(/{{politicalProgLocalAttendance}}/g, Object.values(politicalProg.localProgram?.avgAttendance || {}).map(v => toBengaliNumber(v) || "০").join(' / ') || "০");
     // distribution count is stored as {poster, leaflet, booklet, memorandum}
-    output = output.replace(/{{politicalProgDistributionCount}}/g, Object.values(politicalProg.distribution?.count || {}).join(' / ') || "০");
-    output = output.replace(/{{politicalProgDistributionAttendance}}/g, Object.values(politicalProg.distribution?.avgAttendance || {}).join(' / ') || "০");
+    output = output.replace(/{{politicalProgDistributionCount}}/g, Object.values(politicalProg.distribution?.count || {}).map(v => toBengaliNumber(v) || "০").join(' / ') || "০");
+    output = output.replace(/{{politicalProgDistributionAttendance}}/g, Object.values(politicalProg.distribution?.avgAttendance || {}).map(v => toBengaliNumber(v) || "০").join(' / ') || "০");
 
     // 6. Baitulmal
     const baitulmal = report.finance || {};
