@@ -538,19 +538,15 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 																	<td className="border border-gray-200 p-2 text-left font-medium">ইউনিটের দাওয়াতী গ্রুপ কাজ</td>
 																	<td className="border border-gray-200 p-2 text-center">
 																		{formatVal(compReport.unitDawat?.groupCount)}
-																		<div className="text-[10px] text-gray-400 mt-1">{"{{"}groupDawahCount{"}}"}</div>
 																	</td>
 																	<td className="border border-gray-200 p-2 text-center">
 																		{formatVal(compReport.unitDawat?.participantCount)}
-																		<div className="text-[10px] text-gray-400 mt-1">{"{{"}groupDawahParticipants{"}}"}</div>
 																	</td>
 																	<td className="border border-gray-200 p-2 text-center">
 																		{formatVal(compReport.unitDawat?.reachedCount)}
-																		<div className="text-[10px] text-gray-400 mt-1">{"{{"}groupDawahReached{"}}"}</div>
 																	</td>
 																	<td className="border border-gray-200 p-2 text-center">
 																		{formatVal(compReport.unitDawat?.associateCount)}
-																		<div className="text-[10px] text-gray-400 mt-1">{"{{"}groupDawahNewAssociate{"}}"}</div>
 																	</td>
 																</tr>
 															</tbody>
@@ -575,32 +571,26 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 																	<td className="border border-gray-200 p-2">মোট জনশক্তি সংখ্যা</td>
 																	<td className="border border-gray-200 p-2 text-center">
 																		{formatVal(compReport.personalDawat?.rokon?.total)}
-																		<div className="text-[10px] text-gray-400 mt-1">{"{{"}personalDawahRokonTotal{"}}"}</div>
 																	</td>
 																	<td className="border border-gray-200 p-2 text-center">
 																		{formatVal(compReport.personalDawat?.karmi?.total)}
-																		<div className="text-[10px] text-gray-400 mt-1">{"{{"}personalDawahKarmiTotal{"}}"}</div>
 																	</td>
 																	<td className="border border-gray-200 p-2">কতজনের নিকট পৌঁছানো হয়েছে</td>
 																	<td className="border border-gray-200 p-2 text-center">
 																		{formatVal((compReport.personalDawat?.rokon?.reached || 0) + (compReport.personalDawat?.karmi?.reached || 0))}
-																		<div className="text-[10px] text-gray-400 mt-1">{"{{"}personalDawahReached{"}}"}</div>
 																	</td>
 																</tr>
 																<tr>
 																	<td className="border border-gray-200 p-2">কতজন ব্যক্তিগতভাবে দাওয়াতি কাজ করেছেন</td>
 																	<td className="border border-gray-200 p-2 text-center">
 																		{formatVal(compReport.personalDawat?.rokon?.worked)}
-																		<div className="text-[10px] text-gray-400 mt-1">{"{{"}personalDawahRokonWorked{"}}"}</div>
 																	</td>
 																	<td className="border border-gray-200 p-2 text-center">
 																		{formatVal(compReport.personalDawat?.karmi?.worked)}
-																		<div className="text-[10px] text-gray-400 mt-1">{"{{"}personalDawahKarmiWorked{"}}"}</div>
 																	</td>
 																	<td className="border border-gray-200 p-2">কতজন সহযোগী সদস্য হয়েছেন</td>
 																	<td className="border border-gray-200 p-2 text-center">
 																		{formatVal((compReport.personalDawat?.rokon?.associate || 0) + (compReport.personalDawat?.karmi?.associate || 0))}
-																		<div className="text-[10px] text-gray-400 mt-1">{"{{"}personalDawahNewAssociate{"}}"}</div>
 																	</td>
 																</tr>
 															</tbody>
@@ -621,11 +611,9 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 																<tr>
 																	<td className="border border-gray-200 p-2 text-center">
 																		{formatVal(compReport.generalMeeting?.totalReached)}
-																		<div className="text-[10px] text-gray-400 mt-1 italic font-normal">{"{{"}generalMeetingTotalReached{"}}"}</div>
 																	</td>
 																	<td className="border border-gray-200 p-2 text-center">
 																		{formatVal(compReport.generalMeeting?.associateCount)}
-																		<div className="text-[10px] text-gray-400 mt-1 italic font-normal">{"{{"}generalMeetingNewAssociate{"}}"}</div>
 																	</td>
 																</tr>
 															</tbody>
@@ -658,19 +646,15 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 																			<td className="border-b border-gray-200 p-2 text-left font-medium">{row.label}</td>
 																			<td className="border-b border-l border-gray-200 p-2 text-center">
 																				{formatVal(compReport.prCampaign?.[row.id]?.groupCount)}
-																				<div className="text-[9px] text-gray-400 mt-0.5 font-normal italic">{"{{"}{row.id}Group{"}}"}</div>
 																			</td>
 																			<td className="border-b border-l border-gray-200 p-2 text-center">
 																				{formatVal(compReport.prCampaign?.[row.id]?.participantCount)}
-																				<div className="text-[9px] text-gray-400 mt-0.5 font-normal italic">{"{{"}{row.id}Participant{"}}"}</div>
 																			</td>
 																			<td className="border-b border-l border-gray-200 p-2 text-center">
 																				{formatVal(compReport.prCampaign?.[row.id]?.reachedCount)}
-																				<div className="text-[9px] text-gray-400 mt-0.5 font-normal italic">{"{{"} {row.id}Reached{"}}"}</div>
 																			</td>
 																			<td className="border-b border-l border-gray-200 p-2 text-center">
 																				{formatVal(compReport.prCampaign?.[row.id]?.associateCount)}
-																				<div className="text-[9px] text-gray-400 mt-0.5 font-normal italic">{"{{"} {row.id}Associate{"}}"}</div>
 																			</td>
 																		</tr>
 																	))}
@@ -700,11 +684,9 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 																	<td className="border border-gray-200 p-2 text-left">কুরআন শিক্ষা প্রদান করেছেন</td>
 																	<td className="border border-gray-200 p-2 text-center">
 																		{formatVal(compReport.departmentalInfo?.quranTalim?.rokonTeacherCount)}
-																		<div className="text-[10px] text-gray-400 mt-1 italic">{"{{"}quranTeacherRokon{"}}"}</div>
 																	</td>
 																	<td className="border border-gray-200 p-2 text-center">
 																		{formatVal(compReport.departmentalInfo?.quranTalim?.karmiTeacherCount)}
-																		<div className="text-[10px] text-gray-400 mt-1 italic">{"{{"}quranTeacherKarmi{"}}"}</div>
 																	</td>
 																	<td className="border border-gray-200 p-2 text-center font-bold">{formatVal((compReport.departmentalInfo?.quranTalim?.rokonTeacherCount || 0) + (compReport.departmentalInfo?.quranTalim?.karmiTeacherCount || 0))}</td>
 																</tr>
@@ -714,7 +696,6 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 																	<td className="border border-gray-200 p-2 text-center text-gray-400">-</td>
 																	<td className="border border-gray-200 p-2 text-center font-bold">
 																		{formatVal(compReport.departmentalInfo?.quranTalim?.reachedCount)}
-																		<div className="text-[10px] text-gray-400 mt-1 italic">{"{{"}quranReachedCount{"}}"}</div>
 																	</td>
 																</tr>
 															</tbody>
