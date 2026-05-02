@@ -364,31 +364,35 @@ function ReportPrintContent() {
 
     // 5. Political & Election
     const political = report.political || {};
-    output = output.replace(/{{electionCouncilorCandidateCount}}/g, toBengaliNumber(political.councilor?.candidateCount?.val) || "০");
-    output = output.replace(/{{electionCouncilorElectedCount}}/g, toBengaliNumber(political.councilor?.electedCount?.val) || "০");
-    output = output.replace(/{{electionCouncilorSecondPlaceCount}}/g, toBengaliNumber(political.councilor?.secondPlaceCount?.val) || "০");
-    output = output.replace(/{{electionVoteCenterCount}}/g, toBengaliNumber(political.preparatory?.voteCenter?.count) || "০");
-    output = output.replace(/{{electionVoteCenterIncrease}}/g, toBengaliNumber(political.preparatory?.voteCenter?.increase) || "০");
-    output = output.replace(/{{electionVoteCenterTarget}}/g, toBengaliNumber(political.preparatory?.voteCenter?.target) || "০");
-    output = output.replace(/{{electionVoteCenterCommitteeCount}}/g, toBengaliNumber(political.preparatory?.voteCenterCommittee?.count) || "০");
-    output = output.replace(/{{electionVoteCenterCommitteeIncrease}}/g, toBengaliNumber(political.preparatory?.voteCenterCommittee?.increase) || "০");
-    output = output.replace(/{{electionVoteCenterCommitteeTarget}}/g, toBengaliNumber(political.preparatory?.voteCenterCommittee?.target) || "০");
-    output = output.replace(/{{electionCommitteeMeetingCount}}/g, toBengaliNumber(political.electionCommitteeMeetingCount) || "০");
+    const election = political.election || {};
+    output = output.replace(/{{electionCouncilorCandidateCount}}/g, toBengaliNumber(election.councilor?.candidateCount?.val) || "০");
+    output = output.replace(/{{electionCouncilorElectedCount}}/g, toBengaliNumber(election.councilor?.electedCount?.val) || "০");
+    output = output.replace(/{{electionCouncilorSecondPlaceCount}}/g, toBengaliNumber(election.councilor?.secondPlaceCount?.val) || "০");
+    output = output.replace(/{{electionVoteCenterCount}}/g, toBengaliNumber(election.preparatory?.voteCenter?.count) || "০");
+    output = output.replace(/{{electionVoteCenterIncrease}}/g, toBengaliNumber(election.preparatory?.voteCenter?.increase) || "০");
+    output = output.replace(/{{electionVoteCenterTarget}}/g, toBengaliNumber(election.preparatory?.voteCenter?.target) || "০");
+    output = output.replace(/{{electionVoteCenterCommitteeCount}}/g, toBengaliNumber(election.preparatory?.voteCenterCommittee?.count) || "০");
+    output = output.replace(/{{electionVoteCenterCommitteeIncrease}}/g, toBengaliNumber(election.preparatory?.voteCenterCommittee?.increase) || "০");
+    output = output.replace(/{{electionVoteCenterCommitteeTarget}}/g, toBengaliNumber(election.preparatory?.voteCenterCommittee?.target) || "০");
+    output = output.replace(/{{electionCommitteeMeetingCount}}/g, toBengaliNumber(election.electionCommitteeMeetingCount) || "০");
 
     // State Reform & Correction (Communication & Programs)
-    const politicalComm = political.communication || {};
-    output = output.replace(/{{politicalCommPoliticalCount}}/g, toBengaliNumber(politicalComm.political?.count) || "০");
-    output = output.replace(/{{politicalCommPoliticalReached}}/g, toBengaliNumber(politicalComm.political?.reached) || "০");
-    output = output.replace(/{{politicalCommAdminCount}}/g, toBengaliNumber(politicalComm.admin?.count) || "০");
-    output = output.replace(/{{politicalCommAdminReached}}/g, toBengaliNumber(politicalComm.admin?.reached) || "০");
+    const politicalComm = political.comm || {};
+    output = output.replace(/{{politicalCommPoliticalCount}}/g, toBengaliNumber(politicalComm.political?.communicatedCount) || "০");
+    output = output.replace(/{{politicalCommPoliticalReached}}/g, toBengaliNumber(politicalComm.political?.reachedCount) || "০");
+    output = output.replace(/{{politicalCommAdminCount}}/g, toBengaliNumber(politicalComm.admin?.communicatedCount) || "০");
+    output = output.replace(/{{politicalCommAdminReached}}/g, toBengaliNumber(politicalComm.admin?.reachedCount) || "০");
 
-    const politicalProg = political.program || {};
-    output = output.replace(/{{politicalProgCentralCount}}/g, toBengaliNumber(politicalProg.central?.count) || "০");
-    output = output.replace(/{{politicalProgCentralAttendance}}/g, toBengaliNumber(politicalProg.central?.avgAttendance) || "০");
-    output = output.replace(/{{politicalProgLocalCount}}/g, toBengaliNumber(politicalProg.local?.count) || "০");
-    output = output.replace(/{{politicalProgLocalAttendance}}/g, toBengaliNumber(politicalProg.local?.avgAttendance) || "০");
-    output = output.replace(/{{politicalProgDistributionCount}}/g, toBengaliNumber(politicalProg.distribution?.count) || "০");
-    output = output.replace(/{{politicalProgDistributionAttendance}}/g, toBengaliNumber(politicalProg.distribution?.avgAttendance) || "০");
+    const politicalProg = political.prog || {};
+    // centerProgram count is stored as {val: X}
+    output = output.replace(/{{politicalProgCentralCount}}/g, toBengaliNumber(politicalProg.centerProgram?.count?.val) || "০");
+    output = output.replace(/{{politicalProgCentralAttendance}}/g, toBengaliNumber(politicalProg.centerProgram?.avgAttendance?.val) || "০");
+    // localProgram count is stored as {gathering, meeting, procession}
+    output = output.replace(/{{politicalProgLocalCount}}/g, Object.values(politicalProg.localProgram?.count || {}).join(' / ') || "০");
+    output = output.replace(/{{politicalProgLocalAttendance}}/g, Object.values(politicalProg.localProgram?.avgAttendance || {}).join(' / ') || "০");
+    // distribution count is stored as {poster, leaflet, booklet, memorandum}
+    output = output.replace(/{{politicalProgDistributionCount}}/g, Object.values(politicalProg.distribution?.count || {}).join(' / ') || "০");
+    output = output.replace(/{{politicalProgDistributionAttendance}}/g, Object.values(politicalProg.distribution?.avgAttendance || {}).join(' / ') || "০");
 
     // 6. Baitulmal
     const baitulmal = report.finance || {};
@@ -448,8 +452,8 @@ function ReportPrintContent() {
       output = output.replace(new RegExp(`{{trainingHRD_${key}_Total}}`, 'g'), toBengaliNumber(data.totalCount) || "০");
     });
 
-    // 7. National Days
-    const nationalDays = report.nationalDays || {};
+    // 7. National Days (stored under political.nationalDay)
+    const nationalDays = report.political?.nationalDay || {};
     const dayKeys = ['independenceDay', 'victoryDay', 'motherLanguageDay', 'others'];
     dayKeys.forEach(key => {
       const templateKey = key.charAt(0).toUpperCase() + key.slice(1);
