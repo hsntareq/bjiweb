@@ -55,9 +55,9 @@ function RankBadge({ rank, isAdv, blurred }: { rank: string; isAdv: boolean; blu
   );
 }
 
-function ProfilePopover({ user, anchorRect, onClose }: {
+function ProfilePopover({ user, anchorEl, onClose }: {
   user: UserRow;
-  anchorRect: DOMRect;
+  anchorEl: HTMLElement;
   onClose: () => void;
 }) {
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -65,13 +65,29 @@ function ProfilePopover({ user, anchorRect, onClose }: {
   const rankCls = user.rank ? (RANK_COLORS[user.rank] ?? 'bg-gray-100 text-gray-700') : '';
   const bloodCls = user.bloodGroup ? (BLOOD_COLORS[user.bloodGroup] ?? 'bg-gray-50 text-gray-700 border-gray-200') : '';
 
-  // Position: prefer below, flip up if not enough space
-  const spaceBelow = window.innerHeight - anchorRect.bottom;
-  const placeAbove = spaceBelow < 200;
-  const top = placeAbove
-    ? anchorRect.top + window.scrollY - 8
-    : anchorRect.bottom + window.scrollY + 8;
-  const left = Math.min(anchorRect.left + window.scrollX, window.innerWidth - 320);
+  const [pos, setPos] = useState({ top: 0, left: 0, placeAbove: false });
+
+  const updatePosition = useCallback(() => {
+    const rect = anchorEl.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const placeAbove = spaceBelow < 220;
+    setPos({
+      top: placeAbove ? rect.top - 8 : rect.bottom + 8,
+      left: Math.min(Math.max(rect.left, 8), window.innerWidth - 296),
+      placeAbove,
+    });
+  }, [anchorEl]);
+
+  useEffect(() => {
+    updatePosition();
+    // capture:true catches scroll on any scrollable ancestor (e.g. table container)
+    window.addEventListener('scroll', updatePosition, true);
+    window.addEventListener('resize', updatePosition);
+    return () => {
+      window.removeEventListener('scroll', updatePosition, true);
+      window.removeEventListener('resize', updatePosition);
+    };
+  }, [updatePosition]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -91,8 +107,8 @@ function ProfilePopover({ user, anchorRect, onClose }: {
   return (
     <div
       ref={popoverRef}
-      className={`fixed z-50 w-72 bg-white rounded-xl shadow-xl border border-gray-200 p-4 ${placeAbove ? '-translate-y-full' : ''}`}
-      style={{ top, left }}
+      className={`fixed z-50 w-72 bg-white rounded-xl shadow-xl border border-gray-200 p-4 transition-[top,left] duration-75 ${pos.placeAbove ? '-translate-y-full' : ''}`}
+      style={{ top: pos.top, left: pos.left }}
     >
       {/* Close button */}
       <button onClick={onClose} className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 p-1 rounded">
@@ -206,7 +222,7 @@ export default function DevUsersClient() {
   const [sortAsc, setSortAsc] = useState(true);
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [popoverUser, setPopoverUser] = useState<UserRow | null>(null);
-  const [popoverAnchor, setPopoverAnchor] = useState<DOMRect | null>(null);
+  const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
 
   // Debounce search
   useEffect(() => {
@@ -317,7 +333,7 @@ export default function DevUsersClient() {
       setPopoverAnchor(null);
     } else {
       setPopoverUser(user);
-      setPopoverAnchor((e.currentTarget as HTMLElement).getBoundingClientRect());
+      setPopoverAnchor(e.currentTarget as HTMLElement);
     }
   };
 
@@ -337,7 +353,7 @@ export default function DevUsersClient() {
       {popoverUser && popoverAnchor && (
         <ProfilePopover
           user={popoverUser}
-          anchorRect={popoverAnchor}
+          anchorEl={popoverAnchor}
           onClose={() => { setPopoverUser(null); setPopoverAnchor(null); }}
         />
       )}
