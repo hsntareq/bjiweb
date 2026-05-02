@@ -1,16 +1,20 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
-import { Search, Loader, ChevronUp, ChevronDown, Building2 } from 'lucide-react';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { Search, Loader, ChevronUp, ChevronDown, Building2, Phone, MapPin, Briefcase, X, Droplets } from 'lucide-react';
 
 interface UserRow {
   id: number;
   fullname: string;
   email: string;
+  mobile: string | null;
+  bloodGroup: string | null;
   responsibility: string | null;
   organization: string | null;
   organizationId: number | null;
   organizationType: string | null;
+  thana: string | null;
+  city: string | null;
   rank: string | null;
   isAdv: boolean;
 }
@@ -28,6 +32,17 @@ const RANK_COLORS: Record<string, string> = {
   associate: 'bg-yellow-100 text-yellow-800',
 };
 
+const BLOOD_COLORS: Record<string, string> = {
+  'A+': 'bg-red-50 text-red-700 border-red-200',
+  'A-': 'bg-red-50 text-red-700 border-red-200',
+  'B+': 'bg-orange-50 text-orange-700 border-orange-200',
+  'B-': 'bg-orange-50 text-orange-700 border-orange-200',
+  'AB+': 'bg-purple-50 text-purple-700 border-purple-200',
+  'AB-': 'bg-purple-50 text-purple-700 border-purple-200',
+  'O+': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  'O-': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+};
+
 function RankBadge({ rank, isAdv, blurred }: { rank: string; isAdv: boolean; blurred?: boolean }) {
   const cls = RANK_COLORS[rank] ?? 'bg-gray-100 text-gray-700';
   return (
@@ -37,6 +52,109 @@ function RankBadge({ rank, isAdv, blurred }: { rank: string; isAdv: boolean; blu
         <span className="px-1.5 py-0.5 rounded text-xs font-bold bg-purple-100 text-purple-700 border border-purple-300">ADV</span>
       )}
     </span>
+  );
+}
+
+function ProfilePopover({ user, anchorRect, onClose }: {
+  user: UserRow;
+  anchorRect: DOMRect;
+  onClose: () => void;
+}) {
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const initials = (user.fullname || user.email || 'U')[0].toUpperCase();
+  const rankCls = user.rank ? (RANK_COLORS[user.rank] ?? 'bg-gray-100 text-gray-700') : '';
+  const bloodCls = user.bloodGroup ? (BLOOD_COLORS[user.bloodGroup] ?? 'bg-gray-50 text-gray-700 border-gray-200') : '';
+
+  // Position: prefer below, flip up if not enough space
+  const spaceBelow = window.innerHeight - anchorRect.bottom;
+  const placeAbove = spaceBelow < 200;
+  const top = placeAbove
+    ? anchorRect.top + window.scrollY - 8
+    : anchorRect.bottom + window.scrollY + 8;
+  const left = Math.min(anchorRect.left + window.scrollX, window.innerWidth - 320);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+        onClose();
+      }
+    };
+    const keyHandler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('mousedown', handler);
+    document.addEventListener('keydown', keyHandler);
+    return () => {
+      document.removeEventListener('mousedown', handler);
+      document.removeEventListener('keydown', keyHandler);
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      ref={popoverRef}
+      className={`fixed z-50 w-72 bg-white rounded-xl shadow-xl border border-gray-200 p-4 ${placeAbove ? '-translate-y-full' : ''}`}
+      style={{ top, left }}
+    >
+      {/* Close button */}
+      <button onClick={onClose} className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 p-1 rounded">
+        <X className="w-3.5 h-3.5" />
+      </button>
+
+      {/* Row 1: Avatar + Name + Rank + Blood group */}
+      <div className="flex items-start gap-3 mb-3">
+        <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm shrink-0">
+          {initials}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="font-semibold text-gray-900 truncate pr-4">{user.fullname || '—'}</div>
+          <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+            {user.rank && (
+              <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${rankCls}`}>{user.rank}</span>
+            )}
+            {user.isAdv && (
+              <span className="px-1.5 py-0.5 rounded text-xs font-bold bg-purple-100 text-purple-700 border border-purple-300">ADV</span>
+            )}
+            {user.bloodGroup && (
+              <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold border ${bloodCls}`}>
+                <Droplets className="w-3 h-3" />{user.bloodGroup}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-gray-100 mb-3" />
+
+      {/* Row 2: Mobile */}
+      <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+        <Phone className="w-4 h-4 text-gray-400 shrink-0" />
+        <span>{user.mobile || <span className="text-gray-300 italic">No phone</span>}</span>
+      </div>
+
+      {/* Row 3: Responsibility + Org */}
+      <div className="flex items-start gap-2 text-sm text-gray-600 mb-2">
+        <Briefcase className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
+        <span>
+          {user.responsibility
+            ? <><span className="font-medium text-gray-700">{user.responsibility}</span>{' · '}</>
+            : null}
+          <span>{user.organization || '—'}</span>
+          {user.organizationType && (
+            <span className="ml-1 text-xs text-gray-400">({user.organizationType})</span>
+          )}
+        </span>
+      </div>
+
+      {/* Row 4: Thana + City */}
+      {(user.thana || user.city) && (
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <MapPin className="w-4 h-4 text-gray-400 shrink-0" />
+          <span>
+            {[user.thana, user.city].filter(Boolean).join(' · ')}
+          </span>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -51,14 +169,12 @@ const POSITION_LABELS: Record<string, string> = {
 
 interface Filters {
   orgId: number | null;
-  // rank checkboxes
   member: boolean;
   activist: boolean;
   advActivist: boolean;
   associate: boolean;
   advAssociate: boolean;
   noRank: boolean;
-  // position checkboxes
   president: boolean;
   secretary: boolean;
   baitulmal: boolean;
@@ -89,6 +205,8 @@ export default function DevUsersClient() {
   const [sortKey, setSortKey] = useState<SortKey>('organization');
   const [sortAsc, setSortAsc] = useState(true);
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
+  const [popoverUser, setPopoverUser] = useState<UserRow | null>(null);
+  const [popoverAnchor, setPopoverAnchor] = useState<DOMRect | null>(null);
 
   // Debounce search
   useEffect(() => {
@@ -133,7 +251,6 @@ export default function DevUsersClient() {
   const setFilter = <K extends keyof Filters>(key: K, val: Filters[K]) =>
     setFilters(f => ({ ...f, [key]: val }));
 
-  // Determine if a user passes position filter
   const positionOf = (u: UserRow): string | null => {
     const r = (u.responsibility || '').toLowerCase();
     if (r.includes('president')) return 'president';
@@ -146,7 +263,6 @@ export default function DevUsersClient() {
   // Filtering + blur logic
   const processed = allUsers
     .filter(u => {
-      // Org filter
       if (filters.orgId !== null && u.organizationId !== filters.orgId) return false;
       return true;
     })
@@ -155,7 +271,6 @@ export default function DevUsersClient() {
       const pos = positionOf(u);
       const isPositional = pos !== null;
 
-      // Determine visibility and blur
       let visible = false;
       let blurAdv = false;
 
@@ -165,7 +280,7 @@ export default function DevUsersClient() {
         visible = filters.member || (isPositional && filters[pos!] !== false);
       } else if (rank === 'activist') {
         if (u.isAdv) {
-          visible = filters.activist; // must have activist checked to show any activist
+          visible = filters.activist;
           blurAdv = !filters.advActivist;
         } else {
           visible = filters.activist || (isPositional && filters[pos!] !== false);
@@ -179,7 +294,6 @@ export default function DevUsersClient() {
         }
       }
 
-      // Position override: if any position filter is active, also show matching positional users
       if (isPositional && filters[pos!] !== false) visible = true;
 
       return { ...u, visible, blurAdv };
@@ -197,6 +311,16 @@ export default function DevUsersClient() {
     else { setSortKey(key); setSortAsc(true); }
   };
 
+  const handleNameClick = (e: React.MouseEvent, user: UserRow) => {
+    if (popoverUser?.id === user.id) {
+      setPopoverUser(null);
+      setPopoverAnchor(null);
+    } else {
+      setPopoverUser(user);
+      setPopoverAnchor((e.currentTarget as HTMLElement).getBoundingClientRect());
+    }
+  };
+
   const SortIcon = ({ col }: { col: SortKey }) => {
     if (sortKey !== col) return <ChevronUp className="w-3 h-3 opacity-20" />;
     return sortAsc ? <ChevronUp className="w-3 h-3 text-indigo-600" /> : <ChevronDown className="w-3 h-3 text-indigo-600" />;
@@ -204,12 +328,20 @@ export default function DevUsersClient() {
 
   const thCls = 'px-4 py-3 font-semibold text-left cursor-pointer select-none hover:text-indigo-700';
 
-  // Group orgs for the dropdown: wards first, then units indented
   const wardOrgs = orgs.filter(o => o.type === 'WARD').sort((a,b) => a.name.localeCompare(b.name));
   const unitOrgs = orgs.filter(o => o.type === 'UNIT').sort((a,b) => a.name.localeCompare(b.name));
 
   return (
     <div className="space-y-4">
+      {/* Popover portal */}
+      {popoverUser && popoverAnchor && (
+        <ProfilePopover
+          user={popoverUser}
+          anchorRect={popoverAnchor}
+          onClose={() => { setPopoverUser(null); setPopoverAnchor(null); }}
+        />
+      )}
+
       {/* Search + Org filter row */}
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[200px]">
@@ -227,7 +359,7 @@ export default function DevUsersClient() {
           )}
         </div>
 
-        {/* Org filter — child orgs only */}
+        {/* Org filter */}
         <div className="relative min-w-[200px]">
           <Building2 className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <select
@@ -252,7 +384,6 @@ export default function DevUsersClient() {
 
       {/* Filter checkboxes */}
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm px-4 py-3 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-        {/* Rank filters */}
         <div className="flex items-center gap-4 flex-wrap">
           <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Rank:</span>
 
@@ -295,7 +426,6 @@ export default function DevUsersClient() {
 
         <div className="w-px bg-gray-200 self-stretch hidden sm:block" />
 
-        {/* Position filters */}
         <div className="flex items-center gap-4 flex-wrap">
           <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Position:</span>
           {(['president','secretary','baitulmal','office'] as const).map(pos => (
@@ -345,12 +475,16 @@ export default function DevUsersClient() {
                 {sorted.map(user => (
                   <tr key={user.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 font-medium text-gray-900">
-                      <div className="flex items-center gap-2">
+                      <button
+                        onClick={e => handleNameClick(e, user)}
+                        className={`flex items-center gap-2 text-left hover:text-indigo-700 focus:outline-none focus:text-indigo-700 transition-colors ${popoverUser?.id === user.id ? 'text-indigo-700' : ''}`}
+                        title="Click to view profile"
+                      >
                         <div className="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-xs shrink-0">
                           {(user.fullname || user.email || 'U')[0].toUpperCase()}
                         </div>
                         <span className={user.blurAdv ? 'blur-[3px] select-none' : ''}>{user.fullname || <span className="text-gray-400">—</span>}</span>
-                      </div>
+                      </button>
                     </td>
                     <td className={`px-4 py-3 text-gray-500 ${user.blurAdv ? 'blur-[3px] select-none' : ''}`}>{user.email}</td>
                     <td className="px-4 py-3">
