@@ -10,6 +10,7 @@ interface UserData {
   responsibility: string | null;
   organization: string;
   childOrgName?: string;
+  rank: string | null;
 }
 
 interface UserHierarchyData {
@@ -21,6 +22,24 @@ interface OrgOption {
   id: number;
   name: string;
   type: string;
+}
+
+
+const RANK_COLORS: Record<string, string> = {
+  'member': 'bg-blue-100 text-blue-800',
+  'activist': 'bg-green-100 text-green-800',
+  'associate': 'bg-yellow-100 text-yellow-800',
+  'adv-activist': 'bg-purple-100 text-purple-800',
+  'adv-associate': 'bg-orange-100 text-orange-800',
+};
+
+function RankBadge({ rank }: { rank: string }) {
+  const cls = RANK_COLORS[rank] ?? 'bg-gray-100 text-gray-700';
+  return (
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${cls}`}>
+      {rank}
+    </span>
+  );
 }
 
 export default function UsersClient({ accessToken = '' }: { accessToken?: string }) {
@@ -294,6 +313,7 @@ export default function UsersClient({ accessToken = '' }: { accessToken?: string
                         <tr className="bg-gray-50 border-b border-gray-200 text-gray-600 text-xs uppercase tracking-wider">
                           <th className="px-6 py-4 font-semibold">User</th>
                           <th className="px-6 py-4 font-semibold">Email</th>
+                          <th className="px-6 py-4 font-semibold">Rank</th>
                           <th className="px-6 py-4 font-semibold">Role</th>
                           <th className="px-6 py-4 font-semibold">Child Organization</th>
                         </tr>
@@ -310,6 +330,7 @@ export default function UsersClient({ accessToken = '' }: { accessToken?: string
                               </div>
                             </td>
                             <td className="px-6 py-4 text-gray-600 text-sm">{user.email}</td>
+                            <td className="px-6 py-4 text-sm">{user.rank ? <RankBadge rank={user.rank} /> : '-'}</td>
                             <td className="px-6 py-4 text-gray-600 text-sm">{user.responsibility || '-'}</td>
                             <td className="px-6 py-4 text-gray-600 text-sm font-medium">{user.childOrgName || '-'}</td>
                           </tr>
