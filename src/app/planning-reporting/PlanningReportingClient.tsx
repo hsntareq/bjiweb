@@ -511,9 +511,9 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 												</p>
 											</div>
 											<div className="bg-rose-50/50 p-4 rounded-2xl border border-rose-100">
-												<p className="text-xs font-bold text-rose-400 uppercase mb-1">মোট সহযোগী সদস্য</p>
+												<p className="text-xs font-bold text-rose-400 uppercase mb-1">টার্গেট (মাসিক)</p>
 												<p className="text-2xl font-black text-rose-700">
-													{compReport.headerInfo?.totalAssociateCount || 0}
+													{compReport.headerInfo?.monthlyTargetCount || 0}
 												</p>
 											</div>
 										</div>
@@ -1869,6 +1869,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 				onClose={() => setIsDawatTablighModalOpen(false)}
 				onSave={(data) => handleSaveMultipleCompSections(data)}
 				initialData={{
+					headerInfo: compReport.headerInfo,
 					unitDawat: compReport.unitDawat,
 					personalDawat: compReport.personalDawat,
 					generalMeeting: compReport.generalMeeting,
