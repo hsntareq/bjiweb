@@ -392,7 +392,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 	if (!isMounted) return <div className="flex justify-center p-12"><div className="animate-spin w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full"></div></div>;
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-2 sm:space-y-4">
 			{/* Header Selectors */}
 			<div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
 				<div className="flex items-center gap-3 w-full sm:w-auto">
