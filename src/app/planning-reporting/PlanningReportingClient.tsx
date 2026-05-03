@@ -103,8 +103,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 		const url = new URL(window.location.href);
 		url.searchParams.set('orglevel', userContext.orgType.toLowerCase());
 		window.history.replaceState({}, '', url.toString());
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [userContext?.orgType, isMounted]);
+	}, [userContext, isMounted]);
 
 	// Basic Planning state
 	const [plan, setPlan] = useState<any>({
