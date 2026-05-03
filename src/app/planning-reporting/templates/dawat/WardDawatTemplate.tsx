@@ -9,7 +9,7 @@ import { CalendarCheck, LayoutGrid, Library, Megaphone } from 'lucide-react';
 import React from 'react';
 import { ReportSectionProps } from '../types';
 
-export function WardDawatTemplate({ compReport, formatVal, canEdit, onSave, saving }: ReportSectionProps) {
+export function WardDawatTemplate({ compReport, formatVal, canEdit, onSave, onSaveMultiple, saving }: ReportSectionProps) {
   const [isDawatTablighModalOpen, setIsDawatTablighModalOpen] = useState(false);
   const [isDeptModalOpen, setIsDeptModalOpen] = useState(false);
   const [isDawahPubModalOpen, setIsDawahPubModalOpen] = useState(false);
@@ -306,10 +306,12 @@ export function WardDawatTemplate({ compReport, formatVal, canEdit, onSave, savi
       <DawatTablighModal
         isOpen={isDawatTablighModalOpen}
         onClose={() => setIsDawatTablighModalOpen(false)}
-        onSave={(data) => {
+        onSave={async (data) => {
+          const updates: Record<string, any> = {};
           ['headerInfo', 'unitDawat', 'personalDawat', 'generalMeeting', 'prCampaign'].forEach(key => {
-            if (data[key] !== undefined) onSave(key, data[key]);
+            if (data[key] !== undefined) updates[key] = data[key];
           });
+          if (onSaveMultiple) await onSaveMultiple(updates);
           setIsDawatTablighModalOpen(false);
         }}
         initialData={{
@@ -325,7 +327,7 @@ export function WardDawatTemplate({ compReport, formatVal, canEdit, onSave, savi
       <DepartmentalInfoModal
         isOpen={isDeptModalOpen}
         onClose={() => setIsDeptModalOpen(false)}
-        onSave={(data) => { onSave('departmentalInfo', data); setIsDeptModalOpen(false); }}
+        onSave={async (data) => { await onSave('departmentalInfo', data); setIsDeptModalOpen(false); }}
         initialData={compReport.departmentalInfo}
         saving={saving}
       />
@@ -333,7 +335,7 @@ export function WardDawatTemplate({ compReport, formatVal, canEdit, onSave, savi
       <DawahPublicationModal
         isOpen={isDawahPubModalOpen}
         onClose={() => setIsDawahPubModalOpen(false)}
-        onSave={(data) => { onSave('dawahPublication', data); setIsDawahPubModalOpen(false); }}
+        onSave={async (data) => { await onSave('dawahPublication', data); setIsDawahPubModalOpen(false); }}
         initialData={compReport.dawahPublication}
         saving={saving}
       />
@@ -341,7 +343,7 @@ export function WardDawatTemplate({ compReport, formatVal, canEdit, onSave, savi
       <ProgramImplementationModal
         isOpen={isProgramModalOpen}
         onClose={() => setIsProgramModalOpen(false)}
-        onSave={(data) => { onSave('programs', data); setIsProgramModalOpen(false); }}
+        onSave={async (data) => { await onSave('programs', data); setIsProgramModalOpen(false); }}
         initialData={compReport.programs}
         saving={saving}
       />

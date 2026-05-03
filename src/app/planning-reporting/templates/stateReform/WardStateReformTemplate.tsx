@@ -154,28 +154,28 @@ export function WardStateReformTemplate({ compReport, formatVal, canEdit, onSave
       <PoliticalCommunicationModal
         isOpen={isPoliticalCommModalOpen}
         onClose={() => setIsPoliticalCommModalOpen(false)}
-        onSave={(data) => { onSave('political', { ...compReport.political, comm: data }); setIsPoliticalCommModalOpen(false); }}
+        onSave={async (data) => { await onSave('political', { ...compReport.political, comm: data }); setIsPoliticalCommModalOpen(false); }}
         initialData={compReport.political?.comm}
         saving={saving}
       />
       <PoliticalProgramModal
         isOpen={isPoliticalProgModalOpen}
         onClose={() => setIsPoliticalProgModalOpen(false)}
-        onSave={(data) => { onSave('political', { ...compReport.political, prog: data }); setIsPoliticalProgModalOpen(false); }}
+        onSave={async (data) => { await onSave('political', { ...compReport.political, prog: data }); setIsPoliticalProgModalOpen(false); }}
         initialData={compReport.political?.prog}
         saving={saving}
       />
       <NationalDayModal
         isOpen={isNationalDayModalOpen}
         onClose={() => setIsNationalDayModalOpen(false)}
-        onSave={(data) => { onSave('political', { ...compReport.political, nationalDay: data }); setIsNationalDayModalOpen(false); }}
+        onSave={async (data) => { await onSave('political', { ...compReport.political, nationalDay: data }); setIsNationalDayModalOpen(false); }}
         initialData={compReport.political?.nationalDay}
         saving={saving}
       />
       <ElectionActivityModal
         isOpen={isElectionModalOpen}
         onClose={() => setIsElectionModalOpen(false)}
-        onSave={(data) => { onSave('political', { ...compReport.political, election: data }); setIsElectionModalOpen(false); }}
+        onSave={async (data) => { await onSave('political', { ...compReport.political, election: data }); setIsElectionModalOpen(false); }}
         initialData={compReport.political?.election}
         saving={saving}
       />

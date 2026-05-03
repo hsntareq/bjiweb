@@ -502,6 +502,7 @@ const monthNames = [
 									formatVal={formatVal}
 									canEdit={canEdit}
 									onSave={handleSaveCompSection}
+									onSaveMultiple={handleSaveMultipleCompSections}
 									saving={saving}
 								/>
 							</ReportAccordionSection>
@@ -512,6 +513,7 @@ const monthNames = [
 											formatVal={formatVal}
 											canEdit={canEdit}
 											onSave={handleSaveCompSection}
+											onSaveMultiple={handleSaveMultipleCompSections}
 											saving={saving}
 										/>
 									</ReportAccordionSection>
@@ -523,6 +525,7 @@ const monthNames = [
 											formatVal={formatVal}
 											canEdit={canEdit}
 											onSave={handleSaveCompSection}
+											onSaveMultiple={handleSaveMultipleCompSections}
 											saving={saving}
 										/>
 									</ReportAccordionSection>
@@ -533,6 +536,7 @@ const monthNames = [
 											formatVal={formatVal}
 											canEdit={canEdit}
 											onSave={handleSaveCompSection}
+											onSaveMultiple={handleSaveMultipleCompSections}
 											saving={saving}
 										/>
 									</ReportAccordionSection>
@@ -543,6 +547,7 @@ const monthNames = [
 											formatVal={formatVal}
 											canEdit={canEdit}
 											onSave={handleSaveCompSection}
+											onSaveMultiple={handleSaveMultipleCompSections}
 											saving={saving}
 										/>
 									</ReportAccordionSection>
@@ -553,6 +558,7 @@ const monthNames = [
 											formatVal={formatVal}
 											canEdit={canEdit}
 											onSave={handleSaveCompSection}
+											onSaveMultiple={handleSaveMultipleCompSections}
 											saving={saving}
 										/>
 									</ReportAccordionSection>
@@ -563,6 +569,7 @@ const monthNames = [
 											formatVal={formatVal}
 											canEdit={canEdit}
 											onSave={handleSaveCompSection}
+											onSaveMultiple={handleSaveMultipleCompSections}
 											saving={saving}
 										/>
 									</ReportAccordionSection>

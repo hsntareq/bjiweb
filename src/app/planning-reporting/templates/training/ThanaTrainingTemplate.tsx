@@ -88,14 +88,14 @@ export function ThanaTrainingTemplate({ compReport, formatVal, canEdit, onSave, 
       <TarbiyatModal
         isOpen={isTarbiyatModalOpen}
         onClose={() => setIsTarbiyatModalOpen(false)}
-        onSave={(data) => { onSave('training', { ...compReport.training, ...data }); setIsTarbiyatModalOpen(false); }}
+        onSave={async (data) => { await onSave('training', { ...compReport.training, ...data }); setIsTarbiyatModalOpen(false); }}
         initialData={compReport.training}
         saving={saving}
       />
       <HRDModal
         isOpen={isHRDModalOpen}
         onClose={() => setIsHRDModalOpen(false)}
-        onSave={(data) => { onSave('training', { ...compReport.training, ...data }); setIsHRDModalOpen(false); }}
+        onSave={async (data) => { await onSave('training', { ...compReport.training, ...data }); setIsHRDModalOpen(false); }}
         initialData={compReport.training}
         saving={saving}
       />

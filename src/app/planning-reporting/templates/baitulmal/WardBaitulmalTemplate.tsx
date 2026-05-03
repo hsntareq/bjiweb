@@ -120,7 +120,7 @@ export function WardBaitulmalTemplate({ compReport, formatVal, canEdit, onSave, 
       <BaitulmalModal
         isOpen={isBaitulmalModalOpen}
         onClose={() => setIsBaitulmalModalOpen(false)}
-        onSave={(data) => { onSave('finance', data); setIsBaitulmalModalOpen(false); }}
+        onSave={async (data) => { await onSave('finance', data); setIsBaitulmalModalOpen(false); }}
         initialData={compReport.finance}
         saving={saving}
       />

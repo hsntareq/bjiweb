@@ -55,7 +55,7 @@ export function WardRemarkCommentTemplate({ compReport, formatVal: _formatVal, c
       <RemarksModal
         isOpen={isRemarksModalOpen}
         onClose={() => setIsRemarksModalOpen(false)}
-        onSave={(data) => { onSave('remarks', data); setIsRemarksModalOpen(false); }}
+        onSave={async (data) => { await onSave('remarks', data); setIsRemarksModalOpen(false); }}
         initialData={compReport.remarks}
         saving={saving}
       />

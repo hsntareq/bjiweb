@@ -321,56 +321,56 @@ export function WardOrgTemplate({ compReport, formatVal, canEdit, onSave, saving
       <ManpowerModal
         isOpen={isManpowerModalOpen}
         onClose={() => setIsManpowerModalOpen(false)}
-        onSave={(data) => { onSave('manpower', data); setIsManpowerModalOpen(false); }}
+        onSave={async (data) => { await onSave('manpower', data); setIsManpowerModalOpen(false); }}
         initialData={compReport.manpower}
         saving={saving}
       />
       <DeptManpowerModal
         isOpen={isDeptManpowerModalOpen}
         onClose={() => setIsDeptManpowerModalOpen(false)}
-        onSave={(data) => { onSave('deptManpower', data); setIsDeptManpowerModalOpen(false); }}
+        onSave={async (data) => { await onSave('deptManpower', data); setIsDeptManpowerModalOpen(false); }}
         initialData={compReport.deptManpower || {}}
         saving={saving}
       />
       <UnitOrganizationModal
         isOpen={isUnitOrgModalOpen}
         onClose={() => setIsUnitOrgModalOpen(false)}
-        onSave={(data) => { onSave('unitOrganization', data); setIsUnitOrgModalOpen(false); }}
+        onSave={async (data) => { await onSave('unitOrganization', data); setIsUnitOrgModalOpen(false); }}
         initialData={compReport.unitOrganization || {}}
         saving={saving}
       />
       <DawahFamilyUnitModal
         isOpen={isUnitModalOpen}
         onClose={() => setIsUnitModalOpen(false)}
-        onSave={(data) => { onSave('unitStats', data); setIsUnitModalOpen(false); }}
+        onSave={async (data) => { await onSave('unitStats', data); setIsUnitModalOpen(false); }}
         initialData={compReport.unitStats}
         saving={saving}
       />
       <StudentJoiningModal
         isOpen={isStudentModalOpen}
         onClose={() => setIsStudentModalOpen(false)}
-        onSave={(data) => { onSave('studentJoining', data); setIsStudentModalOpen(false); }}
+        onSave={async (data) => { await onSave('studentJoining', data); setIsStudentModalOpen(false); }}
         initialData={compReport.studentJoining}
         saving={saving}
       />
       <SafarModal
         isOpen={isSafarModalOpen}
         onClose={() => setIsSafarModalOpen(false)}
-        onSave={(data) => { onSave('safar', data); setIsSafarModalOpen(false); }}
+        onSave={async (data) => { await onSave('safar', data); setIsSafarModalOpen(false); }}
         initialData={compReport.safar}
         saving={saving}
       />
       <DonorModal
         isOpen={isDonorModalOpen}
         onClose={() => setIsDonorModalOpen(false)}
-        onSave={(data) => { onSave('donors', data); setIsDonorModalOpen(false); }}
+        onSave={async (data) => { await onSave('donors', data); setIsDonorModalOpen(false); }}
         initialData={compReport.donors}
         saving={saving}
       />
       <OrgMeetingModal
         isOpen={isOrgMeetingModalOpen}
         onClose={() => setIsOrgMeetingModalOpen(false)}
-        onSave={(data) => { onSave('orgMeetings', data); setIsOrgMeetingModalOpen(false); }}
+        onSave={async (data) => { await onSave('orgMeetings', data); setIsOrgMeetingModalOpen(false); }}
         initialData={compReport.orgMeetings}
         saving={saving}
       />

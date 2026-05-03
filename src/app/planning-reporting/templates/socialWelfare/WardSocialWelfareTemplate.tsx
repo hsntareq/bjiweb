@@ -35,13 +35,13 @@ export function WardSocialWelfareTemplate({ compReport, formatVal, canEdit, onSa
         <SocialPersonalModal
           isOpen={isSocialPersonalModalOpen}
           onClose={() => setIsSocialPersonalModalOpen(false)}
-          onSave={data => {
+          onSave={async data => {
             const newSocialWork = {
               ...compReport.socialWork,
               personalCount: data.workerCount,
               personalServiceCount: data.beneficiaryCount
             };
-            onSave('socialWork', newSocialWork);
+            await onSave('socialWork', newSocialWork);
             setIsSocialPersonalModalOpen(false);
           }}
           initialData={{
@@ -61,7 +61,7 @@ export function WardSocialWelfareTemplate({ compReport, formatVal, canEdit, onSa
         <SocialWorkModal
           isOpen={isSocialWorkModalOpen}
           onClose={() => setIsSocialWorkModalOpen(false)}
-          onSave={data => {
+          onSave={async data => {
             const newSocialWork = {
               ...compReport.socialWork,
               generalServiceTeamCount: data.generalServiceTeamCount,
@@ -88,7 +88,7 @@ export function WardSocialWelfareTemplate({ compReport, formatVal, canEdit, onSa
               burial: data.burial,
               employment: data.employment
             };
-            onSave('socialWork', newSocialWork);
+            await onSave('socialWork', newSocialWork);
             setIsSocialWorkModalOpen(false);
           }}
           initialData={compReport.socialWork || {}}
@@ -169,14 +169,14 @@ export function WardSocialWelfareTemplate({ compReport, formatVal, canEdit, onSa
         <SocialHealthModal
           isOpen={isSocialHealthModalOpen}
           onClose={() => setIsSocialHealthModalOpen(false)}
-          onSave={data => {
+          onSave={async data => {
             const newSocialWork = {
               ...compReport.socialWork,
               healthTrainingCount: data.trainingParticipantCount,
               healthServiceCount: data.serviceParticipantCount,
               healthBeneficiaryCount: data.beneficiaryCount
             };
-            onSave('socialWork', newSocialWork);
+            await onSave('socialWork', newSocialWork);
             setIsSocialHealthModalOpen(false);
           }}
           initialData={{
@@ -229,14 +229,14 @@ export function WardSocialWelfareTemplate({ compReport, formatVal, canEdit, onSa
         <SocialInstModal
           isOpen={isSocialInstModalOpen}
           onClose={() => setIsSocialInstModalOpen(false)}
-          onSave={data => {
+          onSave={async data => {
             const newSocialWork = {
               ...compReport.socialWork,
               instTotalCount: data.totalInstitutions,
               instActiveCount: data.activeInstitutions,
               instNewCount: data.newInstitutions
             };
-            onSave('socialWork', newSocialWork);
+            await onSave('socialWork', newSocialWork);
             setIsSocialInstModalOpen(false);
           }}
           initialData={{
