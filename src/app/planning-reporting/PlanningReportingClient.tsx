@@ -239,14 +239,21 @@ const monthNames = [
 		})
 			.then(r => r.ok ? r.json() : null)
 			.then(data => {
-				if (data) setUserContext({
-					organizationId: data.organizationId,
-					orgType: data.orgType,
-					orgName: data.orgName,
-					positionTitle: data.positionTitle,
-					parentOrgId: data.parentOrgId,
-					parentOrgType: data.parentOrgType,
-				});
+				if (data) {
+					setUserContext({
+						organizationId: data.organizationId,
+						orgType: data.orgType,
+						orgName: data.orgName,
+						positionTitle: data.positionTitle,
+						parentOrgId: data.parentOrgId,
+						parentOrgType: data.parentOrgType,
+					});
+					if (data.orgType) {
+						const url = new URL(window.location.href);
+						url.searchParams.set('orglevel', data.orgType.toLowerCase());
+						window.history.replaceState({}, '', url.toString());
+					}
+				}
 			})
 			.catch(() => {});
 	}, [accessToken]);
