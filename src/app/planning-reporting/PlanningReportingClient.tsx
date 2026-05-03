@@ -91,13 +91,16 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 			}
 			url.searchParams.set('year', year.toString());
 			url.searchParams.set('month', month.toString());
+			if (userContext?.orgType) {
+				url.searchParams.set('orglevel', userContext.orgType.toLowerCase());
+			}
 
 			localStorage.setItem('reporting_year', year.toString());
 			localStorage.setItem('reporting_month', month.toString());
 
 			window.history.replaceState({}, '', url.toString());
 		}
-	}, [selectedOrgId, year, month, isMounted]);
+	}, [selectedOrgId, year, month, isMounted, userContext?.orgType]);
 
 	// Basic Planning state
 	const [plan, setPlan] = useState<any>({
