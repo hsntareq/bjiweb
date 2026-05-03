@@ -435,6 +435,216 @@ const monthNames = [
 
 	const formatVal = (val: any) => (val === 0 || val === undefined || val === null) ? '-' : val;
 
+	// Render ward-level Dawat report content
+	const renderWardDawatContent = () => (
+		<div className="space-y-8">
+			{/* Section 1 */}
+			<div>
+				<h4 className="text-sm font-bold text-gray-700 mb-3 underline">১. ইউনিটের দাওয়াতী গ্রুপ:</h4>
+				<table className="w-full border-collapse border border-gray-200 text-sm">
+					<thead>
+						<tr className="bg-gray-50">
+							<th className="border border-gray-200 p-2 text-left">বিবরণ</th>
+							<th className="border border-gray-200 p-2">মোট গ্রুপ সংখ্যা</th>
+							<th className="border border-gray-200 p-2">মোট অংশগ্রহণকারী</th>
+							<th className="border border-gray-200 p-2">পৌঁছানো হয়েছে</th>
+							<th className="border border-gray-200 p-2">সহযোগী সদস্য</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td className="border border-gray-200 p-2 text-left font-medium">ইউনিটের দাওয়াতী গ্রুপ কাজ</td>
+							<td className="border border-gray-200 p-2 text-center">
+								{formatVal(compReport.unitDawat?.groupCount)}
+							</td>
+							<td className="border border-gray-200 p-2 text-center">
+								{formatVal(compReport.unitDawat?.participantCount)}
+							</td>
+							<td className="border border-gray-200 p-2 text-center">
+								{formatVal(compReport.unitDawat?.reachedCount)}
+							</td>
+							<td className="border border-gray-200 p-2 text-center">
+								{formatVal(compReport.unitDawat?.associateCount)}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			{/* Section 2 */}
+			<div>
+				<h4 className="text-sm font-bold text-gray-700 mb-3">२. ব্যক্তিগত ও টার্গেটভিত্তিক দাওয়াত:</h4>
+				<table className="w-full border-collapse border border-gray-200 text-sm">
+					<thead>
+						<tr className="bg-gray-50">
+							<th className="border border-gray-200 p-2">বিবরণ</th>
+							<th className="border border-gray-200 p-2">সদস্য (রুকন)</th>
+							<th className="border border-gray-200 p-2">কর্মী</th>
+							<th className="border border-gray-200 p-2">বিবরণ</th>
+							<th className="border border-gray-200 p-2">মোট সংখ্যা</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td className="border border-gray-200 p-2">মোট জনশক্তি সংখ্যা</td>
+							<td className="border border-gray-200 p-2 text-center">
+								{formatVal(compReport.personalDawat?.rokon?.total)}
+							</td>
+							<td className="border border-gray-200 p-2 text-center">
+								{formatVal(compReport.personalDawat?.karmi?.total)}
+							</td>
+							<td className="border border-gray-200 p-2">কতজনের নিকট পৌঁছানো হয়েছে</td>
+							<td className="border border-gray-200 p-2 text-center">
+								{formatVal((compReport.personalDawat?.rokon?.reached || 0) + (compReport.personalDawat?.karmi?.reached || 0))}
+							</td>
+						</tr>
+						<tr>
+							<td className="border border-gray-200 p-2">কতজন ব্যক্তিগতভাবে দাওয়াতি কাজ করেছেন</td>
+							<td className="border border-gray-200 p-2 text-center">
+								{formatVal(compReport.personalDawat?.rokon?.worked)}
+							</td>
+							<td className="border border-gray-200 p-2 text-center">
+								{formatVal(compReport.personalDawat?.karmi?.worked)}
+							</td>
+							<td className="border border-gray-200 p-2">কতজন সহযোগী সদস্য হয়েছেন</td>
+							<td className="border border-gray-200 p-2 text-center">
+								{formatVal((compReport.personalDawat?.rokon?.associate || 0) + (compReport.personalDawat?.karmi?.associate || 0))}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			{/* Section 3 */}
+			<div>
+				<h4 className="text-sm font-bold text-gray-700 mb-3">३. সাধারণ সভা/দাওয়াতী সভা:</h4>
+				<table className="w-full border-collapse border border-gray-200 text-sm">
+					<thead>
+						<tr className="bg-gray-50">
+							<th className="border border-gray-200 p-2">মোট কতজনকে দাওয়াত প্রদান করা হয়েছে</th>
+							<th className="border border-gray-200 p-2">কতজন সহযোগী সদস্য হয়েছেন</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td className="border border-gray-200 p-2 text-center">
+								{formatVal(compReport.generalMeeting?.totalReached)}
+							</td>
+							<td className="border border-gray-200 p-2 text-center">
+								{formatVal(compReport.generalMeeting?.associateCount)}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			{/* Section 4 */}
+			<div>
+				<h4 className="text-sm font-bold text-gray-700 mb-3">४. গণসংযোগ ও দাওয়াতী অভিযান পালন:</h4>
+				<div className="overflow-x-auto border border-gray-200 rounded-lg">
+					<table className="w-full border-collapse text-sm text-center">
+						<thead>
+							<tr className="bg-gray-50">
+								<th className="border-b border-gray-200 p-2 text-left">বিবরণ</th>
+								<th className="border-b border-l border-gray-200 p-2">মোট গ্রুপ সংখ্যা</th>
+								<th className="border-b border-l border-gray-200 p-2">মোট অংশগ্রহণকারী</th>
+								<th className="border-b border-l border-gray-200 p-2">পৌঁছানো হয়েছে</th>
+								<th className="border-b border-l border-gray-200 p-2">সহযোগী সদস্য</th>
+							</tr>
+						</thead>
+						<tbody>
+							{[
+								{ id: 'prDecade', label: 'গণসংযোগ দশক/পক্ষ' },
+								{ id: 'districtCampaign', label: 'জেলা/মহঃ ঘোষিত অভিযান' },
+								{ id: 'electionWeek', label: 'নির্বাচনী আসনে গণসংযোগ সপ্তাহ' },
+								{ id: 'proWeek', label: 'উলামা/পেশাজীবী গণসংযোগ সপ্তাহ' },
+								{ id: 'other', label: 'অন্যান্য' }
+							].map(row => (
+								<tr key={row.id} className="hover:bg-gray-50/50 transition-colors">
+									<td className="border-b border-gray-200 p-2 text-left font-medium">{row.label}</td>
+									<td className="border-b border-l border-gray-200 p-2 text-center">
+										{formatVal(compReport.prCampaign?.[row.id]?.groupCount)}
+									</td>
+									<td className="border-b border-l border-gray-200 p-2 text-center">
+										{formatVal(compReport.prCampaign?.[row.id]?.participantCount)}
+									</td>
+									<td className="border-b border-l border-gray-200 p-2 text-center">
+										{formatVal(compReport.prCampaign?.[row.id]?.reachedCount)}
+									</td>
+									<td className="border-b border-l border-gray-200 p-2 text-center">
+										{formatVal(compReport.prCampaign?.[row.id]?.associateCount)}
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	);
+
+	// Render thana-level Dawat report content (template for now)
+	const renderThanaDawatContent = () => (
+		<div className="space-y-8">
+			{/* Thana overview stats */}
+			<div>
+				<h4 className="text-sm font-bold text-gray-700 mb-3 underline">१. থানার সর্বমোট দাওয়াত পরিসংখ্যান (সকল ওয়ার্ড সমন্বিত):</h4>
+				<table className="w-full border-collapse border border-gray-200 text-sm">
+					<thead>
+						<tr className="bg-gray-50">
+							<th className="border border-gray-200 p-2 text-left">বিবরণ</th>
+							<th className="border border-gray-200 p-2">মোট সংখ্যা</th>
+							<th className="border border-gray-200 p-2">বর্ণনা</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td className="border border-gray-200 p-2">সর্বমোট জনসংখ্যা পৌঁছানো</td>
+							<td className="border border-gray-200 p-2 text-center font-bold">{formatVal(compReport.headerInfo?.totalReachedCount)}</td>
+							<td className="border border-gray-200 p-2 text-gray-600">থানার সকল ওয়ার্ড থেকে সমন্বিত</td>
+						</tr>
+						<tr>
+							<td className="border border-gray-200 p-2">মাসিক লক্ষ্যমাত্রা</td>
+							<td className="border border-gray-200 p-2 text-center font-bold">{formatVal(compReport.headerInfo?.monthlyTargetCount)}</td>
+							<td className="border border-gray-200 p-2 text-gray-600">থানা স্তরের নির্ধারিত</td>
+						</tr>
+						<tr>
+							<td className="border border-gray-200 p-2">মোট জনসংখ্যা</td>
+							<td className="border border-gray-200 p-2 text-center font-bold">{formatVal(compReport.headerInfo?.totalPopulationCount)}</td>
+							<td className="border border-gray-200 p-2 text-gray-600">দায়িত্ব পরিসরের মধ্যে</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			{/* Thana-level detailed fields */}
+			<div>
+				<h4 className="text-sm font-bold text-gray-700 mb-3 underline">२. থানা পর্যায়ের প্রধান দাওয়াত কার্যক্রম:</h4>
+				<div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-4">
+					<p className="text-sm text-blue-700"><strong>অপেক্ষমাণ:</strong> এই বিভাগ থানা-স্তরের কাস্টম দাওয়াত ফিল্ড দিয়ে পূর্ণ করা হবে। প্রতিটি থানার অনন্য চাহিদা অনুযায়ী কনফিগার করা যাবে।</p>
+				</div>
+				<table className="w-full border-collapse border border-gray-200 text-sm">
+					<thead>
+						<tr className="bg-blue-50">
+							<th className="border border-gray-200 p-2 text-left">কার্যক্রমের বর্ণনা</th>
+							<th className="border border-gray-200 p-2">মোট অংশগ্রহণকারী</th>
+							<th className="border border-gray-200 p-2">পৌঁছানো হয়েছে</th>
+							<th className="border border-gray-200 p-2">সহযোগী সদস্য</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td className="border border-gray-200 p-2 text-left text-gray-500 italic">নির্ধারিত ফিল্ড অপেক্ষমাণ...</td>
+							<td className="border border-gray-200 p-2 text-center text-gray-300">-</td>
+							<td className="border border-gray-200 p-2 text-center text-gray-300">-</td>
+							<td className="border border-gray-200 p-2 text-center text-gray-300">-</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	);
+
 	if (!isMounted) return <div className="flex justify-center p-12"><div className="animate-spin w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full"></div></div>;
 
 	if (userContext && !userContext.orgType) return (
@@ -574,152 +784,9 @@ const monthNames = [
 											</div>
 										</div>
 										<div className="space-y-4">
-											<ReportAccordionSection title="ক) জনসাধারণের মাঝে সর্বমোট দাওয়াত" onEdit={(!canEdit || isFuture) ? undefined : () => setIsDawatTablighModalOpen(true)} buttonText="দাওয়াত এডিট" icon={Megaphone}>
-												<div className="space-y-8">
-													{/* Section 1 */}
-													<div>
-														<h4 className="text-sm font-bold text-gray-700 mb-3 underline">১. ইউনিটের দাওয়াতী গ্রুপ:</h4>
-														<table className="w-full border-collapse border border-gray-200 text-sm">
-															<thead>
-																<tr className="bg-gray-50">
-																	<th className="border border-gray-200 p-2 text-left">বিবরণ</th>
-																	<th className="border border-gray-200 p-2">মোট গ্রুপ সংখ্যা</th>
-																	<th className="border border-gray-200 p-2">মোট অংশগ্রহণকারী</th>
-																	<th className="border border-gray-200 p-2">পৌঁছানো হয়েছে</th>
-																	<th className="border border-gray-200 p-2">সহযোগী সদস্য</th>
-																</tr>
-															</thead>
-															<tbody>
-																<tr>
-																	<td className="border border-gray-200 p-2 text-left font-medium">ইউনিটের দাওয়াতী গ্রুপ কাজ</td>
-																	<td className="border border-gray-200 p-2 text-center">
-																		{formatVal(compReport.unitDawat?.groupCount)}
-																	</td>
-																	<td className="border border-gray-200 p-2 text-center">
-																		{formatVal(compReport.unitDawat?.participantCount)}
-																	</td>
-																	<td className="border border-gray-200 p-2 text-center">
-																		{formatVal(compReport.unitDawat?.reachedCount)}
-																	</td>
-																	<td className="border border-gray-200 p-2 text-center">
-																		{formatVal(compReport.unitDawat?.associateCount)}
-																	</td>
-																</tr>
-															</tbody>
-														</table>
-													</div>
-
-													{/* Section 2 */}
-													<div>
-														<h4 className="text-sm font-bold text-gray-700 mb-3">২. ব্যক্তিগত ও টার্গেটভিত্তিক দাওয়াত:</h4>
-														<table className="w-full border-collapse border border-gray-200 text-sm">
-															<thead>
-																<tr className="bg-gray-50">
-																	<th className="border border-gray-200 p-2">বিবরণ</th>
-																	<th className="border border-gray-200 p-2">সদস্য (রুকন)</th>
-																	<th className="border border-gray-200 p-2">কর্মী</th>
-																	<th className="border border-gray-200 p-2">বিবরণ</th>
-																	<th className="border border-gray-200 p-2">মোট সংখ্যা</th>
-																</tr>
-															</thead>
-															<tbody>
-																<tr>
-																	<td className="border border-gray-200 p-2">মোট জনশক্তি সংখ্যা</td>
-																	<td className="border border-gray-200 p-2 text-center">
-																		{formatVal(compReport.personalDawat?.rokon?.total)}
-																	</td>
-																	<td className="border border-gray-200 p-2 text-center">
-																		{formatVal(compReport.personalDawat?.karmi?.total)}
-																	</td>
-																	<td className="border border-gray-200 p-2">কতজনের নিকট পৌঁছানো হয়েছে</td>
-																	<td className="border border-gray-200 p-2 text-center">
-																		{formatVal((compReport.personalDawat?.rokon?.reached || 0) + (compReport.personalDawat?.karmi?.reached || 0))}
-																	</td>
-																</tr>
-																<tr>
-																	<td className="border border-gray-200 p-2">কতজন ব্যক্তিগতভাবে দাওয়াতি কাজ করেছেন</td>
-																	<td className="border border-gray-200 p-2 text-center">
-																		{formatVal(compReport.personalDawat?.rokon?.worked)}
-																	</td>
-																	<td className="border border-gray-200 p-2 text-center">
-																		{formatVal(compReport.personalDawat?.karmi?.worked)}
-																	</td>
-																	<td className="border border-gray-200 p-2">কতজন সহযোগী সদস্য হয়েছেন</td>
-																	<td className="border border-gray-200 p-2 text-center">
-																		{formatVal((compReport.personalDawat?.rokon?.associate || 0) + (compReport.personalDawat?.karmi?.associate || 0))}
-																	</td>
-																</tr>
-															</tbody>
-														</table>
-													</div>
-
-													{/* Section 3 */}
-													<div>
-														<h4 className="text-sm font-bold text-gray-700 mb-3">৩. সাধারণ সভা/দাওয়াতী সভা:</h4>
-														<table className="w-full border-collapse border border-gray-200 text-sm">
-															<thead>
-																<tr className="bg-gray-50">
-																	<th className="border border-gray-200 p-2">মোট কতজনকে দাওয়াত প্রদান করা হয়েছে</th>
-																	<th className="border border-gray-200 p-2">কতজন সহযোগী সদস্য হয়েছেন</th>
-																</tr>
-															</thead>
-															<tbody>
-																<tr>
-																	<td className="border border-gray-200 p-2 text-center">
-																		{formatVal(compReport.generalMeeting?.totalReached)}
-																	</td>
-																	<td className="border border-gray-200 p-2 text-center">
-																		{formatVal(compReport.generalMeeting?.associateCount)}
-																	</td>
-																</tr>
-															</tbody>
-														</table>
-													</div>
-
-													{/* Section 4 */}
-													<div>
-														<h4 className="text-sm font-bold text-gray-700 mb-3">৪. গণসংযোগ ও দাওয়াতী অভিযান পালন:</h4>
-														<div className="overflow-x-auto border border-gray-200 rounded-lg">
-															<table className="w-full border-collapse text-sm text-center">
-																<thead>
-																	<tr className="bg-gray-50">
-																		<th className="border-b border-gray-200 p-2 text-left">বিবরণ</th>
-																		<th className="border-b border-l border-gray-200 p-2">মোট গ্রুপ সংখ্যা</th>
-																		<th className="border-b border-l border-gray-200 p-2">মোট অংশগ্রহণকারী</th>
-																		<th className="border-b border-l border-gray-200 p-2">পৌঁছানো হয়েছে</th>
-																		<th className="border-b border-l border-gray-200 p-2">সহযোগী সদস্য</th>
-																	</tr>
-																</thead>
-																<tbody>
-																	{[
-																		{ id: 'prDecade', label: 'গণসংযোগ দশক/পক্ষ' },
-																		{ id: 'districtCampaign', label: 'জেলা/মহঃ ঘোষিত অভিযান' },
-																		{ id: 'electionWeek', label: 'নির্বাচনী আসনে গণসংযোগ সপ্তাহ' },
-																		{ id: 'proWeek', label: 'উলামা/পেশাজীবী গণসংযোগ সপ্তাহ' },
-																		{ id: 'other', label: 'অন্যান্য' }
-																	].map(row => (
-																		<tr key={row.id} className="hover:bg-gray-50/50 transition-colors">
-																			<td className="border-b border-gray-200 p-2 text-left font-medium">{row.label}</td>
-																			<td className="border-b border-l border-gray-200 p-2 text-center">
-																				{formatVal(compReport.prCampaign?.[row.id]?.groupCount)}
-																			</td>
-																			<td className="border-b border-l border-gray-200 p-2 text-center">
-																				{formatVal(compReport.prCampaign?.[row.id]?.participantCount)}
-																			</td>
-																			<td className="border-b border-l border-gray-200 p-2 text-center">
-																				{formatVal(compReport.prCampaign?.[row.id]?.reachedCount)}
-																			</td>
-																			<td className="border-b border-l border-gray-200 p-2 text-center">
-																				{formatVal(compReport.prCampaign?.[row.id]?.associateCount)}
-																			</td>
-																		</tr>
-																	))}
-																</tbody>
-															</table>
-														</div>
-													</div>
-												</div>
-											</ReportAccordionSection>
+												<ReportAccordionSection title="ক) জনসাধারণের মাঝে সর্বমোট দাওয়াত" onEdit={(!canEdit || isFuture) ? undefined : () => setIsDawatTablighModalOpen(true)} buttonText="দাওয়াত এডিট" icon={Megaphone}>
+													{userContext?.orgType?.toUpperCase() === 'THANA' ? renderThanaDawatContent() : renderWardDawatContent()}
+												</ReportAccordionSection>
 
 											<ReportAccordionSection title="খ) বিভাগ ভিত্তিক তথ্য" onEdit={(!canEdit || isFuture) ? undefined : () => setIsDeptModalOpen(true)} buttonText="বিভাগ তথ্য এডিট" icon={LayoutGrid}>
 												<div className="space-y-8">
