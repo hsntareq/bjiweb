@@ -97,14 +97,6 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 		}
 	}, [selectedOrgId, year, month, isMounted]);
 
-	// Add orglevel to URL once when userContext loads
-	useEffect(() => {
-		if (!isMounted || !userContext?.orgType) return;
-		const url = new URL(window.location.href);
-		url.searchParams.set('orglevel', userContext.orgType.toLowerCase());
-		window.history.replaceState({}, '', url.toString());
-	}, [userContext, isMounted]);
-
 	// Basic Planning state
 	const [plan, setPlan] = useState<any>({
 		year, month, dawatTarget: 0, dawatAchieved: 0, activistTarget: 0, activistAchieved: 0,
