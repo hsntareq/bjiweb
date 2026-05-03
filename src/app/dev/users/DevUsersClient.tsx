@@ -65,29 +65,28 @@ function ProfilePopover({ user, anchorEl, onClose }: {
   const rankCls = user.rank ? (RANK_COLORS[user.rank] ?? 'bg-gray-100 text-gray-700') : '';
   const bloodCls = user.bloodGroup ? (BLOOD_COLORS[user.bloodGroup] ?? 'bg-gray-50 text-gray-700 border-gray-200') : '';
 
-  const [pos, setPos] = useState({ top: 0, left: 0, placeAbove: false });
-
-  const updatePosition = useCallback(() => {
+  const calcPos = useCallback(() => {
     const rect = anchorEl.getBoundingClientRect();
     const spaceBelow = window.innerHeight - rect.bottom;
     const placeAbove = spaceBelow < 220;
-    setPos({
+    return {
       top: placeAbove ? rect.top - 8 : rect.bottom + 8,
       left: Math.min(Math.max(rect.left, 8), window.innerWidth - 296),
       placeAbove,
-    });
+    };
   }, [anchorEl]);
 
+  const [pos, setPos] = useState(calcPos);
+
   useEffect(() => {
-    updatePosition();
-    // capture:true catches scroll on any scrollable ancestor (e.g. table container)
-    window.addEventListener('scroll', updatePosition, true);
-    window.addEventListener('resize', updatePosition);
+    const update = () => setPos(calcPos());
+    window.addEventListener('scroll', update, true);
+    window.addEventListener('resize', update);
     return () => {
-      window.removeEventListener('scroll', updatePosition, true);
-      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener('scroll', update, true);
+      window.removeEventListener('resize', update);
     };
-  }, [updatePosition]);
+  }, [calcPos]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -107,7 +106,7 @@ function ProfilePopover({ user, anchorEl, onClose }: {
   return (
     <div
       ref={popoverRef}
-      className={`fixed z-50 w-72 bg-white rounded-xl shadow-xl border border-gray-200 p-4 transition-[top,left] duration-75 ${pos.placeAbove ? '-translate-y-full' : ''}`}
+      className={`fixed z-50 w-72 bg-white rounded-xl shadow-xl border border-gray-200 p-4 ${pos.placeAbove ? '-translate-y-full' : ''}`}
       style={{ top: pos.top, left: pos.left }}
     >
       {/* Close button */}
