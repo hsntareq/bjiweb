@@ -356,6 +356,43 @@ const monthNames = [
 		}
 	};
 
+	const resetSection = async (sections) => {
+		if (!selectedOrgId) { toast.error('Error: No organization selected!'); return; }
+		if (!window.confirm('Are you sure you want to reset this section? This cannot be undone.')) return;
+		try {
+			setSaving(true);
+			const updates = {};
+			if (Array.isArray(sections)) { sections.forEach(k => updates[k] = {}); } else { updates[sections] = {}; }
+			const res = await fetch(`http://localhost:3001/comprehensive-report`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+				body: JSON.stringify({ organizationId: selectedOrgId, year, month, ...updates })
+			});
+			if (res.ok) {
+				const text = await res.text();
+				const data = text ? JSON.parse(text) : null;
+				if (data) setCompReport(data);
+				toast.success('Section reset successfully');
+			} else { const err = await res.text(); console.error('Reset failed', err); toast.error('Reset failed'); }
+		} catch (e) { console.error(e); toast.error('An error occurred while resetting'); } finally { setSaving(false); }
+	};
+	
+	const resetAll = async () => {
+		if (!selectedOrgId) { toast.error('Error: No organization selected!'); return; }
+		if (!window.confirm('Are you sure you want to reset ALL report data for this org/month? This cannot be undone.')) return;
+		try {
+			setSaving(true);
+			const updates = {};
+			Object.keys(compReport).forEach(k => updates[k] = {});
+			const res = await fetch(`http://localhost:3001/comprehensive-report`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+				body: JSON.stringify({ organizationId: selectedOrgId, year, month, ...updates })
+			});
+			if (res.ok) { const text = await res.text(); const data = text ? JSON.parse(text) : null; if (data) setCompReport(data); toast.success('All report data reset successfully'); } else { const err = await res.text(); console.error('Reset all failed', err); toast.error('Reset failed'); }
+		} catch (e) { console.error(e); toast.error('An error occurred while resetting'); } finally { setSaving(false); }
+	};
+	
 	const prevMonth = () => { if (month === 1) { setMonth(12); setYear(y => y - 1); } else setMonth(m => m - 1); };
 	const nextMonth = () => {
 		if (month === 12) { setMonth(1); setYear(y => y + 1); } else setMonth(m => m + 1);
@@ -435,10 +472,16 @@ const monthNames = [
 						<button onClick={() => setActiveTab('plan')} className={`flex-1 px-5 py-3 text-sm font-semibold rounded-lg transition-all whitespace-nowrap ${activeTab === 'plan' ? 'bg-emerald-600 text-emerald-200 shadow-sm ring-1 ring-gray-200/50' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}`}>Monthly Plan</button>
 						<button onClick={() => setActiveTab('report')} className={`flex-1 px-5 py-3 text-sm font-semibold rounded-lg transition-all whitespace-nowrap ${activeTab === 'report' ? 'bg-rose-600 text-rose-200 shadow-sm ring-1 ring-gray-200/50' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}`}>Basic Achievements</button>
 					</div>
-					<button onClick={() => window.open(`/planning-reporting/print?orgId=${selectedOrgId}&year=${year}&month=${month}&token=${accessToken}`, '_blank')} className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-xl hover:bg-gray-900 transition-colors shadow-lg">
+					<div className="flex items-center gap-2">
+                        <button onClick={resetAll} className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors shadow-lg">
+                            <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v6h6"/></svg>
+                            Reset All
+                        </button>
+                        <button onClick={() => window.open(`/planning-reporting/print?orgId=${selectedOrgId}&year=${year}&month=${month}&token=${accessToken}`, '_blank')} className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-xl hover:bg-gray-900 transition-colors shadow-lg">
 						<Printer className="w-4 h-4 shrink-0" />
 						Print Ward Report
 					</button>
+                    </div>
 				</div>
 
 				<div className="p-6">
@@ -476,7 +519,7 @@ const monthNames = [
 
 							{activeTab === 'comprehensive' && (
 								<div className="space-y-6">
-								<ReportAccordionSection title="১. দাওয়াতঃ" icon={Megaphone}>
+								<ReportAccordionSection title="১. দাওয়াতঃ" icon={Megaphone} onReset={!canEdit ? undefined : () => resetSection(['headerInfo','unitDawat','personalDawat','generalMeeting','prCampaign','departmentalInfo','dawahPublication','programs'])}>
 								<div className="grid grid-cols-3 gap-6 mb-8">
 									<div className="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100">
 										<p className="text-xs font-bold text-indigo-400 uppercase mb-1">মোট দাওয়াত</p>
@@ -507,7 +550,7 @@ const monthNames = [
 								/>
 							</ReportAccordionSection>
 
-									<ReportAccordionSection title="২. সংগঠনঃ" icon={Users2}>
+									<ReportAccordionSection title="২. সংগঠনঃ" icon={Users2} onReset={!canEdit ? undefined : () => resetSection(['manpower','deptManpower','unitOrganization','unitStats','studentJoining','safar','donors','orgMeetings'])}>
 										<OrgTemplate
 											compReport={compReport}
 											formatVal={formatVal}
@@ -519,7 +562,7 @@ const monthNames = [
 									</ReportAccordionSection>
 
 
-									<ReportAccordionSection title="৩. প্রশিক্ষণঃ" icon={GraduationCap}>
+									<ReportAccordionSection title="৩. প্রশিক্ষণঃ" icon={GraduationCap} onReset={!canEdit ? undefined : () => resetSection('training')}>
 										<TrainingTemplate
 											compReport={compReport}
 											formatVal={formatVal}
@@ -530,7 +573,7 @@ const monthNames = [
 										/>
 									</ReportAccordionSection>
 
-									<ReportAccordionSection title="৪. সমাজসেবা ও সমাজ সংস্কারঃ" icon={HeartHandshake}>
+									<ReportAccordionSection title="৪. সমাজসেবা ও সমাজ সংস্কারঃ" icon={HeartHandshake} onReset={!canEdit ? undefined : () => resetSection('socialWork')}>
 										<SocialWelfareTemplate
 											compReport={compReport}
 											formatVal={formatVal}
@@ -541,7 +584,7 @@ const monthNames = [
 										/>
 									</ReportAccordionSection>
 
-									<ReportAccordionSection title="৫. রাষ্ট্রীয় সংস্কার ও সংশোধনঃ" icon={Scale}>
+									<ReportAccordionSection title="৫. রাষ্ট্রীয় সংস্কার ও সংশোধনঃ" icon={Scale} onReset={!canEdit ? undefined : () => resetSection('political')}>
 										<StateReformTemplate
 											compReport={compReport}
 											formatVal={formatVal}
@@ -552,7 +595,7 @@ const monthNames = [
 										/>
 									</ReportAccordionSection>
 
-									<ReportAccordionSection title="৬. বায়তুলমাল (আর্থিক কার্যক্রম):" icon={Wallet}>
+									<ReportAccordionSection title="৬. বায়তুলমাল (আর্থিক কার্যক্রম):" icon={Wallet} onReset={!canEdit ? undefined : () => resetSection('finance')}>
 										<BaitulmalTemplate
 											compReport={compReport}
 											formatVal={formatVal}
@@ -563,7 +606,7 @@ const monthNames = [
 										/>
 									</ReportAccordionSection>
 
-									<ReportAccordionSection title="৭. বিবিধ ও মন্তব্যঃ" icon={MessagesSquare}>
+									<ReportAccordionSection title="৭. বিবিধ ও মন্তব্যঃ" icon={MessagesSquare} onReset={!canEdit ? undefined : () => resetSection('remarks')}>
 										<RemarkCommentTemplate
 											compReport={compReport}
 											formatVal={formatVal}

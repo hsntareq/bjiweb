@@ -1,9 +1,10 @@
-import { CheckCircle2, ChevronDown, Edit2, Folder } from 'lucide-react';
+import { CheckCircle2, ChevronDown, Edit2, Folder, RefreshCw } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface ReportAccordionSectionProps {
 	title: string;
 	onEdit?: () => void;
+	onReset?: () => void;
 	children: React.ReactNode;
 	defaultOpen?: boolean;
 	icon?: React.ElementType;
@@ -58,18 +59,28 @@ export const ReportAccordionSection: React.FC<ReportAccordionSectionProps> = ({
 
 				</div>
 
-				{onEdit && (
-					<button
-						onClick={(e) => {
-							e.stopPropagation();
-							onEdit();
-						}}
-						className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-white text-indigo-600 border border-indigo-100 rounded-xl hover:bg-indigo-600 hover:text-white transition-all text-xs sm:text-sm font-bold shadow-sm active:scale-95"
-					>
-						<Edit2 className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
-						<span>{buttonText}</span>
-					</button>
-				)}
+				{onReset && (
+<button
+onClick={(e) => { e.stopPropagation(); if (window.confirm('Reset this section? This cannot be undone.')) onReset(); }}
+className="mr-2 flex items-center justify-center gap-1 px-3 py-1.5 bg-white text-red-600 border border-red-100 rounded-xl hover:bg-red-600 hover:text-white transition-all text-xs sm:text-sm font-bold shadow-sm active:scale-95"
+>
+<RefreshCw className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
+<span>Reset</span>
+</button>
+)}
+
+{onEdit && (
+<button
+onClick={(e) => {
+e.stopPropagation();
+onEdit();
+}}
+className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-white text-indigo-600 border border-indigo-100 rounded-xl hover:bg-indigo-600 hover:text-white transition-all text-xs sm:text-sm font-bold shadow-sm active:scale-95"
+>
+<Edit2 className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
+<span>{buttonText}</span>
+</button>
+)}
 
 
 			</div>
