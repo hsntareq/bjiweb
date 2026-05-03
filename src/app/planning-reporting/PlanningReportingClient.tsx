@@ -81,7 +81,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 		setIsMounted(true);
 	}, []);
 
-	// Update URL and localStorage when selection changes
+	// Update URL and localStorage when selection changes (orgId / year / month only)
 	useEffect(() => {
 		if (isMounted) {
 			const url = new URL(window.location.href);
@@ -91,17 +91,20 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 			}
 			url.searchParams.set('year', year.toString());
 			url.searchParams.set('month', month.toString());
-			const orgType = userContext?.orgType;
-			if (orgType) {
-				url.searchParams.set('orglevel', orgType.toLowerCase());
-			}
-
 			localStorage.setItem('reporting_year', year.toString());
 			localStorage.setItem('reporting_month', month.toString());
-
 			window.history.replaceState({}, '', url.toString());
 		}
-	}, [selectedOrgId, year, month, isMounted, userContext]);
+	}, [selectedOrgId, year, month, isMounted]);
+
+	// Add orglevel to URL once when userContext loads
+	useEffect(() => {
+		if (!isMounted || !userContext?.orgType) return;
+		const url = new URL(window.location.href);
+		url.searchParams.set('orglevel', userContext.orgType.toLowerCase());
+		window.history.replaceState({}, '', url.toString());
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [userContext?.orgType, isMounted]);
 
 	// Basic Planning state
 	const [plan, setPlan] = useState<any>({
