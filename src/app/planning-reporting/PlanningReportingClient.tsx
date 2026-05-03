@@ -436,6 +436,16 @@ const monthNames = [
 
 	if (!isMounted) return <div className="flex justify-center p-12"><div className="animate-spin w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full"></div></div>;
 
+	if (userContext && !userContext.orgType) return (
+		<div className="flex flex-col items-center justify-center p-16 text-center space-y-3">
+			<div className="w-14 h-14 rounded-full bg-yellow-50 flex items-center justify-center">
+				<Building className="w-7 h-7 text-yellow-400" />
+			</div>
+			<h2 className="text-lg font-semibold text-gray-700">সংগঠনের স্তর নির্ধারিত নয়</h2>
+			<p className="text-sm text-gray-400 max-w-xs">আপনার অ্যাকাউন্টের সাথে কোনো সংগঠনের স্তর (ওয়ার্ড, থানা ইত্যাদি) যুক্ত নেই। অনুগ্রহ করে অ্যাডমিনের সাথে যোগাযোগ করুন।</p>
+		</div>
+	);
+
 	return (
 		<div className="space-y-2 sm:space-y-4">
 			{/* Header Selectors */}
