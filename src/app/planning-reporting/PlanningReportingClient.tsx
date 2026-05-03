@@ -193,14 +193,16 @@ const monthNames = [
 
 	const isFuture = year > new Date().getFullYear() || (year === new Date().getFullYear() && month > new Date().getMonth() + 1);
 
-	// Access control: only the Secretary of the selected Ward org can edit
+	// Access control: determine ownership and editor roles robustly
 	const selectedOrg = organizations.find(o => o.id === selectedOrgId);
-	const userOwnsSelectedOrg = userContext?.organizationId === selectedOrgId;
-	const EDITOR_POSITIONS = ['President', 'Secretary', 'Office', 'Office Secretary'];
-	const isEditor = EDITOR_POSITIONS.includes(userContext?.positionTitle ?? '');
-	const canEdit = userOwnsSelectedOrg && isEditor && !isFuture;
+	const userOrgId = userContext?.organizationId ?? null;
+	const userOwnsSelectedOrg = (userOrgId !== null) && Number(userOrgId) === Number(selectedOrgId);
+	const EDITOR_POSITIONS = ['president', 'secretary', 'office', 'office secretary'];
+	const userPosition = (userContext?.positionTitle ?? '').toString().toLowerCase();
+	const isEditor = userPosition && EDITOR_POSITIONS.includes(userPosition);
+	const canEdit = userOwnsSelectedOrg && !!isEditor && !isFuture;
 	// canView: any user who owns the org (any position) or is in a parent org
-	const isWardOrg = userContext?.orgType === 'WARD';
+	const isWardOrg = (userContext?.orgType ?? '').toUpperCase() === 'WARD';
 	const isParentOrgUser = userContext?.orgType != null && userContext.orgType !== 'WARD' && userContext.orgType !== 'UNIT';
 	const isWardMember = isWardOrg && userOwnsSelectedOrg;
 	const canView = canEdit || isWardMember || isParentOrgUser || !userContext;
