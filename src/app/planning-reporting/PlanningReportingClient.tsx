@@ -15,6 +15,31 @@ import { getDawatTemplate, getOrgTemplate, getTrainingTemplate, getSocialWelfare
 
 type Organization = { id: number; name: string; type: string; children?: Organization[] };
 
+const emptyCompReport = {
+	headerInfo: {},
+	unitDawat: {},
+	personalDawat: {},
+	generalMeeting: {},
+	publicRelations: {},
+	prCampaign: {},
+	departmentalInfo: {},
+	dawahPublication: {},
+	programs: {},
+	manpower: {},
+	deptManpower: {},
+	unitStats: {},
+	studentJoining: {},
+	safar: {},
+	donors: {},
+	orgMeetings: {},
+	training: {},
+	socialWork: {},
+	political: {},
+	finance: {},
+	miscellaneous: {},
+	remarks: {}
+};
+
 export default function PlanningReportingClient({ accessToken }: { accessToken: string }) {
 		const [year, setYear] = useState(new Date().getFullYear());
 	const [month, setMonth] = useState(new Date().getMonth() + 1);
@@ -71,30 +96,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 	});
 
 	// Comprehensive Report state
-	const [compReport, setCompReport] = useState<any>({
-		headerInfo: {},
-		unitDawat: {},
-		personalDawat: {},
-		generalMeeting: {},
-		publicRelations: {},
-		prCampaign: {},
-		departmentalInfo: {},
-		dawahPublication: {},
-		programs: {},
-		manpower: {},
-		deptManpower: {},
-		unitStats: {},
-		studentJoining: {},
-		safar: {},
-		donors: {},
-		orgMeetings: {},
-		training: {},
-		socialWork: {},
-		political: {},
-		finance: {},
-		miscellaneous: {},
-		remarks: {}
-	});
+	const [compReport, setCompReport] = useState<any>(emptyCompReport);
 
 	// User context for access control
 const [userContext, setUserContext] = useState<{
@@ -209,6 +211,8 @@ const monthNames = [
 
 	const fetchData = async () => {
 		if (!selectedOrgId) return;
+		// Clear stale data immediately so accordions show empty while loading
+		setCompReport(emptyCompReport);
 		setLoading(true);
 		try {
 			const [compRes, planRes] = await Promise.all([
@@ -226,7 +230,10 @@ const monthNames = [
 			if (compRes.ok) {
 				const text = await compRes.text();
 				const data = text ? JSON.parse(text) : null;
-				if (data) setCompReport(data);
+				// Always update — use fetched data if available, otherwise keep empty state
+				setCompReport(data ?? emptyCompReport);
+			} else {
+				setCompReport(emptyCompReport);
 			}
 			if (planRes.ok) {
 				const text = await planRes.text();
@@ -235,6 +242,7 @@ const monthNames = [
 			}
 		} catch (err) {
 			console.error("Failed to fetch data", err);
+			setCompReport(emptyCompReport);
 		} finally {
 			setLoading(false);
 		}
@@ -361,12 +369,11 @@ const monthNames = [
 		if (!window.confirm('Are you sure you want to reset this section? This cannot be undone.')) return;
 		try {
 			setSaving(true);
-			const updates = {};
-			if (Array.isArray(sections)) { sections.forEach(k => updates[k] = {}); } else { updates[sections] = {}; }
+			const resetSections = Array.isArray(sections) ? sections : [sections];
 			const res = await fetch(`http://localhost:3001/comprehensive-report`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json', ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
-				body: JSON.stringify({ organizationId: selectedOrgId, year, month, ...updates })
+				body: JSON.stringify({ organizationId: selectedOrgId, year, month, resetSections })
 			});
 			if (res.ok) {
 				const text = await res.text();
@@ -382,12 +389,16 @@ const monthNames = [
 		if (!window.confirm('Are you sure you want to reset ALL report data for this org/month? This cannot be undone.')) return;
 		try {
 			setSaving(true);
-			const updates = {};
-			Object.keys(compReport).forEach(k => updates[k] = {});
+			const resetSections = [
+				'headerInfo','unitDawat','personalDawat','generalMeeting','publicRelations','prCampaign',
+				'departmentalInfo','dawahPublication','programs','manpower','deptManpower','unitStats',
+				'studentJoining','safar','donors','orgMeetings','unitOrganization','training','socialWork',
+				'political','finance','baitulmal','organizationData','dawah','miscellaneous','remarks'
+			];
 			const res = await fetch(`http://localhost:3001/comprehensive-report`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json', ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
-				body: JSON.stringify({ organizationId: selectedOrgId, year, month, ...updates })
+				body: JSON.stringify({ organizationId: selectedOrgId, year, month, resetSections })
 			});
 			if (res.ok) { const text = await res.text(); const data = text ? JSON.parse(text) : null; if (data) setCompReport(data); toast.success('All report data reset successfully'); } else { const err = await res.text(); console.error('Reset all failed', err); toast.error('Reset failed'); }
 		} catch (e) { console.error(e); toast.error('An error occurred while resetting'); } finally { setSaving(false); }
@@ -477,9 +488,9 @@ const monthNames = [
                             <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v6h6"/></svg>
                             Reset All
                         </button>
-                        <button onClick={() => window.open(`/planning-reporting/print?orgId=${selectedOrgId}&year=${year}&month=${month}&token=${accessToken}`, '_blank')} className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-xl hover:bg-gray-900 transition-colors shadow-lg">
+                        <button onClick={() => window.open(`/planning-reporting/print?orgId=${selectedOrgId}&year=${year}&month=${month}&orglevel=${(selectedOrg?.type || userContext?.orgType || 'ward').toLowerCase()}&token=${accessToken}`, '_blank')} className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-xl hover:bg-gray-900 transition-colors shadow-lg">
 						<Printer className="w-4 h-4 shrink-0" />
-						Print Ward Report
+						Print Report
 					</button>
                     </div>
 				</div>

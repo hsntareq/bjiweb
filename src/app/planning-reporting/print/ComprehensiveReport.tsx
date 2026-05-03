@@ -108,11 +108,10 @@ export const ComprehensiveReport: React.FC<ComprehensiveReportProps> = ({
 					<PrintDataCell>{toBengaliNumber(report?.socialWork?.instTotalCount)}</PrintDataCell>
 					<PrintDataCell>{toBengaliNumber(report?.socialWork?.instActiveCount)}</PrintDataCell>
 					<PrintDataCell>{toBengaliNumber(report?.socialWork?.instNewCount)}</PrintDataCell>
-				</PrintRow>
-			</PrintTable>
-			</PrintTable>
+			</PrintRow>
+		</PrintTable>
 
-			<PrintSectionTitle title="১. ইউনিটে নিয়মিত গ্রুপভিত্তিক দাওয়াত:" />
+		<PrintSectionTitle title="১. ইউনিটে নিয়মিত গ্রুপভিত্তিক দাওয়াত:" />
 			<PrintTable>
 				<PrintRow>
 					<PrintHeaderCell width="20%">কয়টি গ্রুপ বের হয়েছে</PrintHeaderCell>

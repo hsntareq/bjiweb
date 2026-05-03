@@ -104,11 +104,9 @@ export const BaitulmalModal: React.FC<BaitulmalModalProps> = ({
           <div className="flex justify-between font-bold text-gray-700 p-2 bg-gray-50 rounded border border-gray-200">
              <div className="flex flex-col">
                <span>ধার্যকৃত নিছাব: <input type="number" value={data.nisab?.allocated || 0} onChange={(e) => handleNisabChange('allocated', parseInt(e.target.value) || 0)} className="w-20 border-b border-gray-300 bg-transparent text-center" /> /=</span>
-               <span className="text-[9px] text-gray-400 font-normal italic mt-0.5">Var: {"{{"}baitulmalDharjoNisab{"}}"}</span>
              </div>
              <div className="flex flex-col items-end">
                <span>ওয়াদাকৃত নিছাব: <input type="number" value={data.nisab?.promised || 0} onChange={(e) => handleNisabChange('promised', parseInt(e.target.value) || 0)} className="w-20 border-b border-gray-300 bg-transparent text-center" /> /=</span>
-               <span className="text-[9px] text-gray-400 font-normal italic mt-0.5">Var: {"{{"}baitulmalWadaNisab{"}}"}</span>
              </div>
           </div>
 

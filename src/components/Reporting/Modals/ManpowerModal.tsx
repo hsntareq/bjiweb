@@ -67,27 +67,22 @@ export const ManpowerModal: React.FC<ManpowerModalProps> = ({
                   <td className="p-2 font-medium">
                     {row.label}
                     <div className="text-[9px] text-gray-400 font-normal mt-0.5">
-                      Vars: {"{{"}{row.id}Previous{"}}"}, {"{{"}{row.id}Current{"}}"}
                     </div>
                   </td>
                   <td className="p-2 text-center">
                     <input type="number" value={data[row.id]?.previousCount || 0} onChange={(e) => handleTableChange(row.id, 'previousCount', parseInt(e.target.value) || 0)} className="w-16 border rounded p-1 text-center mx-auto block" />
-                    <span className="text-[8px] text-gray-400">{"{{"}{row.id}Previous{"}}"}</span>
                   </td>
                   <td className="p-2 text-center">
                     <input type="number" value={data[row.id]?.currentCount || 0} onChange={(e) => handleTableChange(row.id, 'currentCount', parseInt(e.target.value) || 0)} className="w-16 border rounded p-1 text-center mx-auto block" />
-                    <span className="text-[8px] text-gray-400">{"{{"}{row.id}Current{"}}"}</span>
                   </td>
                   <td className="p-2 text-center">
                     <input type="number" value={data[row.id]?.promotionIncrease || 0} onChange={(e) => handleTableChange(row.id, 'promotionIncrease', parseInt(e.target.value) || 0)} className="w-16 border rounded p-1 text-center mx-auto block" />
-                    <span className="text-[8px] text-gray-400">{"{{"}{row.id}Increase{"}}"}</span>
                   </td>
                   <td className="p-2 text-center">
                     <input type="number" value={data[row.id]?.arrivedIncrease || 0} onChange={(e) => handleTableChange(row.id, 'arrivedIncrease', parseInt(e.target.value) || 0)} className="w-16 border rounded p-1 text-center mx-auto block" />
                   </td>
                   <td className="p-2 text-center">
                     <input type="number" value={data[row.id]?.deficit || 0} onChange={(e) => handleTableChange(row.id, 'deficit', parseInt(e.target.value) || 0)} className="w-16 border rounded p-1 text-center mx-auto block" />
-                    <span className="text-[8px] text-gray-400">{"{{"}{row.id}Deficit{"}}"}</span>
                   </td>
                   <td className="p-2 text-center">
                     <input type="number" value={data[row.id]?.target || 0} onChange={(e) => handleTableChange(row.id, 'target', parseInt(e.target.value) || 0)} className="w-16 border rounded p-1 text-center mx-auto block" />

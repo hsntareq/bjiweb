@@ -63,7 +63,7 @@ export const ReportAccordionSection: React.FC<ReportAccordionSectionProps> = ({
 				{onReset && (
 				<button
 					onClick={(e) => { e.stopPropagation(); onReset(); }}
-					className="mr-2 flex items-center justify-center gap-1 px-3 py-1.5 bg-white text-red-600 border border-red-100 rounded-xl hover:bg-red-600 hover:text-white transition-all text-xs sm:text-sm font-bold shadow-sm active:scale-95"
+					className="flex items-center justify-center gap-1 px-3 py-1.5 bg-white text-red-600 border border-red-100 rounded-xl hover:bg-red-600 hover:text-white transition-all text-xs sm:text-sm font-bold shadow-sm active:scale-95"
 				>
 					<RefreshCw className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
 					<span>Reset</span>
