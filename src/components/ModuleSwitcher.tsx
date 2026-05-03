@@ -23,14 +23,6 @@ const MODULES = [
 		color: "from-violet-500 to-purple-600",
 	},
 	{
-		id: "organization-report",
-		name: "Organization Report",
-		description: "Team & Organization Stats",
-		href: "/organization-report",
-		icon: "🏢",
-		color: "from-purple-500 to-pink-600",
-	},
-	{
 		id: "organization-management",
 		name: "Organization Management",
 		description: "Hierarchy & Structure",

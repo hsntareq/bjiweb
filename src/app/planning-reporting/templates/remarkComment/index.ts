@@ -1,0 +1,1 @@
+export { WardRemarkCommentTemplate } from './WardRemarkCommentTemplate';

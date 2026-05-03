@@ -1,0 +1,1 @@
+export { WardSocialWelfareTemplate } from './WardSocialWelfareTemplate';

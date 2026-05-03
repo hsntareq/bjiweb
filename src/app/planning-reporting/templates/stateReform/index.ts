@@ -1,0 +1,1 @@
+export { WardStateReformTemplate } from './WardStateReformTemplate';
