@@ -14,6 +14,8 @@ function ReportPrintContent() {
 
   const [report, setReport] = useState<any>(null);
   const [orgName, setOrgName] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   const monthNames = [
     "জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন",
@@ -25,14 +27,30 @@ function ReportPrintContent() {
       fetch(`http://localhost:3001/comprehensive-report/organization/${orgId}?year=${year}&month=${month}`, {
         headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {}
       })
-      .then(res => res.json())
-      .then(data => setReport(data));
+      .then(res => {
+        if (!res.ok) { setNotFound(true); setLoading(false); return null; }
+        return res.json();
+      })
+      .then(data => {
+        if (!data) return;
+        if (!data || (Array.isArray(data) && data.length === 0)) {
+          setNotFound(true);
+        } else {
+          setReport(data);
+        }
+        setLoading(false);
+      })
+      .catch(() => { setNotFound(true); setLoading(false); });
 
       fetch(`http://localhost:3001/organization/${orgId}`, {
         headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {}
       })
-      .then(res => res.json())
-      .then(data => setOrgName(data.name));
+      .then(res => res.ok ? res.json() : null)
+      .then(data => { if (data?.name) setOrgName(data.name); })
+      .catch(() => {});
+    } else {
+      setNotFound(true);
+      setLoading(false);
     }
   }, [orgId, year, month, accessToken]);
 
@@ -476,11 +494,29 @@ function ReportPrintContent() {
     return output;
   };
 
-  if (!report) return (
+  if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center animate-pulse">
         <FileText className="w-12 h-12 text-indigo-400 mx-auto mb-4" />
         <p className="text-gray-500 font-medium">প্রতিবেদন প্রস্তুত করা হচ্ছে...</p>
+      </div>
+    </div>
+  );
+
+  if (notFound || !report) return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="text-center space-y-4">
+        <FileText className="w-16 h-16 text-gray-300 mx-auto" />
+        <h2 className="text-xl font-semibold text-gray-600">কোনো প্রতিবেদন পাওয়া যায়নি</h2>
+        <p className="text-gray-400 text-sm">
+          {orgName ? `"${orgName}" সংগঠনের` : 'এই সংগঠনের'} নির্বাচিত মাসের জন্য কোনো মাসিক প্রতিবেদন দাখিল করা হয়নি।
+        </p>
+        <button
+          onClick={() => window.close()}
+          className="mt-4 px-5 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700"
+        >
+          বন্ধ করুন
+        </button>
       </div>
     </div>
   );
