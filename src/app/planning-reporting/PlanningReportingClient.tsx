@@ -82,6 +82,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 	}, []);
 
 	// Update URL and localStorage when selection changes
+	const orgType = userContext?.orgType ?? null;
 	useEffect(() => {
 		if (isMounted) {
 			const url = new URL(window.location.href);
@@ -91,8 +92,8 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 			}
 			url.searchParams.set('year', year.toString());
 			url.searchParams.set('month', month.toString());
-			if (userContext?.orgType) {
-				url.searchParams.set('orglevel', userContext.orgType.toLowerCase());
+			if (orgType) {
+				url.searchParams.set('orglevel', orgType.toLowerCase());
 			}
 
 			localStorage.setItem('reporting_year', year.toString());
@@ -100,7 +101,7 @@ export default function PlanningReportingClient({ accessToken }: { accessToken: 
 
 			window.history.replaceState({}, '', url.toString());
 		}
-	}, [selectedOrgId, year, month, isMounted, userContext?.orgType]);
+	}, [selectedOrgId, year, month, isMounted, orgType]);
 
 	// Basic Planning state
 	const [plan, setPlan] = useState<any>({
