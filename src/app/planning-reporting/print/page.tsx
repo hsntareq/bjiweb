@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { templateHtml, templateStyle } from './Template';
 import { templateHtml as thanaTemplateHtml, templateStyle as thanaTemplateStyle } from './thana-template';
+import { templateHtml as unitTemplateHtml, templateStyle as unitTemplateStyle } from './unit-template';
 
 function ReportPrintContent() {
 	const searchParams = useSearchParams();
@@ -487,6 +488,12 @@ function ReportPrintContent() {
 		output = output.replace(/{{politicalCommPoliticalReached}}/g, toBengaliNumber(politicalComm.political?.reachedCount) || "০");
 		output = output.replace(/{{politicalCommAdminCount}}/g, toBengaliNumber(politicalComm.admin?.communicatedCount) || "০");
 		output = output.replace(/{{politicalCommAdminReached}}/g, toBengaliNumber(politicalComm.admin?.reachedCount) || "০");
+		
+		// For Unit template
+		output = output.replace(/{{statePolComm}}/g, toBengaliNumber(politicalComm.political?.communicatedCount) || "০");
+		output = output.replace(/{{stateEminentComm}}/g, toBengaliNumber(politicalComm.eminent?.communicatedCount) || "০");
+		output = output.replace(/{{stateUpperProgAtt}}/g, toBengaliNumber(politicalComm.upperProgAtt?.communicatedCount) || "০");
+		output = output.replace(/{{stateOtherComm}}/g, toBengaliNumber(politicalComm.other?.communicatedCount) || "০");
 
 		const politicalProg = political.prog || {};
 		// centerProgram count is stored as {val: X}
@@ -516,6 +523,27 @@ function ReportPrintContent() {
 		output = output.replace(/{{baitulmalNisabPorishodh}}/g, toBengaliNumber(baitulmal.expense?.nisabPaid) || "০");
 		output = output.replace(/{{baitulmalSorasoriIyanat}}/g, toBengaliNumber(baitulmal.income?.directIanat) || "০");
 		output = output.replace(/{{baitulmalSthaniyoKhoroch}}/g, toBengaliNumber(baitulmal.expense?.localExpense) || "০");
+
+		// For Unit template specifically
+		output = output.replace(/{{baitulmalMonthlyTarget}}/g, toBengaliNumber(baitulmal.nisab?.promised) || "০");
+		output = output.replace(/{{baitulmalIncome0}}/g, toBengaliNumber(baitulmal.income?.directIanat) || "০");
+		output = output.replace(/{{baitulmalExpense0}}/g, toBengaliNumber(baitulmal.expense?.localExpense) || "০");
+		output = output.replace(/{{baitulmalIncome1}}/g, toBengaliNumber(baitulmal.income?.oneTime) || "০");
+		output = output.replace(/{{baitulmalExpense1}}/g, toBengaliNumber(baitulmal.expense?.oneTime) || "০");
+		output = output.replace(/{{baitulmalIncome2}}/g, toBengaliNumber(baitulmal.income?.electionFund) || "০");
+		output = output.replace(/{{baitulmalExpense2}}/g, toBengaliNumber(baitulmal.expense?.electionFund) || "০");
+		output = output.replace(/{{baitulmalIncome3}}/g, toBengaliNumber(baitulmal.income?.socialWork) || "০");
+		output = output.replace(/{{baitulmalExpense3}}/g, toBengaliNumber(baitulmal.expense?.socialWork) || "০");
+		output = output.replace(/{{baitulmalIncome4}}/g, toBengaliNumber(baitulmal.income?.zakat) || "০");
+		output = output.replace(/{{baitulmalExpense4}}/g, toBengaliNumber(baitulmal.expense?.zakat) || "০");
+		output = output.replace(/{{baitulmalIncome5}}/g, toBengaliNumber(baitulmal.income?.floodCollection) || "০");
+		output = output.replace(/{{baitulmalExpense5}}/g, toBengaliNumber(baitulmal.expense?.floodCollection) || "০");
+		output = output.replace(/{{baitulmalIncome6}}/g, toBengaliNumber(baitulmal.income?.shahidFund) || "০");
+		output = output.replace(/{{baitulmalExpense6}}/g, toBengaliNumber(baitulmal.expense?.shahidFund) || "০");
+		output = output.replace(/{{baitulmalIncome7}}/g, toBengaliNumber(baitulmal.income?.fitra) || "০");
+		output = output.replace(/{{baitulmalExpense7}}/g, toBengaliNumber(baitulmal.expense?.fitra) || "০");
+		output = output.replace(/{{baitulmalIncomeTotal}}/g, toBengaliNumber(baitulmal.income?.totalIncome) || "০");
+		output = output.replace(/{{baitulmalExpenseTotal}}/g, toBengaliNumber(baitulmal.expense?.totalExpense) || "০");
 
 		output = output.replace(/{{baitulmalTotalIncome}}/g, toBengaliNumber(baitulmal.income?.totalIncome) || "০");
 		output = output.replace(/{{baitulmalTotalExpense}}/g, toBengaliNumber(baitulmal.expense?.totalExpense) || "০");
@@ -584,8 +612,16 @@ function ReportPrintContent() {
 		return output;
 	};
 
-	const activeTemplateHtml = orgLevel === 'thana' ? thanaTemplateHtml : templateHtml;
-	const activeTemplateStyle = orgLevel === 'thana' ? thanaTemplateStyle : templateStyle;
+	let activeTemplateHtml = templateHtml;
+	let activeTemplateStyle = templateStyle;
+	
+	if (orgLevel === 'thana') {
+		activeTemplateHtml = thanaTemplateHtml;
+		activeTemplateStyle = thanaTemplateStyle;
+	} else if (orgLevel === 'unit') {
+		activeTemplateHtml = unitTemplateHtml;
+		activeTemplateStyle = unitTemplateStyle;
+	}
 
 	if (loading) return (
 		<div className="min-h-screen flex items-center justify-center bg-gray-50">

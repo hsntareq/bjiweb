@@ -425,7 +425,7 @@ const monthNames = [
 
 	const formatVal = (val: any) => (val === 0 || val === undefined || val === null) ? '-' : val;
 
-	const orgLevel = (userContext?.orgType?.toUpperCase() || 'WARD') as OrgLevel;
+	const orgLevel = (selectedOrg?.type?.toUpperCase() || userContext?.orgType?.toUpperCase() || 'WARD') as OrgLevel;
 	const DawatTemplate = getDawatTemplate(orgLevel);
 	const OrgTemplate = getOrgTemplate(orgLevel);
 	const TrainingTemplate = getTrainingTemplate(orgLevel);
@@ -551,15 +551,16 @@ const monthNames = [
 										</p>
 									</div>
 								</div>
-								<DawatTemplate
-									compReport={compReport}
-									formatVal={formatVal}
-									canEdit={canEdit}
-									onSave={handleSaveCompSection}
-									onSaveMultiple={handleSaveMultipleCompSections}
-									saving={saving}
-								/>
-							</ReportAccordionSection>
+									<DawatTemplate
+										compReport={compReport}
+										formatVal={formatVal}
+										canEdit={canEdit}
+										onSave={handleSaveCompSection}
+										onSaveMultiple={handleSaveMultipleCompSections}
+										saving={saving}
+										orgLevel={orgLevel}
+									/>
+								</ReportAccordionSection>
 
 									<ReportAccordionSection title="২. সংগঠনঃ" icon={Users2} onReset={!canEdit ? undefined : () => resetSection(['manpower','deptManpower','unitOrganization','unitStats','studentJoining','safar','donors','orgMeetings'])}>
 										<OrgTemplate
@@ -569,6 +570,7 @@ const monthNames = [
 											onSave={handleSaveCompSection}
 											onSaveMultiple={handleSaveMultipleCompSections}
 											saving={saving}
+											orgLevel={orgLevel}
 										/>
 									</ReportAccordionSection>
 
@@ -581,6 +583,7 @@ const monthNames = [
 											onSave={handleSaveCompSection}
 											onSaveMultiple={handleSaveMultipleCompSections}
 											saving={saving}
+											orgLevel={orgLevel}
 										/>
 									</ReportAccordionSection>
 
@@ -592,6 +595,7 @@ const monthNames = [
 											onSave={handleSaveCompSection}
 											onSaveMultiple={handleSaveMultipleCompSections}
 											saving={saving}
+											orgLevel={orgLevel}
 										/>
 									</ReportAccordionSection>
 
@@ -603,6 +607,7 @@ const monthNames = [
 											onSave={handleSaveCompSection}
 											onSaveMultiple={handleSaveMultipleCompSections}
 											saving={saving}
+											orgLevel={orgLevel}
 										/>
 									</ReportAccordionSection>
 
@@ -614,6 +619,7 @@ const monthNames = [
 											onSave={handleSaveCompSection}
 											onSaveMultiple={handleSaveMultipleCompSections}
 											saving={saving}
+											orgLevel={orgLevel}
 										/>
 									</ReportAccordionSection>
 
@@ -625,6 +631,7 @@ const monthNames = [
 											onSave={handleSaveCompSection}
 											onSaveMultiple={handleSaveMultipleCompSections}
 											saving={saving}
+											orgLevel={orgLevel}
 										/>
 									</ReportAccordionSection>
 								</div>

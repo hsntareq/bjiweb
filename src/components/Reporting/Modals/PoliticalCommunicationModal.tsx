@@ -7,6 +7,7 @@ interface PoliticalCommunicationModalProps {
   onSave: (data: any) => void;
   initialData: any;
   saving: boolean;
+  rows?: { id: string; label: string }[];
 }
 
 export const PoliticalCommunicationModal: React.FC<PoliticalCommunicationModalProps> = ({ 
@@ -14,7 +15,11 @@ export const PoliticalCommunicationModal: React.FC<PoliticalCommunicationModalPr
   onClose, 
   onSave, 
   initialData = {}, 
-  saving 
+  saving,
+  rows = [
+    { id: 'political', label: 'রাজনৈতিক ব্যক্তিবর্গ' },
+    { id: 'admin', label: 'প্রশাসনিক ব্যক্তিবর্গ' }
+  ]
 }) => {
   const [data, setData] = useState(initialData);
 
@@ -49,10 +54,7 @@ export const PoliticalCommunicationModal: React.FC<PoliticalCommunicationModalPr
                 </tr>
              </thead>
              <tbody>
-                {[
-                   { id: 'political', label: 'রাজনৈতিক ব্যক্তিবর্গ' },
-                   { id: 'admin', label: 'প্রশাসনিক ব্যক্তিবর্গ' }
-                ].map(row => (
+                {rows.map(row => (
                    <tr key={row.id} className="border-b">
                       <td className="p-2 font-medium">{row.label}</td>
                       <td className="p-2"><input type="number" value={data[row.id]?.communicatedCount || 0} onChange={(e) => handleTableChange(row.id, 'communicatedCount', parseInt(e.target.value) || 0)} className="w-20 border rounded p-1 text-center mx-auto block" /></td>
