@@ -10,8 +10,12 @@ table td, table th {
   vertical-align: middle !important;
   font-size: 8pt;
 }
+.border-table td, .border-table th { border: 1pt solid #000; }
 .section-title { font-size: 9pt; font-weight: 600; margin-top: 10px; margin-bottom: 5px; }
 .note-text { font-size: 8pt; font-style: italic; font-weight: normal; }
+.text-left { text-align: left !important; }
+.text-right { text-align: right !important; }
+.text-center { text-align: center !important; }
 .c13 { text-align: left; }
 .c19 { text-align: right; }
 .c1 { text-align: center; }
@@ -67,13 +71,13 @@ export const templateHtml = `
     <td>{{groupDawahParticipantsFemale}}</td>
   </tr>
   <tr>
-    <td class="text-left">ের নিকট দাওয়াত পৌঁছানো হয়েছে</td>
+    <td class="text-left">দাওয়াত পৌঁছানো হয়েছে</td>
     <td>{{groupDawahReachedTotal}}</td>
     <td>{{groupDawahReachedMale}}</td>
     <td>{{groupDawahReachedFemale}}</td>
   </tr>
   <tr>
-    <td class="text-left">সহযোগী সদস্য হয়েছেন</td>
+    <td class="text-left">সহযোগী সদস্য</td>
     <td>{{groupDawahNewAssociateTotal}}</td>
     <td>{{groupDawahNewAssociateMale}}</td>
     <td>{{groupDawahNewAssociateFemale}}</td>
@@ -116,13 +120,13 @@ export const templateHtml = `
     <td style="width:22%">মহিলা</td>
   </tr>
   <tr>
-    <td class="text-left">ের নিকট দাওয়াত পৌঁছানো হয়েছে</td>
+    <td class="text-left">দাওয়াত পৌঁছানো হয়েছে</td>
     <td>{{personalDawahReachedTotal}}</td>
     <td>{{personalDawahReachedMale}}</td>
     <td>{{personalDawahReachedFemale}}</td>
   </tr>
   <tr>
-    <td class="text-left">সহযোগী সদস্য হয়েছেন</td>
+    <td class="text-left">সহযোগী সদস্য</td>
     <td>{{personalDawahAssociateTotal}}</td>
     <td>{{personalDawahAssociateMale}}</td>
     <td>{{personalDawahAssociateFemale}}</td>
@@ -138,13 +142,13 @@ export const templateHtml = `
     <td style="width:22%">মহিলা</td>
   </tr>
   <tr>
-    <td class="text-left">ের নিকট দাওয়াত পৌঁছানো হয়েছে</td>
+    <td class="text-left">দাওয়াত পৌঁছানো হয়েছে</td>
     <td>{{generalMeetingReachedTotal}}</td>
     <td>{{generalMeetingReachedMale}}</td>
     <td>{{generalMeetingReachedFemale}}</td>
   </tr>
   <tr>
-    <td class="text-left">সহযোগী সদস্য হয়েছেন</td>
+    <td class="text-left">সহযোগী সদস্য</td>
     <td>{{generalMeetingNewAssociateTotal}}</td>
     <td>{{generalMeetingNewAssociateMale}}</td>
     <td>{{generalMeetingNewAssociateFemale}}</td>
@@ -157,8 +161,8 @@ export const templateHtml = `
     <td style="width:28%" class="text-left">বিবরণ</td>
     <td style="width:18%">মোট গ্রুপ সংখ্যা</td>
     <td style="width:18%">মোট অংশগ্রহণকারীর সংখ্যা</td>
-    <td style="width:18%">মোট ের নিকট দাওয়াত পৌঁছানো হয়েছে</td>
-    <td style="width:18%">মোট সহযোগী সদস্য হয়েছেন</td>
+    <td style="width:18%">মোট দাওয়াত পৌঁছানো হয়েছে</td>
+    <td style="width:18%">মোট সহযোগী সদস্য</td>
   </tr>
   <tr>
     <td class="text-left">গণসংযোগ দশক/পক্ষ (পুরুষ/মহিলা)</td>
@@ -1797,9 +1801,9 @@ export const templateHtml = `
 <table class="border-table">
   <tr>
     <td class="text-left" style="width:35%; font-weight:bold;">আয়ের বিবরণ</td>
-    <td style="width:15%"></td>
+    <td style="width:15%; font-weight:bold;">পরিমাণ</td>
     <td class="text-left" style="width:35%; font-weight:bold;">ব্যয়ের বিবরণ</td>
-    <td style="width:15%"></td>
+    <td style="width:15%; font-weight:bold;">পরিমাণ</td>
   </tr>
 
   <tr>
