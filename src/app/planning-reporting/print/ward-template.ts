@@ -551,7 +551,7 @@ export const templateHtml = `
 </td>
 <td class="c16" colspan="3" rowspan="1">
 <p class="c1">
-<span class="c2">মোট ের নিকট দাওয়াত পৌঁছানো হয়েছে</span>
+<span class="c2">মোট কতজনের নিকট দাওয়াত পৌঁছানো হয়েছে</span>
 </p>
 </td>
 <td class="c86" colspan="2" rowspan="1">
@@ -4473,24 +4473,34 @@ export const templateHtml = `
 </td>
 </tr>
 <tr class="c20">
-<td class="c130" colspan="4" rowspan="1">
+<td class="c130" colspan="3" rowspan="1">
 <p class="c1">
 <span class="c3">আয়ের বিবরণ</span>
 </p>
 </td>
-<td class="c130" colspan="4" rowspan="1">
+<td class="c130" colspan="1" rowspan="1">
+<p class="c1">
+<span class="c3">পরিমাণ</span>
+</p>
+</td>
+<td class="c130" colspan="3" rowspan="1">
 <p class="c1">
 <span class="c3">ব্যয়ের বিবরণ</span>
 </p>
 </td>
+<td class="c130" colspan="1" rowspan="1">
+<p class="c1">
+<span class="c3">পরিমাণ</span>
+</p>
+</td>
 </tr>
 <tr class="c20">
-<td class="c14" colspan="1" rowspan="1">
+<td class="c14" colspan="3" rowspan="1">
 <p class="c13">
 <span class="c3">প্রাপ্ত নিছাব</span>
 </p>
 </td>
-<td class="c14" colspan="3" rowspan="1">
+<td class="c14" colspan="1" rowspan="1">
 <p class="c19">
 <span class="c3">{{baitulmalPraptoNisab}}/=</span>
 </p>
@@ -4507,12 +4517,12 @@ export const templateHtml = `
 </td>
 </tr>
 <tr class="c20">
-<td class="c14" colspan="1" rowspan="1">
+<td class="c14" colspan="3" rowspan="1">
 <p class="c13">
 <span class="c3">সরাসরি ইয়ানত</span>
 </p>
 </td>
-<td class="c14" colspan="3" rowspan="1">
+<td class="c14" colspan="1" rowspan="1">
 <p class="c19">
 <span class="c3">{{baitulmalSorasoriIyanat}}/=</span>
 </p>
@@ -4529,12 +4539,12 @@ export const templateHtml = `
 </td>
 </tr>
 <tr class="c20">
-<td class="c14" colspan="1" rowspan="1">
+<td class="c14" colspan="3" rowspan="1">
 <p class="c13">
 <span class="c3">এককালীন /জরুরী(নির্বাচনী ওয়াদা)</span>
 </p>
 </td>
-<td class="c14" colspan="3" rowspan="1">
+<td class="c14" colspan="1" rowspan="1">
 <p class="c19">
 <span class="c3">{{baitulmalOneTimeIncome}}/=</span>
 </p>
@@ -4551,12 +4561,12 @@ export const templateHtml = `
 </td>
 </tr>
 <tr class="c20">
-<td class="c14" colspan="1" rowspan="1">
+<td class="c14" colspan="3" rowspan="1">
 <p class="c13">
 <span class="c3">নির্বাচনী ফান্ড</span>
 </p>
 </td>
-<td class="c14" colspan="3" rowspan="1">
+<td class="c14" colspan="1" rowspan="1">
 <p class="c19">
 <span class="c3">{{baitulmalElectionFundIncome}}/=</span>
 </p>
@@ -4573,12 +4583,12 @@ export const templateHtml = `
 </td>
 </tr>
 <tr class="c20">
-<td class="c14" colspan="1" rowspan="1">
+<td class="c14" colspan="3" rowspan="1">
 <p class="c13">
 <span class="c3">শহীদ ফান্ড</span>
 </p>
 </td>
-<td class="c14" colspan="3" rowspan="1">
+<td class="c14" colspan="1" rowspan="1">
 <p class="c19">
 <span class="c3">{{baitulmalShahidFundIncome}}/=</span>
 </p>
@@ -4595,12 +4605,12 @@ export const templateHtml = `
 </td>
 </tr>
 <tr class="c20">
-<td class="c14" colspan="1" rowspan="1">
+<td class="c14" colspan="3" rowspan="1">
 <p class="c13">
 <span class="c3">বিশেষ ও বন্যার্তদের কালেকশন</span>
 </p>
 </td>
-<td class="c14" colspan="3" rowspan="1">
+<td class="c14" colspan="1" rowspan="1">
 <p class="c19">
 <span class="c3">{{baitulmalFloodCollectionIncome}}/=</span>
 </p>
@@ -4617,12 +4627,12 @@ export const templateHtml = `
 </td>
 </tr>
 <tr class="c20">
-<td class="c14" colspan="1" rowspan="1">
+<td class="c14" colspan="3" rowspan="1">
 <p class="c13">
 <span class="c3">সমাজকল্যাণ ও সমাজসেবা</span>
 </p>
 </td>
-<td class="c14" colspan="3" rowspan="1">
+<td class="c14" colspan="1" rowspan="1">
 <p class="c19">
 <span class="c3">{{baitulmalSocialWorkIncome}}/=</span>
 </p>
@@ -4639,12 +4649,12 @@ export const templateHtml = `
 </td>
 </tr>
 <tr class="c20">
-<td class="c14" colspan="1" rowspan="1">
+<td class="c14" colspan="3" rowspan="1">
 <p class="c13">
 <span class="c3">যাকাত</span>
 </p>
 </td>
-<td class="c14" colspan="3" rowspan="1">
+<td class="c14" colspan="1" rowspan="1">
 <p class="c19">
 <span class="c3">৩,০০০/=</span>
 </p>
@@ -4661,12 +4671,12 @@ export const templateHtml = `
 </td>
 </tr>
 <tr class="c20">
-<td class="c14" colspan="1" rowspan="1">
+<td class="c14" colspan="3" rowspan="1">
 <p class="c13">
 <span class="c3">ফিতরা</span>
 </p>
 </td>
-<td class="c14" colspan="3" rowspan="1">
+<td class="c14" colspan="1" rowspan="1">
 <p class="c19">
 <span class="c3">১,০০০/=</span>
 </p>
@@ -4683,12 +4693,12 @@ export const templateHtml = `
 </td>
 </tr>
 <tr class="c20">
-<td class="c14" colspan="1" rowspan="1">
+<td class="c14" colspan="3" rowspan="1">
 <p class="c13">
 <span class="c3">ইফতার</span>
 </p>
 </td>
-<td class="c14" colspan="3" rowspan="1">
+<td class="c14" colspan="1" rowspan="1">
 <p class="c19">
 <span class="c3">{{baitulmalIftarIncome}}/=</span>
 </p>
@@ -4705,12 +4715,12 @@ export const templateHtml = `
 </td>
 </tr>
 <tr class="c20">
-<td class="c14" colspan="1" rowspan="1">
+<td class="c14" colspan="3" rowspan="1">
 <p class="c13">
 <span class="c3">ডেলিগেট ফি</span>
 </p>
 </td>
-<td class="c14" colspan="3" rowspan="1">
+<td class="c14" colspan="1" rowspan="1">
 <p class="c19">
 <span class="c3">{{baitulmalDelegateFeeIncome}}/=</span>
 </p>
@@ -4727,12 +4737,12 @@ export const templateHtml = `
 </td>
 </tr>
 <tr class="c20">
-<td class="c14" colspan="1" rowspan="1">
+<td class="c14" colspan="3" rowspan="1">
 <p class="c19">
 <span class="c2">মোট আয় =</span>
 </p>
 </td>
-<td class="c14" colspan="3" rowspan="1">
+<td class="c14" colspan="1" rowspan="1">
 <p class="c19">
 <span class="c2">{{baitulmalTotalIncome}}/=</span>
 </p>
@@ -4749,12 +4759,12 @@ export const templateHtml = `
 </td>
 </tr>
 <tr class="c20">
-<td class="c14" colspan="1" rowspan="1">
+<td class="c14" colspan="3" rowspan="1">
 <p class="c19">
 <span class="c2">গত মাসের উদ্বৃত্ত =</span>
 </p>
 </td>
-<td class="c14" colspan="3" rowspan="1">
+<td class="c14" colspan="1" rowspan="1">
 <p class="c19">
 <span class="c2">{{baitulmalPreviousSurplus}}</span>
 </p>
@@ -4771,12 +4781,12 @@ export const templateHtml = `
 </td>
 </tr>
 <tr class="c20">
-<td class="c14" colspan="1" rowspan="1">
+<td class="c14" colspan="3" rowspan="1">
 <p class="c19">
 <span class="c2">সর্বমোট আয় =</span>
 </p>
 </td>
-<td class="c14" colspan="3" rowspan="1">
+<td class="c14" colspan="1" rowspan="1">
 <p class="c19">
 <span class="c2">{{baitulmalGrandTotalIncome}}/=</span>
 </p>
