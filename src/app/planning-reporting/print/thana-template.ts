@@ -1,42 +1,38 @@
 export const templateStyle = `
-
-body { color: #000; background-color: #fff; }
+body { color: #000; background-color: #fff; font-family: "Noto Serif Bengali"; }
 ol{margin:0;padding:0}
-.border-table { table-layout: fixed; width: 100% !important; border-collapse: collapse; margin-bottom: 10px; }
-.border-table td, .border-table th { border: 1pt solid #000; padding: 2.2pt; text-align: center; vertical-align: middle; word-wrap: break-word; font-family: "Tiro Bangla"; font-size: 8pt; }
-.border-table .text-left { text-align: left; }
-.border-table .text-right { text-align: right; }
-.section-title { font-family: "Tiro Bangla"; font-size: 10pt; font-weight: bold; margin-bottom: 5px; margin-top: 10px; }
-.note-text { font-family: "Tiro Bangla"; font-size: 8pt; font-style: italic; }
-.c1{padding-top:0pt;padding-bottom:0pt;line-height:1.13;text-align:center}
-.c13{padding-top:0pt;padding-bottom:0pt;line-height:1.13;text-align:left}
-.c19{padding-top:0pt;padding-bottom:0pt;line-height:1.13;text-align:right}
-.c11{orphans:2;widows:2}
-.c30{font-weight:700;text-decoration:none;vertical-align:baseline;font-size:12pt;font-family:"Tiro Bangla";font-style:normal}
-.c42{font-size:8pt;font-weight:700;font-family:"Tiro Bangla"}
-.c3{font-weight:400;text-decoration:none;vertical-align:baseline;font-size:8pt;font-family:"Tiro Bangla";font-style:normal}
-.c48{font-size:8pt;font-family:"Tiro Bangla";font-style:italic;font-weight:400}
-.c128{border:none;vertical-align:middle;width:258pt}
-.c123{border-bottom:1pt dashed #000;vertical-align:middle;width:516.1pt}
-
+table { width: 100% !important; border-collapse: collapse; }
+table td, table th {
+  padding: 2px 4px !important;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: nowrap;
+  vertical-align: middle !important;
+  font-size: 8pt;
+}
+.section-title { font-size: 9pt; font-weight: 600; margin-top: 10px; margin-bottom: 5px; }
+.note-text { font-size: 8pt; font-style: italic; font-weight: normal; }
+.c13 { text-align: left; }
+.c19 { text-align: right; }
+.c1 { text-align: center; }
 `;
 
 export const templateHtml = `
 
-<p class="c1 c11"><span class="c132 c146">&#2476;&#2495;&#2488;&#2478;&#2495;&#2482;&#2509;&#2482;&#2494;&#2489;&#2495;&#2480; &#2480;&#2494;&#2489;&#2478;&#2494;&#2472;&#2495;&#2480; &#2480;&#2494;&#2489;&#2495;&#2478;</span></p>
-<p class="c1 c11"><span class="c30">থানা &#2488;&#2434;&#2455;&#2464;&#2472;&#2503;&#2480;</span></p>
+<p class="c1 c11"><span class="c132 c146">বিসমিল্লাহির রাহমানির রাহিম</span></p>
+<p class="c1 c11"><span class="c30">থানা সংগঠনের</span></p>
 <p class="c1 c11"><span class="c30">মাসিক/ত্রৈমাসিক/ষাণ্মাসিক/নয় মাসিক/বার্ষিক রিপোর্ট</span></p>
 
 <table class="c18" style="margin-bottom: 10px;">
   <tr>
-    <td class="c128"><p class="c13"><span class="c42">মাস:</span><span class="c3">&nbsp;{{month}}</span></p></td>
-    <td class="c128"><p class="c19"><span class="c42">সন:</span><span class="c3">&nbsp;{{year}}</span></p></td>
+    <td class="c128"><p class="c13"><span class="c42">মাস:</span><span class="c3"> {{month}}</span></p></td>
+    <td class="c128"><p class="c19"><span class="c42">সন:</span><span class="c3"> {{year}}</span></p></td>
   </tr>
   <tr>
-    <td class="c128"><p class="c13"><span class="c42">থানা/বিভাগের নাম:</span><span class="c3">&nbsp;{{orgName}} ঢাকা মহানগরী দক্ষিণ</span></p></td>
+    <td class="c128"><p class="c13"><span class="c42">থানা/বিভাগের নাম:</span><span class="c3"> {{orgName}} ঢাকা মহানগরী দক্ষিণ</span></p></td>
   </tr>
   <tr>
-    <td class="c123" colspan="2"><p class="c13"><span class="c42">আমীর/সভাপতির নাম:</span><span class="c3">&nbsp;{{president}}</span></p></td>
+    <td class="c123" colspan="2"><p class="c13"><span class="c42">আমীর/সভাপতির নাম:</span><span class="c3"> {{president}}</span></p></td>
   </tr>
 </table>
 
@@ -45,7 +41,7 @@ export const templateHtml = `
 </p>
 
 <p class="c13 c11">
-  <span class="c3">ক) জনসাধারণের মাঝে সর্বমোট দাওয়াত প্রদান সংখ্যা* : {{totalReachedCount}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;মোট জনসংখ্যা* : {{totalPopulation}}</span><br/>
+  <span class="c3">ক) জনসাধারণের মাঝে সর্বমোট দাওয়াত প্রদান সংখ্যা* : {{totalReachedCount}}        মোট জনসংখ্যা* : {{totalPopulation}}</span><br/>
   <span class="c3">টার্গেট (মাসিক/ত্রৈমাসিক/ষাণ্মাসিক/নয় মাসিক/বার্ষিক): {{totalDawahTarget}}</span><br/>
   <span class="c48">*দাওয়াত ও তাবলীগের ‘ক’ এর অধীনে ক্রমিক ১-৪ নং পর্যন্ত দাওয়াত প্রদানের মোট সংখ্যা যোগ করে এখানে বসাতে হবে।</span>
 </p>
@@ -59,7 +55,7 @@ export const templateHtml = `
     <td style="width:22%">মহিলা</td>
   </tr>
   <tr>
-    <td class="text-left">কতটি গ্রুপ বের হয়েছে</td>
+    <td class="text-left">গ্রুপ বের হয়েছে</td>
     <td>{{groupDawahCountTotal}}</td>
     <td>{{groupDawahCountMale}}</td>
     <td>{{groupDawahCountFemale}}</td>
@@ -71,13 +67,13 @@ export const templateHtml = `
     <td>{{groupDawahParticipantsFemale}}</td>
   </tr>
   <tr>
-    <td class="text-left">কতজনের নিকট দাওয়াত পৌঁছানো হয়েছে</td>
+    <td class="text-left">ের নিকট দাওয়াত পৌঁছানো হয়েছে</td>
     <td>{{groupDawahReachedTotal}}</td>
     <td>{{groupDawahReachedMale}}</td>
     <td>{{groupDawahReachedFemale}}</td>
   </tr>
   <tr>
-    <td class="text-left">কতজন সহযোগী সদস্য হয়েছেন</td>
+    <td class="text-left">সহযোগী সদস্য হয়েছেন</td>
     <td>{{groupDawahNewAssociateTotal}}</td>
     <td>{{groupDawahNewAssociateMale}}</td>
     <td>{{groupDawahNewAssociateFemale}}</td>
@@ -105,7 +101,7 @@ export const templateHtml = `
     <td>{{personalDawahKarmiFemaleTotal}}</td>
   </tr>
   <tr>
-    <td class="text-left">কতজন ব্যক্তিগতভাবে দাওয়াতি কাজ করেছেন</td>
+    <td class="text-left">ব্যক্তিগতভাবে দাওয়াতি কাজ করেছেন</td>
     <td>{{personalDawahRokonMaleWorked}}</td>
     <td>{{personalDawahKarmiMaleWorked}}</td>
     <td>{{personalDawahRokonFemaleWorked}}</td>
@@ -120,13 +116,13 @@ export const templateHtml = `
     <td style="width:22%">মহিলা</td>
   </tr>
   <tr>
-    <td class="text-left">কতজনের নিকট দাওয়াত পৌঁছানো হয়েছে</td>
+    <td class="text-left">ের নিকট দাওয়াত পৌঁছানো হয়েছে</td>
     <td>{{personalDawahReachedTotal}}</td>
     <td>{{personalDawahReachedMale}}</td>
     <td>{{personalDawahReachedFemale}}</td>
   </tr>
   <tr>
-    <td class="text-left">কতজন সহযোগী সদস্য হয়েছেন</td>
+    <td class="text-left">সহযোগী সদস্য হয়েছেন</td>
     <td>{{personalDawahAssociateTotal}}</td>
     <td>{{personalDawahAssociateMale}}</td>
     <td>{{personalDawahAssociateFemale}}</td>
@@ -142,13 +138,13 @@ export const templateHtml = `
     <td style="width:22%">মহিলা</td>
   </tr>
   <tr>
-    <td class="text-left">কতজনের নিকট দাওয়াত পৌঁছানো হয়েছে</td>
+    <td class="text-left">ের নিকট দাওয়াত পৌঁছানো হয়েছে</td>
     <td>{{generalMeetingReachedTotal}}</td>
     <td>{{generalMeetingReachedMale}}</td>
     <td>{{generalMeetingReachedFemale}}</td>
   </tr>
   <tr>
-    <td class="text-left">কতজন সহযোগী সদস্য হয়েছেন</td>
+    <td class="text-left">সহযোগী সদস্য হয়েছেন</td>
     <td>{{generalMeetingNewAssociateTotal}}</td>
     <td>{{generalMeetingNewAssociateMale}}</td>
     <td>{{generalMeetingNewAssociateFemale}}</td>
@@ -161,8 +157,8 @@ export const templateHtml = `
     <td style="width:28%" class="text-left">বিবরণ</td>
     <td style="width:18%">মোট গ্রুপ সংখ্যা</td>
     <td style="width:18%">মোট অংশগ্রহণকারীর সংখ্যা</td>
-    <td style="width:18%">মোট কতজনের নিকট দাওয়াত পৌঁছানো হয়েছে</td>
-    <td style="width:18%">মোট কতজন সহযোগী সদস্য হয়েছেন</td>
+    <td style="width:18%">মোট ের নিকট দাওয়াত পৌঁছানো হয়েছে</td>
+    <td style="width:18%">মোট সহযোগী সদস্য হয়েছেন</td>
   </tr>
   <tr>
     <td class="text-left">গণসংযোগ দশক/পক্ষ (পুরুষ/মহিলা)</td>
@@ -221,7 +217,7 @@ export const templateHtml = `
     <td>মহিলা</td>
   </tr>
   <tr>
-    <td class="text-left">কতজন কুরআন শিক্ষা প্রদান করেছেন</td>
+    <td class="text-left">কুরআন শিক্ষা প্রদান করেছেন</td>
     <td>{{quranTeacherRokonMale}}</td>
     <td>{{quranTeacherRokonFemale}}</td>
     <td>{{quranTeacherKarmiMale}}</td>
@@ -232,7 +228,7 @@ export const templateHtml = `
     <td>{{quranGroupStudents}}</td>
   </tr>
   <tr>
-    <td class="text-left">কতজনকে কুরআন শিক্ষা প্রদান করা হয়েছে</td>
+    <td class="text-left">কে কুরআন শিক্ষা প্রদান করা হয়েছে</td>
     <td>{{quranReachedRokonMale}}</td>
     <td>{{quranReachedRokonFemale}}</td>
     <td>{{quranReachedKarmiMale}}</td>
@@ -245,9 +241,9 @@ export const templateHtml = `
 </table>
 <table class="border-table">
   <tr>
-    <td>মোট কতজন সহীহ তিলাওয়াত শিখেছেন(পু/ম)</td>
-    <td>মোট কতজনের নিকট দাওয়াত পৌঁছানো হয়েছে(পু/ম)</td>
-    <td>মোট কতজন সহযোগী সদস্য হয়েছেন (পু/ম)</td>
+    <td>মোট সহীহ তিলাওয়াত শিখেছেন(পু/ম)</td>
+    <td>মোট ের নিকট দাওয়াত পৌঁছানো হয়েছে(পু/ম)</td>
+    <td>মোট সহযোগী সদস্য হয়েছেন (পু/ম)</td>
   </tr>
   <tr>
     <td>{{quranSahihLearnedMale}}/{{quranSahihLearnedFemale}}</td>
@@ -283,14 +279,14 @@ export const templateHtml = `
     <td class="text-left" style="width:30%">সরকারী হিসাবে মহল্লা সংখ্যা</td>
     <td style="width:10%">{{mahallaGovtCount}}</td>
     <td style="width:10%">বৃদ্ধি</td>
-    <td class="text-left" style="width:40%">মোট কতজনের নিকট দাওয়াত পৌঁছানো হয়েছে</td>
+    <td class="text-left" style="width:40%">মোট ের নিকট দাওয়াত পৌঁছানো হয়েছে</td>
     <td style="width:10%">{{mahallaReachedCount}}</td>
   </tr>
   <tr>
     <td class="text-left">মোট মহল্লা কমিটি সংখ্যা</td>
     <td>{{mahallaCommitteeCount}}</td>
     <td>{{mahallaCommitteeIncrease}}</td>
-    <td class="text-left">মোট কতজন সহযোগী সদস্য হয়েছেন</td>
+    <td class="text-left">মোট সহযোগী সদস্য হয়েছেন</td>
     <td>{{mahallaAssociateCount}}</td>
   </tr>
   <tr>
@@ -311,14 +307,14 @@ export const templateHtml = `
     <td style="width:10%">বৃদ্ধি</td>
   </tr>
   <tr>
-    <td class="text-left">কতজন যুবকের মাঝে দাওয়াত পৌঁছানো হয়েছে</td>
+    <td class="text-left">যুবকের মাঝে দাওয়াত পৌঁছানো হয়েছে</td>
     <td>{{youthReachedCount}}</td>
     <td class="text-left">যুব কমিটি</td>
     <td>{{youthCommitteeCount}}</td>
     <td>{{youthCommitteeIncrease}}</td>
   </tr>
   <tr>
-    <td class="text-left">কতজন যুবক সহযোগী সদস্য হয়েছেন</td>
+    <td class="text-left">যুবক সহযোগী সদস্য হয়েছেন</td>
     <td>{{youthAssociateCount}}</td>
     <td class="text-left">নতুন সমিতি/ক্লাব প্রতিষ্ঠা করা হয়েছে</td>
     <td>{{youthClubCount}}</td>
@@ -336,8 +332,8 @@ export const templateHtml = `
 <table class="border-table">
   <tr>
     <td class="text-left">শ্রেণী/পেশার বিবরণ</td>
-    <td>মোট কতজনের মাঝে দাওয়াত পৌঁছানো হয়েছে</td>
-    <td>মোট কতজন সহযোগী সদস্য হয়েছেন</td>
+    <td>মোট ের মাঝে দাওয়াত পৌঁছানো হয়েছে</td>
+    <td>মোট সহযোগী সদস্য হয়েছেন</td>
     <td>টার্গেট</td>
     <td>বাস্তবায়নের হার</td>
   </tr>
@@ -403,7 +399,7 @@ export const templateHtml = `
 <table class="border-table">
   <tr>
     <td>দাওয়াতি কাজে অংশগ্রহণকারী মোট পরিবার</td>
-    <td>মোট কতটি নতুন পরিবারে দাওয়াত পৌঁছানো হয়েছে</td>
+    <td>মোট নতুন পরিবারে দাওয়াত পৌঁছানো হয়েছে</td>
   </tr>
   <tr>
     <td>{{familyDawahParticipants}}</td>
@@ -465,7 +461,7 @@ export const templateHtml = `
   <tr>
     <td>প্রফেশনাল সাংস্কৃতিক টিম সংখ্যা</td>
     <td>মোট দাওয়াতি সাংস্কৃতিক প্রোগ্রাম সংখ্যা</td>
-    <td>মোট কতজনের নিকট দাওয়াত পৌঁছানো হয়েছে</td>
+    <td>মোট ের নিকট দাওয়াত পৌঁছানো হয়েছে</td>
   </tr>
   <tr>
     <td>{{culturalTeamCount}}</td>
@@ -1378,7 +1374,7 @@ export const templateHtml = `
     <td style="width:15%">মহানগরী/থানা পরিচালিত কোর্স সংখ্যা</td>
     <td style="width:15%">কোর্সসম্পন্নকারী সংখ্যা</td>
     <td style="width:25%">অন্য প্রতিষ্ঠান হতে কোর্স সম্পন্নকারী সংখ্যা</td>
-    <td style="width:15%">মোট কতজন</td>
+    <td style="width:15%">মোট </td>
   </tr>
 
   <tr>
@@ -1454,7 +1450,7 @@ export const templateHtml = `
     <td>মোট প্রশিক্ষিত সমাজকর্মী সংখ্যা</td>
     <td>এ বছর কয়টি প্রশিক্ষণ কোর্স হয়েছে</td>
     <td>টার্গেট</td>
-    <td>এ বছর কতজন প্রশিক্ষণ কোর্স সম্পন্ন করেছে</td>
+    <td>এ বছর প্রশিক্ষণ কোর্স সম্পন্ন করেছে</td>
     <td>টার্গেট</td>
   </tr>
   <tr>
@@ -1469,7 +1465,7 @@ export const templateHtml = `
 <p class="c13 c11 section-title">২. ব্যক্তিগত উদ্যোগে সামাজিক কাজ:</p>
 <table class="border-table">
   <tr>
-    <td class="text-left" style="width:50%">মোট কতজন জনশক্তি ব্যক্তিগত উদ্যোগে সামাজিক কাজ করেছেন</td>
+    <td class="text-left" style="width:50%">মোট জনশক্তি ব্যক্তিগত উদ্যোগে সামাজিক কাজ করেছেন</td>
     <td style="width:15%">{{socialPersonalWork}}</td>
     <td class="text-left" style="width:20%">মোট সেবা প্রাপ্ত সংখ্যা</td>
     <td style="width:15%">{{socialPersonalServiceCount}}</td>
@@ -1501,71 +1497,71 @@ export const templateHtml = `
   <tr>
     <td class="text-left">ছোট-ছোট উন্নয়নমূলক কাজ</td>
     <td>{{socialWorkLeft1}}</td>
-    <td class="text-left">শিক্ষা সহায়তা প্রদান (মোট কতজনকে)</td>
+    <td class="text-left">শিক্ষা সহায়তা প্রদান (মোট কে)</td>
     <td>{{socialWorkRight1}}</td>
   </tr>
   <tr>
-    <td class="text-left">সামাজিক অনুষ্ঠানে অংশগ্রহণ/সহায়তা প্রদান (মোট সংখ্যা/কতজনকে)</td>
+    <td class="text-left">সামাজিক অনুষ্ঠানে অংশগ্রহণ/সহায়তা প্রদান (মোট সংখ্যা/কে)</td>
     <td>{{socialWorkLeft2}}</td>
-    <td class="text-left">টেকনিক্যাল সেবা প্রদান (মোট কতজন/কতজনকে)</td>
+    <td class="text-left">টেকনিক্যাল সেবা প্রদান (মোট /কে)</td>
     <td>{{socialWorkRight2}}</td>
   </tr>
   <tr>
     <td class="text-left">সামাজিক বিরোধ মীমাংসা</td>
     <td>{{socialWorkLeft3}}</td>
-    <td class="text-left">অনলাইনের মাধ্যমে সেবা প্রদান (মোট কতজনকে)</td>
+    <td class="text-left">অনলাইনের মাধ্যমে সেবা প্রদান (মোট কে)</td>
     <td>{{socialWorkRight3}}</td>
   </tr>
   <tr>
-    <td class="text-left">মানবিক সহায়তা প্রদান (মোট কতজনকে)</td>
+    <td class="text-left">মানবিক সহায়তা প্রদান (মোট কে)</td>
     <td>{{socialWorkLeft4}}</td>
-    <td class="text-left">বৃক্ষরোপন (মোট কতটি)</td>
+    <td class="text-left">বৃক্ষরোপন (মোট )</td>
     <td>{{socialWorkRight4}}</td>
   </tr>
   <tr>
-    <td class="text-left">কর্জে হাসানা প্রদান (মোট কতজনকে)</td>
+    <td class="text-left">কর্জে হাসানা প্রদান (মোট কে)</td>
     <td>{{socialWorkLeft5}}</td>
     <td class="text-left">খাবার বিতরণ/ঈদ সামগ্রী</td>
     <td>{{socialWorkRight5}}</td>
   </tr>
   <tr>
-    <td class="text-left">পরিষ্কার-পরিচ্ছন্নতা/মশক নিধন অভিযান (মোট কতটি/সংখ্যা)</td>
+    <td class="text-left">পরিষ্কার-পরিচ্ছন্নতা/মশক নিধন অভিযান (মোট /সংখ্যা)</td>
     <td>{{socialWorkLeft6}}</td>
-    <td class="text-left">দুর্যোগকালীন সহায়তা প্রদান (মোট কতজনকে) খাবার বিতরণ</td>
+    <td class="text-left">দুর্যোগকালীন সহায়তা প্রদান (মোট কে) খাবার বিতরণ</td>
     <td>{{socialWorkRight6}}</td>
   </tr>
   <tr>
-    <td class="text-left">রোগীর পরিচর্যা/চিকিৎসা সহায়তা প্রদান (মোট কতজনকে)</td>
+    <td class="text-left">রোগীর পরিচর্যা/চিকিৎসা সহায়তা প্রদান (মোট কে)</td>
     <td>{{socialWorkLeft7}}</td>
-    <td class="text-left">ত্রাণ বিতরণ (মোট কতজনকে) বিতরণ</td>
+    <td class="text-left">ত্রাণ বিতরণ (মোট কে) বিতরণ</td>
     <td>{{socialWorkRight7}}</td>
   </tr>
   <tr>
-    <td class="text-left">স্বেচ্ছায় রক্ত দান (মোট কতজন/কতজনকে)</td>
+    <td class="text-left">স্বেচ্ছায় রক্ত দান (মোট /কে)</td>
     <td>{{socialWorkLeft8}}</td>
-    <td class="text-left">ভিন্নধর্মাবলম্বীদের সেবা প্রদান (মোট কতজন/কতজনকে)</td>
+    <td class="text-left">ভিন্নধর্মাবলম্বীদের সেবা প্রদান (মোট /কে)</td>
     <td>{{socialWorkRight8}}</td>
   </tr>
   <tr>
-    <td class="text-left">মাতৃত্বকালীন সময়ে সেবা প্রদান (মোট কতজনকে)</td>
+    <td class="text-left">মাতৃত্বকালীন সময়ে সেবা প্রদান (মোট কে)</td>
     <td>{{socialWorkLeft9}}</td>
-    <td class="text-left">মায়্যেতের গোসল (কতজনকে)</td>
+    <td class="text-left">মায়্যেতের গোসল (কে)</td>
     <td>{{socialWorkRight9}}</td>
   </tr>
   <tr>
-    <td class="text-left">নবজাতক গিফট প্রদান (মোট কতজনকে)</td>
+    <td class="text-left">নবজাতক গিফট প্রদান (মোট কে)</td>
     <td>{{socialWorkLeft10}}</td>
-    <td class="text-left">জানাযায় অংশগ্রহণ (মোট কতটি)</td>
+    <td class="text-left">জানাযায় অংশগ্রহণ (মোট )</td>
     <td>{{socialWorkRight10}}</td>
   </tr>
   <tr>
-    <td class="text-left">মেডিকেল ক্যাম্প (মোট কতটি)</td>
+    <td class="text-left">মেডিকেল ক্যাম্প (মোট )</td>
     <td>{{socialWorkLeft11}}</td>
-    <td class="text-left">স্বল্প পুঁজিতে কর্মসংস্থানের সহায়তা (কতজনকে)</td>
+    <td class="text-left">স্বল্প পুঁজিতে কর্মসংস্থানের সহায়তা (কে)</td>
     <td>{{socialWorkRight11}}</td>
   </tr>
   <tr>
-    <td class="text-left">ভ্রাম্যমান স্কুল/মক্তব চালু (মোট কতটি)</td>
+    <td class="text-left">ভ্রাম্যমান স্কুল/মক্তব চালু (মোট )</td>
     <td>{{socialWorkLeft12}}</td>
     <td class="text-left">অন্যান্য (বিস্তারিত আলাদা কাগজে দেয়া যাবে)</td>
     <td>{{socialWorkRight12}}</td>
@@ -1576,8 +1572,8 @@ export const templateHtml = `
   <tr>
     <td class="text-left">বিবরণ</td>
     <td>মোট সংখ্যা</td>
-    <td>কতটি সাংগঠনিক থানা/বিভাগে</td>
-    <td>কতটি সাংগঠনিক ওয়ার্ডে</td>
+    <td>সাংগঠনিক থানা/বিভাগে</td>
+    <td>সাংগঠনিক ওয়ার্ডে</td>
   </tr>
   <tr><td class="text-left">সামাজিক প্রতিষ্ঠান রয়েছে</td><td>{{socialInstTotalCount}}</td><td>{{socialInstThanaCount}}</td><td>{{socialInstWardCount}}</td></tr>
   <tr><td class="text-left">প্রতিষ্ঠানভিত্তিক সামাজিক কাজ হয়েছে</td><td>{{socialInstActiveCount}}</td><td>{{socialInstActiveThanaCount}}</td><td>{{socialInstActiveWardCount}}</td></tr>
@@ -1595,7 +1591,7 @@ export const templateHtml = `
   <tr>
     <td class="text-left">নার্স তৈরী সংখ্যা</td>
     <td>{{healthNurseCount}}</td>
-    <td class="text-left">মোট কতজন স্বাস্থ্যসেবা কাজে অংশগ্রহণ করেছেন</td>
+    <td class="text-left">মোট স্বাস্থ্যসেবা কাজে অংশগ্রহণ করেছেন</td>
     <td>{{healthParticipationCount}}</td>
   </tr>
   <tr>
@@ -1635,8 +1631,8 @@ export const templateHtml = `
 
 <table style="width: 100%; margin-bottom: 10px;">
   <tr>
-    <td style="font-family: 'Tiro Bangla'; font-weight: bold; width: 60%;">৭. সামাজিক কাজের জন্য মোট আয়ের কত শতাংশ ব্যয় হয়েছে :</td>
-    <td style="border: 1pt solid #000; text-align: center; font-family: 'Tiro Bangla'; font-weight: bold; padding: 5px; width: 40%;">{{socialExpensePercentage}}%</td>
+    <td style="; font-weight: bold; width: 60%;">৭. সামাজিক কাজের জন্য মোট আয়ের কত শতাংশ ব্যয় হয়েছে :</td>
+    <td style="border: 1pt solid #000; text-align: center; ; font-weight: bold; padding: 5px; width: 40%;">{{socialExpensePercentage}}%</td>
   </tr>
 </table>
 
@@ -1645,8 +1641,8 @@ export const templateHtml = `
 <table class="border-table">
   <tr>
     <td class="text-left" style="width:33%">যোগাযোগের ধরন</td>
-    <td style="width:33%">মোট কতজন যোগাযোগ করেছেন</td>
-    <td style="width:34%">মোট কতজনের সাথে যোগাযোগ হয়েছে</td>
+    <td style="width:33%">মোট যোগাযোগ করেছেন</td>
+    <td style="width:34%">মোট ের সাথে যোগাযোগ হয়েছে</td>
   </tr>
   <tr><td class="text-left">রাজনৈতিক ব্যক্তিবর্গ</td><td>{{politicalCommPoliticalCount}}</td><td>{{politicalCommPoliticalReached}}</td></tr>
   <tr><td class="text-left">প্রশাসনিক ব্যক্তিবর্গ</td><td>{{politicalCommAdminCount}}</td><td>{{politicalCommAdminReached}}</td></tr>
@@ -1795,7 +1791,7 @@ export const templateHtml = `
   <tr><td class="text-left">অন্যান্য- (বিস্তারিত আলাদা কাগজে দেয়া যাবে)</td><td>{{entOtherCount}}</td><td>{{entOtherIncrease}}</td><td>{{entOtherTarget}}</td></tr>
 </table>
 
-<div style="text-align: center; margin: 20px 0;"><span style="border: 1px solid #000; padding: 5px 20px; font-weight: bold; font-family: 'Tiro Bangla';">বায়তুলমাল</span></div>
+<div style="text-align: center; margin: 20px 0;"><span style="border: 1px solid #000; padding: 5px 20px; font-weight: bold; ;">বায়তুলমাল</span></div>
 
 <p class="c13 c11"><strong>ধার্যকৃত নিসাব: </strong>{{baitulmalDharjoNisab}}</p>
 <table class="border-table">
@@ -1979,8 +1975,9 @@ export const templateHtml = `
 <p class="c13 c11 section-title">থানা আমীরের মন্তব্য:</p>
 <p class="c13 c11" style="line-height: 1.5;">আলহামদুলিল্লাহ, সেশনের আরও একটি সাংগঠনিক মাস মার্চ ২০২৬ অতিক্রম করে রিপোর্টের উপর মন্তব্য লেখার সুযোগ পেয়েছি। পরিকল্পনার আলোকে টার্গেট ভিত্তিক কাজ করার চেষ্টা করা হয়েছে যতটুকু সম্ভব হয়েছে তা আল্লাহ তায়ালার একান্ত মেহেরবানী এবং অবাস্তবায়িত কাজের জন্য আল্লাহ রাব্বুল আলামিনের কাছে ক্ষমা প্রার্থনা করছি। রহমত, মাগফেরাত ও নাজাতের মাস মাহে রমজান ও ঈদুল ফিতর উদযাপনের ফলে সর্বস্তরের জনশক্তি সহ সাধারণ মানুষের মাঝে আল্লাহর ভয় ও সামাজিক সম্প্রীতি পরিলক্ষিত হয়েছে যার ফলশ্রুতিতে কাজের স্পৃহা বৃদ্ধি সহ সংগঠনের ভীত মজবুতীর জন্য আরও সক্রিয় হয়েছে। তবে মূল দায়িত্বশীল সহ জনশক্তির একাংশের কর্মক্ষেত্র কেন্দ্রিক অতি ব্যস্ততা এবং দুর্বলতার কারণও পরিকল্পনা বাস্তবায়নে কম দায়ী নয়। আশার দিক হল দায়িত্বশীল ভাইদের অব্যাহত প্রচেষ্টার ফলে কাজের গতি দিনদিন বৃদ্ধি পাচ্ছে, কম সক্রিয় ইউনিট সমূহ সক্রিয় করার চেষ্টা চলমান। তবে মান-উন্নয়ন সহ গৃহীত পরিকল্পনা বাস্তবায়ন ও পূর্ণ দায়িত্বানুভূতি নিয়ে কাজ করতে পারলে এলাকাটি ইসলামী আন্দোলনের দূর্বার ঘাটিতে পরিণত হবে ইনশাআল্লাহ। উর্ধ্বতন সংগঠনের তত্ত্বাবধান, পরামর্শ ও আল্লাহর সাহায্য ময়দানকে দ্বীনের জন্য আরও মজবুত ও গতিশীল করবে আল্লাহ রাব্বুল আলামিন আমাদের সকল ভুল ত্রুটি ক্ষমা করে তার দ্বীনের জন্য কদমকে মজবুত করে ময়দানে আরও বেশী অগ্রণী ভূমিকা পালন করার তাওফিক দান করুন আমীন।</p>
 
-<div style="margin-top: 50px; text-align: right; font-family: 'Tiro Bangla'; font-weight: bold;">
+<div style="margin-top: 50px; text-align: right; ; font-weight: bold;">
   স্বাক্ষর ও তারিখ
 </div>
 
 `;
+

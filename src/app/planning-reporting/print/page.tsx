@@ -6,6 +6,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { templateHtml, templateStyle } from './Template';
 import { templateHtml as thanaTemplateHtml, templateStyle as thanaTemplateStyle } from './thana-template';
 import { templateHtml as unitTemplateHtml, templateStyle as unitTemplateStyle } from './unit-template';
+import { templateHtml as wardTemplateHtml, templateStyle as wardTemplateStyle } from './ward-template';
 
 function ReportPrintContent() {
 	const searchParams = useSearchParams();
@@ -622,6 +623,9 @@ function ReportPrintContent() {
 	} else if (orgLevel === 'unit') {
 		activeTemplateHtml = unitTemplateHtml;
 		activeTemplateStyle = unitTemplateStyle;
+	} else if (orgLevel === 'ward') {
+		activeTemplateHtml = wardTemplateHtml;
+		activeTemplateStyle = wardTemplateStyle;
 	}
 
 	if (loading) return (
