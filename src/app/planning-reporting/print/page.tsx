@@ -259,10 +259,11 @@ function ReportPrintContent() {
 		const dawahPubKeys = [
 			'libraryCount', 'bookCount', 'bookDistributedCount',
 			'libraryIncrease', 'bookIncrease', 'bookDistributedIncrease',
-			'softCopyDistributed', 'unitCenterCount', 'unitBookDistributed',
-			'unitCenterIncrease', 'unitBookDistributedIncrease', 'dawatLinkDistributed',
+			'softCopyDistributed', 'softCopyIncrease', 'unitCenterCount', 'unitBookDistributed',
+			'unitCenterIncrease', 'unitBookDistributedIncrease', 'dawatLinkDistributed', 'dawatLinkIncrease',
 			'wardCenterCount', 'wardBookSold', 'wardCenterIncrease', 'wardBookSoldIncrease',
-			'sonarBanglaCount', 'sangramCount', 'prithibiCount'
+			'sonarBanglaCount', 'sangramCount', 'prithibiCount',
+			'libraryTarget', 'bookTarget', 'bookDistributedTarget'
 		];
 		dawahPubKeys.forEach(key => {
 			output = output.replace(new RegExp(`{{dawahPub${key.charAt(0).toUpperCase() + key.slice(1)}}}`, 'g'), toBengaliNumber(dawahPub[key]) || "০");
