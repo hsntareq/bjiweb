@@ -327,42 +327,79 @@ export const templateHtml = `
 <p class="c13 c11 section-title">■ সমাজ সংস্কার ও সমাজ সেবা: ১. ব্যক্তিগত উদ্যোগে সামাজিক কাজ:</p>
 <table class="border-table">
   <tr>
-    <td class="text-left">ব্যক্তিগত উদ্যোগে সামাজিক কাজ করেছেন এমন জনশক্তি</td><td style="width: 10%;">{{socialPersonalWorkerCount}}</td>
+    <td class="text-left">ব্যক্তিগত উদ্যোগে সামাজিক কাজ করেছেন এমন জনশক্তি</td><td style="width: 10%;">{{socialPersonalCount}}</td>
     <td class="text-left">সর্বমোট সেবাপ্রাপ্ত সংখ্যা</td><td style="width: 10%;">{{socialPersonalServiceCount}}</td>
   </tr>
   <tr>
-    <td class="text-left">স্বাস্থ্যসেবা কাজে অংশগ্রহণ করেছেন এমন জনশক্তি</td><td>{{socialHealthWorkerCount}}</td>
-    <td class="text-left">মোট সেবাপ্রাপ্ত সংখ্যা</td><td>{{socialHealthServiceCount}}</td>
+    <td class="text-left">স্বাস্থ্যকর্মী প্রশিক্ষণ প্রোগ্রামে মোট অংশগ্রহণকারী সংখ্যা</td><td>{{socialHealthTrainingCount}}</td>
+    <td class="text-left">স্বাস্থ্যসেবা কাজে অংশগ্রহণ করেছেন এমন জনশক্তি</td><td>{{socialHealthServiceCount}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">মোট সেবাপ্রাপ্ত সংখ্যা</td><td>{{socialHealthBeneficiaryCount}}</td>
+    <td colspan="2" style="border:none;"></td>
   </tr>
 </table>
 
 <p class="c13 c11 section-title">২. ইউনিটের উদ্যোগে সামাজিক কাজ:</p>
 <table class="border-table">
   <tr>
-    <td class="text-left">বিবরণ</td>
-    <td style="width: 10%;">সংখ্যা</td>
-    <td class="text-left">বিবরণ</td>
-    <td style="width: 10%;">সংখ্যা</td>
+    <td style="width:33%">সাধারণ সেবা টীম সংখ্যা</td>
+    <td style="width:33%">টেকনিক্যাল সেবা টীম সংখ্যা</td>
+    <td style="width:34%">স্বেচ্ছাসেবক টীম সংখ্যা</td>
   </tr>
   <tr>
-    <td class="text-left">সামাজিক অনুষ্ঠানে অংশগ্রহণ/সহায়তা প্রদান</td><td>{{socialUnitEventAtt}}</td>
-    <td class="text-left">মাতৃত্বকালীন সময়ে সেবা প্রদান/নবজাতক গিফট প্রদান</td><td>{{socialUnitMaternity}}</td>
+    <td>{{socialGeneralServiceTeamCount}}</td>
+    <td>{{socialTechnicalServiceTeamCount}}</td>
+    <td>{{socialVolunteerTeamCount}}</td>
+  </tr>
+</table>
+
+<table class="border-table">
+  <tr>
+    <td style="width:35%" class="text-left">বিবরণ</td>
+    <td style="width:15%">সংখ্যা</td>
+    <td style="width:35%" class="text-left">বিবরণ</td>
+    <td style="width:15%">সংখ্যা</td>
   </tr>
   <tr>
-    <td class="text-left">সামাজিক বিরোধ মীমাংসা/জনসচেতনতামূলক প্রোগ্রাম</td><td>{{socialUnitConflict}}</td>
-    <td class="text-left">রোগীর পরিচর্যা/চিকিৎসা সহায়তা প্রদান/স্বেচ্ছায় রক্তদান</td><td>{{socialUnitPatientCare}}</td>
+    <td class="text-left">ছোট-ছোট উন্নয়নমূলক কাজ</td><td>{{socialDevWork}}</td>
+    <td class="text-left">শিক্ষা সহায়তা প্রদান (মোট কে)</td><td>{{socialEducation}}</td>
   </tr>
   <tr>
-    <td class="text-left">মানবিক সহায়তা প্রদান/কর্জে হাসানা প্রদান</td><td>{{socialUnitHumanitarian}}</td>
-    <td class="text-left">মাইয়্যেতের গোসল/জানাযায় অংশগ্রহণ</td><td>{{socialUnitFuneral}}</td>
+    <td class="text-left">সামাজিক অনুষ্ঠানে অংশগ্রহণ/সহায়তা প্রদান (মোট সংখ্যা/কে)</td><td>{{socialSocialEvent}}</td>
+    <td class="text-left">টেকনিক্যাল সেবা প্রদান (মোট /কে)</td><td>{{socialTechnical}}</td>
   </tr>
   <tr>
-    <td class="text-left">টেকনিক্যাল সেবা প্রদান</td><td>{{socialUnitTech}}</td>
-    <td class="text-left">বৃক্ষরোপন (কতটি)</td><td>{{socialUnitTree}}</td>
+    <td class="text-left">মানবিগত সহায়তা / কর্জে হাসানা প্রদান (মোট কে)</td><td>{{socialHumanitarian}}</td>
+    <td class="text-left">অনলাইনের মাধ্যমে সেবা প্রদান (মোট কে)</td><td>{{socialOnline}}</td>
   </tr>
   <tr>
-    <td class="text-left">ভিন্নধর্মাবলম্বীদের সেবা</td><td>{{socialUnitOtherReligions}}</td>
-    <td class="text-left"></td><td></td>
+    <td class="text-left">পরিস্কার-পরিচ্ছন্নতা/মশক নিধন অভিযান (মোট /সংখ্যা)</td><td>{{socialCleaning}}</td>
+    <td class="text-left">বৃক্ষরোপন (মোট )</td><td>{{socialTrees}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">রোগীর পরিচর্চা / চিকিৎসা সহায়তা প্রদান (মোট কে)</td><td>{{socialMedical}}</td>
+    <td class="text-left">জনসচেতনতামূলক প্রোগ্রাম (মোট )</td><td>{{socialAwareness}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">স্বেচ্ছায় রক্ত দান (মোট /কে)</td><td>{{socialBlood}}</td>
+    <td class="text-left">দূর্যোগকালীন সহায়তা প্রদান (মোট কে)</td><td>{{socialDisaster}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">মাতৃত্বকালীন সময়ে সেবা প্রদান (মোট কে)</td><td>{{socialMaternity}}</td>
+    <td class="text-left">ত্রাণ বিতরণ (মোট কে)/ গোশত ভিতরন</td><td>{{socialRelief}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">নবজাতক গিফ্ট প্রদান (মোট কে)</td><td>{{socialNewborn}}</td>
+    <td class="text-left">ভিন্নধর্মাবলম্বীদের সেবা প্রদান (মোট /কে)</td><td>{{socialNonMuslim}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">ভ্রাম্যমান স্কুল/মক্তব চালু (মোট )</td><td>{{socialMaktub}}</td>
+    <td class="text-left">মাইয়্যেতের গোসল (কে)/জানাযায় অংশগ্রহণ (মোট )</td><td>{{socialBurial}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">অন্যান্য (বিস্তারিত আলাদা কাগজে দেয়া যাবে)</td><td>{{socialOthers}}</td>
+    <td class="text-left">স্বল্প পুঁজিতে কর্মসংস্ঠানের সহায়তা (কে)</td><td>{{socialEmployment}}</td>
   </tr>
 </table>
 
