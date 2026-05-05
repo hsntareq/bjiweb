@@ -1,0 +1,80 @@
+export const templateStyle = `
+body { color: #000; background-color: #fff; font-family: "Noto Serif Bengali"; }
+ol{margin:0;padding:0}
+table { width: 100% !important; border-collapse: collapse; }
+table td, table th {
+  padding: 2px 4px !important;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: nowrap;
+  vertical-align: middle !important;
+  font-size: 8pt;
+}
+.border-table td, .border-table th { border: 1pt solid #000; }
+.section-title { font-size: 9pt; font-weight: 600; margin-top: 10px; margin-bottom: 5px; }
+.note-text { font-size: 8pt; font-style: italic; font-weight: normal; }
+.text-left { text-align: left !important; }
+.text-right { text-align: right !important; }
+.text-center { text-align: center !important; }
+.c13 { text-align: left; }
+.c19 { text-align: right; }
+.c1 { text-align: center; }
+`;
+
+export const templateHtml = `
+
+<p class="c1 c11"><span class="c132 c146">বিসমিল্লাহির রাহমানির রাহিম</span></p>
+<p class="c1 c11"><span class="c30">থানা সংগঠনের</span></p>
+<p class="c1 c11"><span class="c30">মাসিক/ত্রৈমাসিক/ষাণ্মাসিক/নয় মাসিক/বার্ষিক রিপোর্ট</span></p>
+
+<table class="c18" style="margin-bottom: 10px;">
+  <tr>
+    <td class="c128"><p class="c13"><span class="c42">মাস:</span><span class="c3"> {{month}}</span></p></td>
+    <td class="c128"><p class="c19"><span class="c42">সন:</span><span class="c3"> {{year}}</span></p></td>
+  </tr>
+  <tr>
+    <td class="c128"><p class="c13"><span class="c42">থানা/বিভাগের নাম:</span><span class="c3"> {{orgName}} ঢাকা মহানগরী দক্ষিণ</span></p></td>
+  </tr>
+  <tr>
+    <td class="c123" colspan="2"><p class="c13"><span class="c42">আমীর/সভাপতির নাম:</span><span class="c3"> {{president}}</span></p></td>
+  </tr>
+</table>
+
+<p class="c13 c11" style="border-bottom: 1pt solid #000; margin-bottom: 5px;">
+  <span class="c42">দাওয়াত ও তাবলীগ :</span>
+</p>
+
+<p class="c13 c11">
+  <span class="c3">ক) জনসাধারণের মাঝে সর্বমোট দাওয়াত প্রদান সংখ্যা* : {{totalReachedCount}}        মোট জনসংখ্যা* : {{totalPopulation}}</span><br/>
+  <span class="c3">টার্গেট (মাসিক/ত্রৈমাসিক/ষাণ্মাসিক/নয় মাসিক/বার্ষিক): {{totalDawahTarget}}</span><br/>
+  <span class="c48">*দাওয়াত ও তাবলীগের ‘ক’ এর অধীনে ক্রমিক ১-৪ নং পর্যন্ত দাওয়াত প্রদানের মোট সংখ্যা যোগ করে এখানে বসাতে হবে।</span>
+</p>
+
+<p class="c13 c11 section-title">১. ইউনিটে নিয়মিত গ্রুপভিত্তিক দাওয়াত:</p>
+<table class="border-table">
+  <tr>
+    <td style="width:34%" class="text-left">বিবরণ</td>
+    <td style="width:22%">মোট</td>
+    <td style="width:22%">পুরুষ</td>
+    <td style="width:22%">মহিলা</td>
+  </tr>
+  <tr>
+    <td class="text-left">গ্রুপ বের হয়েছে</td>
+    <td>{{groupDawahCountTotal}}</td>
+    <td>{{groupDawahCountMale}}</td>
+    <td>{{groupDawahCountFemale}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">অংশগ্রহণকারীর সংখ্যা</td>
+    <td>{{groupDawahParticipantsTotal}}</td>
+    <td>{{groupDawahParticipantsMale}}</td>
+    <td>{{groupDawahParticipantsFemale}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">দাওয়াত পৌঁছানো হয়েছে</td>
+    <td>{{groupDawahReachedTotal}}</td>
+    <td>{{groupDawahReachedMale}}</td>
+    <td>{{groupDawahReachedFemale}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">সহযোগী সদস্য</td>

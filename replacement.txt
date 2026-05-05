@@ -1,0 +1,137 @@
+<table class="border-table">
+  <tr>
+    <td style="width:15%">বিভাগসমূহ</td>
+    <td style="width:15%">জনশক্তির ধরণ</td>
+    <td style="width:14%">বিগত সময়ের সংখ্যা</td>
+    <td style="width:14%">বর্তমান সংখ্যা</td>
+    <td style="width:14%">বৃদ্ধি</td>
+    <td style="width:14%">ঘাটতি</td>
+    <td style="width:14%">টার্গেট</td>
+  </tr>
+
+  <tr>
+    <td rowspan="3">শ্রম*</td>
+    <td class="text-left">সদস্য (রুকন)</td>
+    <td>{{laborRokonPrevious}}</td>
+    <td>{{laborRokonCurrent}}</td>
+    <td>{{laborRokonIncrease}}</td>
+    <td>{{laborRokonDeficit}}</td>
+    <td>{{laborRokonTarget}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">কর্মী</td>
+    <td>{{laborKarmiPrevious}}</td>
+    <td>{{laborKarmiCurrent}}</td>
+    <td>{{laborKarmiIncrease}}</td>
+    <td>{{laborKarmiDeficit}}</td>
+    <td>{{laborKarmiTarget}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">সহযোগী সদস্য</td>
+    <td>{{laborAssociatePrevious}}</td>
+    <td>{{laborAssociateCurrent}}</td>
+    <td>{{laborAssociateIncrease}}</td>
+    <td>{{laborAssociateDeficit}}</td>
+    <td>{{laborAssociateTarget}}</td>
+  </tr>
+  <tr>
+    <td rowspan="3">উলামা</td>
+    <td class="text-left">সদস্য (রুকন)</td>
+    <td>{{ulamaRokonPrevious}}</td>
+    <td>{{ulamaRokonCurrent}}</td>
+    <td>{{ulamaRokonIncrease}}</td>
+    <td>{{ulamaRokonDeficit}}</td>
+    <td>{{ulamaRokonTarget}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">কর্মী</td>
+    <td>{{ulamaKarmiPrevious}}</td>
+    <td>{{ulamaKarmiCurrent}}</td>
+    <td>{{ulamaKarmiIncrease}}</td>
+    <td>{{ulamaKarmiDeficit}}</td>
+    <td>{{ulamaKarmiTarget}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">সহযোগী সদস্য</td>
+    <td>{{ulamaAssociatePrevious}}</td>
+    <td>{{ulamaAssociateCurrent}}</td>
+    <td>{{ulamaAssociateIncrease}}</td>
+    <td>{{ulamaAssociateDeficit}}</td>
+    <td>{{ulamaAssociateTarget}}</td>
+  </tr>
+  <tr>
+    <td rowspan="3">পেশাজীবী</td>
+    <td class="text-left">সদস্য (রুকন)</td>
+    <td>{{proRokonPrevious}}</td>
+    <td>{{proRokonCurrent}}</td>
+    <td>{{proRokonIncrease}}</td>
+    <td>{{proRokonDeficit}}</td>
+    <td>{{proRokonTarget}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">কর্মী</td>
+    <td>{{proKarmiPrevious}}</td>
+    <td>{{proKarmiCurrent}}</td>
+    <td>{{proKarmiIncrease}}</td>
+    <td>{{proKarmiDeficit}}</td>
+    <td>{{proKarmiTarget}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">সহযোগী সদস্য</td>
+    <td>{{proAssociatePrevious}}</td>
+    <td>{{proAssociateCurrent}}</td>
+    <td>{{proAssociateIncrease}}</td>
+    <td>{{proAssociateDeficit}}</td>
+    <td>{{proAssociateTarget}}</td>
+  </tr>
+  <tr>
+    <td rowspan="3">যুব</td>
+    <td class="text-left">সদস্য (রুকন)</td>
+    <td>{{youthRokonPrevious}}</td>
+    <td>{{youthRokonCurrent}}</td>
+    <td>{{youthRokonIncrease}}</td>
+    <td>{{youthRokonDeficit}}</td>
+    <td>{{youthRokonTarget}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">কর্মী</td>
+    <td>{{youthKarmiPrevious}}</td>
+    <td>{{youthKarmiCurrent}}</td>
+    <td>{{youthKarmiIncrease}}</td>
+    <td>{{youthKarmiDeficit}}</td>
+    <td>{{youthKarmiTarget}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">সহযোগী সদস্য</td>
+    <td>{{youthAssociatePrevious}}</td>
+    <td>{{youthAssociateCurrent}}</td>
+    <td>{{youthAssociateIncrease}}</td>
+    <td>{{youthAssociateDeficit}}</td>
+    <td>{{youthAssociateTarget}}</td>
+  </tr>
+  <tr>
+    <td rowspan="3">ভিন্নধর্মাবলম্বী</td>
+    <td class="text-left">সদস্য (রুকন)</td>
+    <td>{{nonMuslimRokonPrevious}}</td>
+    <td>{{nonMuslimRokonCurrent}}</td>
+    <td>{{nonMuslimRokonIncrease}}</td>
+    <td>{{nonMuslimRokonDeficit}}</td>
+    <td>{{nonMuslimRokonTarget}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">কর্মী</td>
+    <td>{{nonMuslimKarmiPrevious}}</td>
+    <td>{{nonMuslimKarmiCurrent}}</td>
+    <td>{{nonMuslimKarmiIncrease}}</td>
+    <td>{{nonMuslimKarmiDeficit}}</td>
+    <td>{{nonMuslimKarmiTarget}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">সহযোগী সদস্য</td>
+    <td>{{nonMuslimAssociatePrevious}}</td>
+    <td>{{nonMuslimAssociateCurrent}}</td>
+    <td>{{nonMuslimAssociateIncrease}}</td>
+    <td>{{nonMuslimAssociateDeficit}}</td>
+    <td>{{nonMuslimAssociateTarget}}</td>
+  </tr>
+</table>

@@ -1,0 +1,236 @@
+<table class="border-table">
+  <tr>
+    <td style="width:12%">বিভাগসমূহ</td>
+    <td style="width:15%">অরুন</td>
+    <td style="width:12%">বিগত সময়ের সংখ্যা</td>
+    <td style="width:12%">বর্তমান সংখ্যা</td>
+    <td style="width:12%">বৃদ্ধি<br/>(মানোন্নয়ন/আগত)</td>
+    <td style="width:12%">ঘাটতি<br/>(মানোন্নয়ন/স্থানান্তর)</td>
+    <td style="width:12%">টার্গেট</td>
+    <td style="width:13%">বাস্তবায়নের হার</td>
+  </tr>
+
+  <tr>
+    <td rowspan="3">মহিলা</td>
+    <td class="text-left">সদস্য (রুকন)</td>
+    <td>{{divwomenRokonPrev}}</td>
+    <td>{{divwomenRokonCurrent}}</td>
+    <td>{{divwomenRokonIncrease}}</td>
+    <td>{{divwomenRokonDecrease}}</td>
+    <td>{{divwomenRokonTarget}}</td>
+    <td>{{divwomenRokonProgress}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">কর্মী</td>
+    <td>{{divwomenKarmiPrev}}</td>
+    <td>{{divwomenKarmiCurrent}}</td>
+    <td>{{divwomenKarmiIncrease}}</td>
+    <td>{{divwomenKarmiDecrease}}</td>
+    <td>{{divwomenKarmiTarget}}</td>
+    <td>{{divwomenKarmiProgress}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">সহযোগী সদস্য</td>
+    <td>{{divwomenAssociatePrev}}</td>
+    <td>{{divwomenAssociateCurrent}}</td>
+    <td>{{divwomenAssociateIncrease}}</td>
+    <td>{{divwomenAssociateDecrease}}</td>
+    <td>{{divwomenAssociateTarget}}</td>
+    <td>{{divwomenAssociateProgress}}</td>
+  </tr>
+  <tr>
+    <td rowspan="3">শ্রম*</td>
+    <td class="text-left">সদস্য (রুকন)</td>
+    <td>{{divlaborRokonPrev}}</td>
+    <td>{{divlaborRokonCurrent}}</td>
+    <td>{{divlaborRokonIncrease}}</td>
+    <td>{{divlaborRokonDecrease}}</td>
+    <td>{{divlaborRokonTarget}}</td>
+    <td>{{divlaborRokonProgress}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">কর্মী</td>
+    <td>{{divlaborKarmiPrev}}</td>
+    <td>{{divlaborKarmiCurrent}}</td>
+    <td>{{divlaborKarmiIncrease}}</td>
+    <td>{{divlaborKarmiDecrease}}</td>
+    <td>{{divlaborKarmiTarget}}</td>
+    <td>{{divlaborKarmiProgress}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">সহযোগী সদস্য</td>
+    <td>{{divlaborAssociatePrev}}</td>
+    <td>{{divlaborAssociateCurrent}}</td>
+    <td>{{divlaborAssociateIncrease}}</td>
+    <td>{{divlaborAssociateDecrease}}</td>
+    <td>{{divlaborAssociateTarget}}</td>
+    <td>{{divlaborAssociateProgress}}</td>
+  </tr>
+  <tr>
+    <td rowspan="3">উলামা</td>
+    <td class="text-left">সদস্য (রুকন)</td>
+    <td>{{divulamaRokonPrev}}</td>
+    <td>{{divulamaRokonCurrent}}</td>
+    <td>{{divulamaRokonIncrease}}</td>
+    <td>{{divulamaRokonDecrease}}</td>
+    <td>{{divulamaRokonTarget}}</td>
+    <td>{{divulamaRokonProgress}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">কর্মী</td>
+    <td>{{divulamaKarmiPrev}}</td>
+    <td>{{divulamaKarmiCurrent}}</td>
+    <td>{{divulamaKarmiIncrease}}</td>
+    <td>{{divulamaKarmiDecrease}}</td>
+    <td>{{divulamaKarmiTarget}}</td>
+    <td>{{divulamaKarmiProgress}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">সহযোগী সদস্য</td>
+    <td>{{divulamaAssociatePrev}}</td>
+    <td>{{divulamaAssociateCurrent}}</td>
+    <td>{{divulamaAssociateIncrease}}</td>
+    <td>{{divulamaAssociateDecrease}}</td>
+    <td>{{divulamaAssociateTarget}}</td>
+    <td>{{divulamaAssociateProgress}}</td>
+  </tr>
+  <tr>
+    <td rowspan="3">পেশাজীবী</td>
+    <td class="text-left">সদস্য (রুকন)</td>
+    <td>{{divprofessionalRokonPrev}}</td>
+    <td>{{divprofessionalRokonCurrent}}</td>
+    <td>{{divprofessionalRokonIncrease}}</td>
+    <td>{{divprofessionalRokonDecrease}}</td>
+    <td>{{divprofessionalRokonTarget}}</td>
+    <td>{{divprofessionalRokonProgress}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">কর্মী</td>
+    <td>{{divprofessionalKarmiPrev}}</td>
+    <td>{{divprofessionalKarmiCurrent}}</td>
+    <td>{{divprofessionalKarmiIncrease}}</td>
+    <td>{{divprofessionalKarmiDecrease}}</td>
+    <td>{{divprofessionalKarmiTarget}}</td>
+    <td>{{divprofessionalKarmiProgress}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">সহযোগী সদস্য</td>
+    <td>{{divprofessionalAssociatePrev}}</td>
+    <td>{{divprofessionalAssociateCurrent}}</td>
+    <td>{{divprofessionalAssociateIncrease}}</td>
+    <td>{{divprofessionalAssociateDecrease}}</td>
+    <td>{{divprofessionalAssociateTarget}}</td>
+    <td>{{divprofessionalAssociateProgress}}</td>
+  </tr>
+  <tr>
+    <td rowspan="3">যুব</td>
+    <td class="text-left">সদস্য (রুকন)</td>
+    <td>{{divyouthRokonPrev}}</td>
+    <td>{{divyouthRokonCurrent}}</td>
+    <td>{{divyouthRokonIncrease}}</td>
+    <td>{{divyouthRokonDecrease}}</td>
+    <td>{{divyouthRokonTarget}}</td>
+    <td>{{divyouthRokonProgress}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">কর্মী</td>
+    <td>{{divyouthKarmiPrev}}</td>
+    <td>{{divyouthKarmiCurrent}}</td>
+    <td>{{divyouthKarmiIncrease}}</td>
+    <td>{{divyouthKarmiDecrease}}</td>
+    <td>{{divyouthKarmiTarget}}</td>
+    <td>{{divyouthKarmiProgress}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">সহযোগী সদস্য</td>
+    <td>{{divyouthAssociatePrev}}</td>
+    <td>{{divyouthAssociateCurrent}}</td>
+    <td>{{divyouthAssociateIncrease}}</td>
+    <td>{{divyouthAssociateDecrease}}</td>
+    <td>{{divyouthAssociateTarget}}</td>
+    <td>{{divyouthAssociateProgress}}</td>
+  </tr>
+  <tr>
+    <td rowspan="3">সাহিত্য ও সংস্কৃতি</td>
+    <td class="text-left">সদস্য (রুকন)</td>
+    <td>{{divliteratureRokonPrev}}</td>
+    <td>{{divliteratureRokonCurrent}}</td>
+    <td>{{divliteratureRokonIncrease}}</td>
+    <td>{{divliteratureRokonDecrease}}</td>
+    <td>{{divliteratureRokonTarget}}</td>
+    <td>{{divliteratureRokonProgress}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">কর্মী</td>
+    <td>{{divliteratureKarmiPrev}}</td>
+    <td>{{divliteratureKarmiCurrent}}</td>
+    <td>{{divliteratureKarmiIncrease}}</td>
+    <td>{{divliteratureKarmiDecrease}}</td>
+    <td>{{divliteratureKarmiTarget}}</td>
+    <td>{{divliteratureKarmiProgress}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">সহযোগী সদস্য</td>
+    <td>{{divliteratureAssociatePrev}}</td>
+    <td>{{divliteratureAssociateCurrent}}</td>
+    <td>{{divliteratureAssociateIncrease}}</td>
+    <td>{{divliteratureAssociateDecrease}}</td>
+    <td>{{divliteratureAssociateTarget}}</td>
+    <td>{{divliteratureAssociateProgress}}</td>
+  </tr>
+  <tr>
+    <td rowspan="3">মিডিয়া</td>
+    <td class="text-left">সদস্য (রুকন)</td>
+    <td>{{divmediaRokonPrev}}</td>
+    <td>{{divmediaRokonCurrent}}</td>
+    <td>{{divmediaRokonIncrease}}</td>
+    <td>{{divmediaRokonDecrease}}</td>
+    <td>{{divmediaRokonTarget}}</td>
+    <td>{{divmediaRokonProgress}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">কর্মী</td>
+    <td>{{divmediaKarmiPrev}}</td>
+    <td>{{divmediaKarmiCurrent}}</td>
+    <td>{{divmediaKarmiIncrease}}</td>
+    <td>{{divmediaKarmiDecrease}}</td>
+    <td>{{divmediaKarmiTarget}}</td>
+    <td>{{divmediaKarmiProgress}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">সহযোগী সদস্য</td>
+    <td>{{divmediaAssociatePrev}}</td>
+    <td>{{divmediaAssociateCurrent}}</td>
+    <td>{{divmediaAssociateIncrease}}</td>
+    <td>{{divmediaAssociateDecrease}}</td>
+    <td>{{divmediaAssociateTarget}}</td>
+    <td>{{divmediaAssociateProgress}}</td>
+  </tr>
+  <tr>
+    <td rowspan="3">ভিন্নধর্মাবলম্বী</td>
+    <td class="text-left">সদস্য (রুকন)</td>
+    <td>{{divnonMuslimRokonPrev}}</td>
+    <td>{{divnonMuslimRokonCurrent}}</td>
+    <td>{{divnonMuslimRokonIncrease}}</td>
+    <td>{{divnonMuslimRokonDecrease}}</td>
+    <td>{{divnonMuslimRokonTarget}}</td>
+    <td>{{divnonMuslimRokonProgress}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">কর্মী</td>
+    <td>{{divnonMuslimKarmiPrev}}</td>
+    <td>{{divnonMuslimKarmiCurrent}}</td>
+    <td>{{divnonMuslimKarmiIncrease}}</td>
+    <td>{{divnonMuslimKarmiDecrease}}</td>
+    <td>{{divnonMuslimKarmiTarget}}</td>
+    <td>{{divnonMuslimKarmiProgress}}</td>
+  </tr>
+  <tr>
+    <td class="text-left">সহযোগী সদস্য</td>
+    <td>{{divnonMuslimAssociatePrev}}</td>
+    <td>{{divnonMuslimAssociateCurrent}}</td>
+    <td>{{divnonMuslimAssociateIncrease}}</td>
+    <td>{{divnonMuslimAssociateDecrease}}</td>
+    <td>{{divnonMuslimAssociateTarget}}</td>
+    <td>{{divnonMuslimAssociateProgress}}</td>
+  </tr></table>
