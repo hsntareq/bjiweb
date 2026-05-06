@@ -27,6 +27,7 @@ interface OrgOption {
   id: number;
   name: string;
   type: string;
+  parentId?: number | null;
 }
 
 
@@ -52,7 +53,19 @@ function RankBadge({ rank, isAdv }: { rank: string; isAdv?: boolean }) {
   );
 }
 
-export default function UsersClient({ accessToken: initialToken = '' }: { accessToken?: string }) {
+export default function UsersClient({
+  accessToken: initialToken = '',
+  hasOrgAccess = false,
+  userOrgId = null,
+  userOrgType = null,
+  userParentOrgId = null,
+}: {
+  accessToken?: string;
+  hasOrgAccess?: boolean;
+  userOrgId?: number | null;
+  userOrgType?: string | null;
+  userParentOrgId?: number | null;
+}) {
   const { data: session } = useSession();
   const [fallbackToken, setFallbackToken] = useState<string | null>(null);
 
@@ -60,6 +73,7 @@ export default function UsersClient({ accessToken: initialToken = '' }: { access
     organizationId: number | null;
     orgType: string | null;
     orgName: string | null;
+    parentOrgId: number | null;
   } | null>(null);
   
   const [availableOrgs, setAvailableOrgs] = useState<OrgOption[]>([]);
@@ -143,6 +157,7 @@ export default function UsersClient({ accessToken: initialToken = '' }: { access
             organizationId: data.organizationId,
             orgType: data.orgType,
             orgName: data.orgName,
+            parentOrgId: data.parentOrgId,
           });
           setSelectedOrgId(data.organizationId);
           setSelectedLevel(data.orgType);
@@ -161,7 +176,7 @@ export default function UsersClient({ accessToken: initialToken = '' }: { access
       if (!token) return;
       
       try {
-        const res = await fetch(`${API_URL}/organization/hierarchy/tree`, {
+        const res = await fetch(`${API_URL}/organization/hierarchy/tree?global=true`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) {
@@ -210,7 +225,7 @@ export default function UsersClient({ accessToken: initialToken = '' }: { access
   const flattenOrgs = (orgs: any[]): OrgOption[] => {
     let result: OrgOption[] = [];
     for (const org of orgs) {
-      result.push({ id: org.id, name: org.name, type: org.type });
+      result.push({ id: org.id, name: org.name, type: org.type, parentId: org.parentId || org.parent?.id });
       if (org.children?.length > 0) {
         result = result.concat(flattenOrgs(org.children));
       }
@@ -224,8 +239,19 @@ export default function UsersClient({ accessToken: initialToken = '' }: { access
     if (!userContext?.orgType) return levelOptions;
     const userLevelIndex = levelOptions.indexOf(userContext.orgType);
     if (userLevelIndex === -1) return levelOptions;
+    // Non-authorized: locked to their own level only
+    if (!hasOrgAccess) return [userContext.orgType];
+    // Authorized: can browse from their level downwards
     return levelOptions.slice(userLevelIndex);
-  }, [userContext?.orgType]);
+  }, [userContext?.orgType, hasOrgAccess]);
+
+  // For non-authorized users: sibling orgs = orgs at same level with same parent
+  const filteredOrgOptions = useMemo(() => {
+    const orgsAtLevel = availableOrgs.filter(o => o.type === selectedLevel);
+    if (hasOrgAccess || !userContext?.parentOrgId) return orgsAtLevel;
+    // Restrict to siblings: same parent as the user's org
+    return orgsAtLevel.filter(o => (o as any).parentId === userContext.parentOrgId);
+  }, [availableOrgs, selectedLevel, hasOrgAccess, userContext?.parentOrgId]);
 
   // Filter child org users by search
   const filteredChildUsers = userData.childOrgUsers.filter(u => 
@@ -257,15 +283,21 @@ export default function UsersClient({ accessToken: initialToken = '' }: { access
               value={selectedLevel}
               onChange={(e) => {
                 setSelectedLevel(e.target.value);
-                setSelectedOrgId(null); // Reset org selection
+                setSelectedOrgId(null);
               }}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              disabled={!hasOrgAccess}
+              className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                !hasOrgAccess ? 'bg-gray-50 cursor-not-allowed text-gray-500' : ''
+              }`}
             >
               <option value="">Select level...</option>
               {filteredLevelOptions.map(l => (
                 <option key={l} value={l}>{l}</option>
               ))}
             </select>
+            {!hasOrgAccess && (
+              <p className="text-xs text-gray-400 mt-1">Locked to your organization level</p>
+            )}
           </div>
 
           <div>
@@ -277,12 +309,15 @@ export default function UsersClient({ accessToken: initialToken = '' }: { access
               disabled={!selectedLevel}
             >
               <option value="">Select organization...</option>
-              {availableOrgs
-                .filter(o => o.type === selectedLevel)
-                .map(o => (
-                  <option key={o.id} value={o.id}>{o.name}</option>
-                ))}
+              {filteredOrgOptions.map(o => (
+                <option key={o.id} value={o.id}>{o.name}</option>
+              ))}
             </select>
+            {!hasOrgAccess && filteredOrgOptions.length > 0 && (
+              <p className="text-xs text-gray-400 mt-1">
+                Showing {filteredOrgOptions.length} organization{filteredOrgOptions.length > 1 ? 's' : ''} in your area
+              </p>
+            )}
           </div>
         </div>
       </div>

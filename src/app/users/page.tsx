@@ -19,7 +19,13 @@ export default async function UsersPage() {
                     <p className="text-gray-400 text-sm mt-1">Manage all users, their responsibilities, and statuses.</p>
                 </div>
 
-                <UsersClient accessToken={(session as any)?.accessToken || ''} />
+                <UsersClient
+                    accessToken={(session as any)?.accessToken || ''}
+                    hasOrgAccess={authUser?.hasOrgAccess ?? false}
+                    userOrgId={authUser?.organizationId ?? null}
+                    userOrgType={authUser?.orgType ?? null}
+                    userParentOrgId={authUser?.parentOrgId ?? null}
+                />
             </main>
         </div>
     );
