@@ -28,6 +28,7 @@ interface OrgOption {
   name: string;
   type: string;
   parentId?: number | null;
+  parentName?: string | null;
 }
 
 
@@ -259,12 +260,18 @@ export default function UsersClient({
     fetchUsers();
   }, [selectedOrgId, selectedLevel, getToken]);
 
-  const flattenOrgs = (orgs: any[]): OrgOption[] => {
+  const flattenOrgs = (orgs: any[], parentName: string | null = null): OrgOption[] => {
     let result: OrgOption[] = [];
     for (const org of orgs) {
-      result.push({ id: org.id, name: org.name, type: org.type, parentId: org.parentId || org.parent?.id });
+      result.push({ 
+        id: org.id, 
+        name: org.name, 
+        type: org.type, 
+        parentId: org.parentId || org.parent?.id,
+        parentName: parentName
+      });
       if (org.children?.length > 0) {
-        result = result.concat(flattenOrgs(org.children));
+        result = result.concat(flattenOrgs(org.children, org.name));
       }
     }
     return result;
@@ -360,7 +367,9 @@ export default function UsersClient({
             >
               <option value="">Select organization...</option>
               {filteredOrgOptions.map(o => (
-                <option key={o.id} value={o.id}>{o.name}</option>
+                <option key={o.id} value={o.id}>
+                  {o.name} {o.parentName ? `(${o.parentName})` : ''}
+                </option>
               ))}
             </select>
             {!hasOrgAccess && filteredOrgOptions.length > 0 && (
