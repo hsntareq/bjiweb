@@ -144,9 +144,26 @@ export default function UsersClient({
                 organizationId: data.organizationId,
                 orgType: data.orgType,
                 orgName: data.orgName,
+                parentOrgId: data.parentOrgId,
               });
-              setSelectedOrgId(data.organizationId);
-              setSelectedLevel(data.orgType);
+              
+              if (hasOrgAccess) {
+                const levels = ['CENTRAL', 'DIVISION', 'CITY', 'THANA', 'WARD', 'UNIT'];
+                const userLevelIndex = levels.indexOf(data.orgType);
+                const nextLevelIndex = userLevelIndex !== -1 && userLevelIndex + 1 < levels.length 
+                  ? userLevelIndex + 1 
+                  : userLevelIndex;
+                
+                setSelectedLevel(levels[nextLevelIndex]);
+                if (nextLevelIndex !== userLevelIndex) {
+                  setSelectedOrgId(null);
+                } else {
+                  setSelectedOrgId(data.organizationId);
+                }
+              } else {
+                setSelectedLevel(data.orgType);
+                setSelectedOrgId(data.organizationId);
+              }
             }
             return;
           }
@@ -159,8 +176,24 @@ export default function UsersClient({
             orgName: data.orgName,
             parentOrgId: data.parentOrgId,
           });
-          setSelectedOrgId(data.organizationId);
-          setSelectedLevel(data.orgType);
+          
+          if (hasOrgAccess) {
+            const levels = ['CENTRAL', 'DIVISION', 'CITY', 'THANA', 'WARD', 'UNIT'];
+            const userLevelIndex = levels.indexOf(data.orgType);
+            const nextLevelIndex = userLevelIndex !== -1 && userLevelIndex + 1 < levels.length 
+              ? userLevelIndex + 1 
+              : userLevelIndex;
+            
+            setSelectedLevel(levels[nextLevelIndex]);
+            if (nextLevelIndex !== userLevelIndex) {
+              setSelectedOrgId(null);
+            } else {
+              setSelectedOrgId(data.organizationId);
+            }
+          } else {
+            setSelectedLevel(data.orgType);
+            setSelectedOrgId(data.organizationId);
+          }
         }
       } catch (err) {
         console.error("Failed to fetch me", err);
@@ -240,19 +273,33 @@ export default function UsersClient({
     if (!userContext?.orgType) return levelOptions;
     const userLevelIndex = levelOptions.indexOf(userContext.orgType);
     if (userLevelIndex === -1) return levelOptions;
+    
     // Non-authorized: locked to their own level only
     if (!hasOrgAccess) return [userContext.orgType];
-    // Authorized: can browse from their level downwards
-    return levelOptions.slice(userLevelIndex);
+    
+    // Authorized: locked to direct child level (if exists, else their own level)
+    const nextLevelIndex = userLevelIndex + 1 < levelOptions.length ? userLevelIndex + 1 : userLevelIndex;
+    return [levelOptions[nextLevelIndex]];
   }, [userContext?.orgType, hasOrgAccess]);
 
-  // For non-authorized users: sibling orgs = orgs at same level with same parent
   const filteredOrgOptions = useMemo(() => {
     const orgsAtLevel = availableOrgs.filter(o => o.type === selectedLevel);
-    if (hasOrgAccess || !userContext?.parentOrgId) return orgsAtLevel;
-    // Restrict to siblings: same parent as the user's org
-    return orgsAtLevel.filter(o => (o as any).parentId === userContext.parentOrgId);
-  }, [availableOrgs, selectedLevel, hasOrgAccess, userContext?.parentOrgId]);
+    
+    if (!userContext) return orgsAtLevel;
+
+    if (!hasOrgAccess) {
+      if (!userContext.parentOrgId) return orgsAtLevel;
+      // Restrict to siblings: same parent as the user's org
+      return orgsAtLevel.filter(o => o.parentId === userContext.parentOrgId);
+    } else {
+      // Authorized: restrict to direct children
+      if (selectedLevel === userContext.orgType) {
+        return orgsAtLevel.filter(o => o.id === userContext.organizationId);
+      } else {
+        return orgsAtLevel.filter(o => o.parentId === userContext.organizationId);
+      }
+    }
+  }, [availableOrgs, selectedLevel, hasOrgAccess, userContext]);
 
   // Filter child org users by search
   const filteredChildUsers = userData.childOrgUsers.filter(u => 
