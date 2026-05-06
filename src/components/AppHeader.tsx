@@ -9,20 +9,25 @@ import ModuleSwitcher from "./ModuleSwitcher";
 
 interface AppHeaderProps {
 	session: Session | null;
+	hasOrgAccess?: boolean;
 }
 
-const navLinks = [
-	{ href: "/organization", icon: Package, label: "Organizations" },
-	{ href: "/global-organizations", icon: Globe, label: "Global Orgs" },
-	{ href: "/users", icon: Users, label: "Users" },
-	{ href: "/planning-reporting", icon: BarChart2, label: "Planning & Reporting" },
+const ALL_NAV_LINKS = [
+	{ href: "/organization", icon: Package, label: "Organizations", requiresOrgAccess: true },
+	{ href: "/global-organizations", icon: Globe, label: "Global Orgs", requiresOrgAccess: true },
+	{ href: "/users", icon: Users, label: "Users", requiresOrgAccess: false },
+	{ href: "/planning-reporting", icon: BarChart2, label: "Planning & Reporting", requiresOrgAccess: true },
 ];
 
-export default function AppHeader({ session }: AppHeaderProps) {
+export default function AppHeader({ session, hasOrgAccess = false }: AppHeaderProps) {
 	const userInitial = (session?.user?.email || session?.user?.name || "U")[0].toUpperCase();
 	const userDisplay = session?.user?.email || session?.user?.name || "";
 	const [menuOpen, setMenuOpen] = useState(false);
 	const menuRef = useRef<HTMLDivElement>(null);
+
+	const navLinks = ALL_NAV_LINKS.filter(
+		(link) => !link.requiresOrgAccess || hasOrgAccess
+	);
 
 	useEffect(() => {
 		function handleClickOutside(e: MouseEvent) {
@@ -38,7 +43,7 @@ export default function AppHeader({ session }: AppHeaderProps) {
 		<header className="bg-white border-b border-gray-100 sticky top-0 z-50">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
 				{/* Logo */}
-				<Link href="/organization" className="flex items-center gap-3 shrink-0">
+				<Link href={hasOrgAccess ? "/organization" : "/dashboard"} className="flex items-center gap-3 shrink-0">
 					<div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center shadow-md shadow-indigo-400/20 shrink-0">
 						<Package className="w-4 h-4 text-white" />
 					</div>

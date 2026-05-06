@@ -1,6 +1,5 @@
-import { authOptions } from "@/lib/auth-options";
 import { Award, BookOpen, CheckCircle, Clock, Zap } from "lucide-react";
-import { getServerSession } from "next-auth";
+import { getSessionAndAuthUser } from "@/lib/getAuthUser";
 import { redirect } from "next/navigation";
 import AppHeader from "@/components/AppHeader";
 
@@ -36,7 +35,7 @@ const courses = [
 ];
 
 export default async function MyLearningPage() {
-	const session = await getServerSession(authOptions);
+	const { session, authUser } = await getSessionAndAuthUser();
 	if (!session) {
 		redirect("/login");
 	}
@@ -44,7 +43,7 @@ export default async function MyLearningPage() {
 	return (
 		<div className="min-h-screen bg-gray-50">
 			{/* Header */}
-			<AppHeader session={session} />
+			<AppHeader session={session} hasOrgAccess={authUser?.hasOrgAccess ?? false} />
 
 			{/* Content */}
 			<main className="max-w-6xl mx-auto px-6 py-10">

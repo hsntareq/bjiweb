@@ -1,6 +1,5 @@
-import { authOptions } from "@/lib/auth-options";
 import { ChevronRight, Clock, Package, ShoppingCart, TrendingUp } from "lucide-react";
-import { getServerSession } from "next-auth";
+import { getSessionAndAuthUser } from "@/lib/getAuthUser";
 import { redirect } from "next/navigation";
 import AppHeader from "@/components/AppHeader";
 
@@ -12,14 +11,14 @@ const stats = [
 ];
 
 export default async function DashboardPage() {
-	const session = await getServerSession(authOptions);
+	const { session, authUser } = await getSessionAndAuthUser();
 	if (!session) {
 		redirect("/login");
 	}
 	return (
 		<div className="min-h-screen bg-gray-50">
 			{/* Header */}
-			<AppHeader session={session} />
+			<AppHeader session={session} hasOrgAccess={authUser?.hasOrgAccess ?? false} />
 
 			{/* Content */}
 			<main className="max-w-6xl mx-auto px-6 py-10">

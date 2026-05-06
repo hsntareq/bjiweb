@@ -1,17 +1,16 @@
-import { authOptions } from "@/lib/auth-options";
-import { getServerSession } from "next-auth";
+import { getSessionAndAuthUser } from "@/lib/getAuthUser";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import AppHeader from "@/components/AppHeader";
 import PersonalReportTabs from "./PersonalReportTabs";
 
 export default async function PersonalReportPage() {
-	const session = await getServerSession(authOptions);
+	const { session, authUser } = await getSessionAndAuthUser();
 	if (!session) redirect("/login");
 
 	return (
 		<div className="min-h-screen bg-gray-50">
-			<AppHeader session={session} />
+			<AppHeader session={session} hasOrgAccess={authUser?.hasOrgAccess ?? false} />
 
 			<main className="max-w-6xl mx-auto px-0 sm:px-6 py-10">
 				<div className="mb-8 px-6 sm:px-0">
