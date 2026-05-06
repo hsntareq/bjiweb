@@ -1,7 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { Loader, User, Search, ChevronDown, Building2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { isTokenExpired } from '../../lib/getAuthToken';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 interface UserData {
   id: number;
@@ -48,7 +52,10 @@ function RankBadge({ rank, isAdv }: { rank: string; isAdv?: boolean }) {
   );
 }
 
-export default function UsersClient({ accessToken = '' }: { accessToken?: string }) {
+export default function UsersClient({ accessToken: initialToken = '' }: { accessToken?: string }) {
+  const { data: session } = useSession();
+  const [fallbackToken, setFallbackToken] = useState<string | null>(null);
+
   const [userContext, setUserContext] = useState<{
     organizationId: number | null;
     orgType: string | null;
@@ -67,16 +74,71 @@ export default function UsersClient({ accessToken = '' }: { accessToken?: string
   const [showCurrentOrg, setShowCurrentOrg] = useState(true);
   const [showChildOrgs, setShowChildOrgs] = useState(true);
 
+  const refreshBackendToken = useCallback(async (): Promise<string | null> => {
+    const provider = (session as any)?.provider;
+    const googleId = (session as any)?.googleId;
+    const email = session?.user?.email;
+    if (provider !== "google" || !googleId || !email) return null;
+    try {
+      const res = await fetch(`${API_URL}/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ googleId, email }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const nextToken = data.access_token;
+        if (nextToken) {
+          setFallbackToken(nextToken);
+          return nextToken;
+        }
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  }, [session]);
+
+  const getToken = useCallback(async (): Promise<string | null> => {
+    const token = fallbackToken || (session as any)?.accessToken || initialToken;
+    if (!token || isTokenExpired(token)) {
+      const refreshed = await refreshBackendToken();
+      if (refreshed) return refreshed;
+    }
+    return token;
+  }, [fallbackToken, session, initialToken, refreshBackendToken]);
+
   // Fetch user context on mount
   useEffect(() => {
-    if (!accessToken) return;
-    
-    fetch('http://localhost:3001/auth/me', {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    })
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (data) {
+    async function fetchMe() {
+      const token = await getToken();
+      if (!token) return;
+      
+      try {
+        const res = await fetch(`${API_URL}/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.status === 401) {
+          const refreshedToken = await refreshBackendToken();
+          if (refreshedToken) {
+            const retryRes = await fetch(`${API_URL}/auth/me`, {
+              headers: { Authorization: `Bearer ${refreshedToken}` },
+            });
+            if (retryRes.ok) {
+              const data = await retryRes.json();
+              setUserContext({
+                organizationId: data.organizationId,
+                orgType: data.orgType,
+                orgName: data.orgName,
+              });
+              setSelectedOrgId(data.organizationId);
+              setSelectedLevel(data.orgType);
+            }
+            return;
+          }
+        }
+        if (res.ok) {
+          const data = await res.json();
           setUserContext({
             organizationId: data.organizationId,
             orgType: data.orgType,
@@ -85,26 +147,34 @@ export default function UsersClient({ accessToken = '' }: { accessToken?: string
           setSelectedOrgId(data.organizationId);
           setSelectedLevel(data.orgType);
         }
-      })
-      .catch(() => {});
-  }, [accessToken]);
+      } catch (err) {
+        console.error("Failed to fetch me", err);
+      }
+    }
+    fetchMe();
+  }, [getToken, refreshBackendToken]);
 
   // Fetch available orgs (org hierarchy)
   useEffect(() => {
-    if (!accessToken) return;
-    
-    fetch('http://localhost:3001/organization/hierarchy/tree', {
-      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
-    })
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (data) {
+    async function fetchOrgs() {
+      const token = await getToken();
+      if (!token) return;
+      
+      try {
+        const res = await fetch(`${API_URL}/organization/hierarchy/tree`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
           const flattened = flattenOrgs(data);
           setAvailableOrgs(flattened);
         }
-      })
-      .catch(() => {});
-  }, [accessToken]);
+      } catch (err) {
+        console.error("Failed to fetch orgs", err);
+      }
+    }
+    fetchOrgs();
+  }, [getToken]);
 
   // Fetch users when org selection changes
   useEffect(() => {
@@ -113,27 +183,29 @@ export default function UsersClient({ accessToken = '' }: { accessToken?: string
       return;
     }
 
-    setLoading(true);
-    fetch(
-      `http://localhost:3001/users/by-organization?orgId=${selectedOrgId}&level=${selectedLevel}`,
-      {
-        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
-      }
-    )
-      .then(r => {
-        if (!r.ok) throw new Error('Failed to fetch users');
-        return r.json();
-      })
-      .then(data => {
+    async function fetchUsers() {
+      const token = await getToken();
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `${API_URL}/users/by-organization?orgId=${selectedOrgId}&level=${selectedLevel}`,
+          {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          }
+        );
+        if (!res.ok) throw new Error('Failed to fetch users');
+        const data = await res.json();
         setUserData(data);
         setError(null);
-      })
-      .catch(err => {
+      } catch (err: any) {
         console.error('Error fetching users:', err);
         setError(err.message || 'Failed to load users');
-      })
-      .finally(() => setLoading(false));
-  }, [selectedOrgId, selectedLevel, accessToken]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchUsers();
+  }, [selectedOrgId, selectedLevel, getToken]);
 
   const flattenOrgs = (orgs: any[]): OrgOption[] => {
     let result: OrgOption[] = [];
@@ -147,6 +219,13 @@ export default function UsersClient({ accessToken = '' }: { accessToken?: string
   };
 
   const levelOptions = ['CENTRAL', 'DIVISION', 'CITY', 'THANA', 'WARD', 'UNIT'];
+
+  const filteredLevelOptions = useMemo(() => {
+    if (!userContext?.orgType) return levelOptions;
+    const userLevelIndex = levelOptions.indexOf(userContext.orgType);
+    if (userLevelIndex === -1) return levelOptions;
+    return levelOptions.slice(userLevelIndex);
+  }, [userContext?.orgType]);
 
   // Filter child org users by search
   const filteredChildUsers = userData.childOrgUsers.filter(u => 
@@ -183,7 +262,7 @@ export default function UsersClient({ accessToken = '' }: { accessToken?: string
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option value="">Select level...</option>
-              {levelOptions.map(l => (
+              {filteredLevelOptions.map(l => (
                 <option key={l} value={l}>{l}</option>
               ))}
             </select>

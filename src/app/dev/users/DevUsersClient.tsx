@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { Search, Loader, ChevronUp, ChevronDown, Building2, Phone, MapPin, Briefcase, X, Droplets } from 'lucide-react';
+import { Search, Loader, ChevronUp, ChevronDown, Building2, Phone, MapPin, Briefcase, X, Droplets, Home, Landmark } from 'lucide-react';
 
 interface UserRow {
   id: number;
@@ -17,6 +17,24 @@ interface UserRow {
   city: string | null;
   rank: string | null;
   isAdv: boolean;
+  monthlyBaitulmalAmount?: number;
+  yearlyDonationAmount?: number;
+  knowledgebaseId?: number;
+  academicQualifications?: any[];
+  address?: string;
+  nid?: string;
+  photo?: string;
+  jobTitle?: string;
+  jobOrganization?: string;
+  officeAddress?: string;
+  positions?: any[];
+  monthlyBaitulmalTarget?: number;
+  monthlyBaitulmalPaid?: number;
+  yearlyDonationTarget?: number;
+  yearlyDonationPaid?: number;
+  monthlyBaitulmalStatus?: string;
+  yearlyDonationRemaining?: string;
+  payments?: any[];
 }
 
 interface OrgOption {
@@ -116,8 +134,12 @@ function ProfilePopover({ user, anchorEl, onClose }: {
 
       {/* Row 1: Avatar + Name + Rank + Blood group */}
       <div className="flex items-start gap-3 mb-3">
-        <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm shrink-0">
-          {initials}
+        <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm shrink-0 overflow-hidden">
+          {user.photo ? (
+            <img src={user.photo} alt={user.fullname} className="w-full h-full object-cover" />
+          ) : (
+            initials
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <div className="font-semibold text-gray-900 truncate pr-4">{user.fullname || '—'}</div>
@@ -162,11 +184,127 @@ function ProfilePopover({ user, anchorEl, onClose }: {
 
       {/* Row 4: Thana + City */}
       {(user.thana || user.city) && (
-        <div className="flex items-center gap-2 text-sm text-gray-600">
+        <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
           <MapPin className="w-4 h-4 text-gray-400 shrink-0" />
           <span>
             {[user.thana, user.city].filter(Boolean).join(' · ')}
           </span>
+        </div>
+      )}
+
+      {/* Row 5: Home Address */}
+      {user.address && (
+        <div className="flex items-start gap-2 text-xs text-gray-500 mb-2">
+          <Home className="w-4 h-4 text-gray-400 shrink-0" />
+          <span className="italic">{user.address}</span>
+        </div>
+      )}
+
+      {/* Row 6: NID */}
+      {user.nid && (
+        <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
+          <span className="font-semibold text-gray-400 uppercase tracking-tighter text-[9px]">NID</span>
+          <span>{user.nid}</span>
+        </div>
+      )}
+
+      {/* Row 6b: Job / Profession */}
+      {user.jobTitle && (
+        <div className="flex items-center gap-2 text-xs mb-2">
+          <Landmark className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+          <span>
+            <span className="font-semibold text-gray-800">{user.jobTitle}</span>
+            {user.jobOrganization && (
+              <span className="text-gray-500"> at <span className="text-emerald-700 font-medium">{user.jobOrganization}</span></span>
+            )}
+          </span>
+        </div>
+      )}
+
+      {/* Row 6b: Office Address */}
+      {user.officeAddress && (
+        <div className="flex items-start gap-2 text-xs text-gray-500 mb-3">
+          <Building2 className="w-4 h-4 text-gray-400 shrink-0" />
+          <span className="italic text-indigo-600/70">{user.officeAddress}</span>
+        </div>
+      )}
+
+      {/* Row 7: Financials */}
+      {(user.monthlyBaitulmalTarget !== undefined || user.yearlyDonationTarget !== undefined) && (
+        <div className="bg-gray-50 rounded-lg p-2 mb-3 mt-1 text-[10px] uppercase tracking-tight font-bold">
+          <div className="flex justify-between items-center mb-1 border-b border-gray-100 pb-1">
+            <span className="text-gray-400">Monthly</span>
+            <span className="text-gray-900">
+              ৳{user.monthlyBaitulmalTarget} / <span className={user.monthlyBaitulmalStatus === 'Paid' ? 'text-emerald-600' : 'text-amber-600'}>{user.monthlyBaitulmalStatus}</span>
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-gray-400">Yearly</span>
+            <span className="text-gray-900">
+              ৳{user.yearlyDonationTarget}, <span className="text-red-500">Due: ৳{(user.yearlyDonationTarget || 0) - (user.yearlyDonationPaid || 0)}</span>
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Row 8: Qualifications */}
+      {user.academicQualifications && user.academicQualifications.length > 0 && (
+        <div className="mb-3">
+          <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Education</div>
+          {user.academicQualifications.map((q, i) => (
+            <div key={i} className="text-[10px] text-gray-600 leading-tight mb-1 last:mb-0">
+              <span className="font-bold text-gray-800">{q.year}: </span>
+              <span>{q.degree}</span>
+              {q.subject && <span className="text-gray-800"> in {q.subject}</span>}
+              {q.institution && <span className="text-gray-500"> from {q.institution}</span>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Row 9: Payment History */}
+      {user.payments && user.payments.length > 0 && (
+        <div className="mb-3 pt-2 border-t border-gray-100">
+          <div className="text-[10px] font-bold text-gray-400 uppercase mb-2">Payment History (Last 12 Months)</div>
+          <div className="max-h-[150px] overflow-y-auto pr-1">
+            <table className="w-full text-[10px]">
+              <thead>
+                <tr className="text-gray-400 border-b">
+                  <th className="text-left py-1 font-medium">Month/Year</th>
+                  <th className="text-right py-1 font-medium">Target</th>
+                  <th className="text-right py-1 font-medium">Paid</th>
+                  <th className="text-center py-1 font-medium">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {user.payments.slice(0, 12).map((p, i) => (
+                  <tr key={i} className="border-b border-gray-50 last:border-0">
+                    <td className="py-1 text-gray-600">{['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][p.month-1]} {p.year}</td>
+                    <td className="py-1 text-right text-gray-500">৳{p.allocatedNisab}</td>
+                    <td className="py-1 text-right font-medium text-gray-800">৳{p.totalPaid}</td>
+                    <td className="py-1 text-center">
+                      <span className={`px-1 rounded-sm ${p.totalPaid >= p.allocatedNisab ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'}`}>
+                        {p.totalPaid >= p.allocatedNisab ? 'Paid' : 'Due'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Row 10: Other Positions */}
+      {user.positions && user.positions.length > 1 && (
+        <div className="pt-2 border-t border-gray-100">
+          <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">All Roles</div>
+          {user.positions.map((p, i) => (
+            <div key={i} className="text-[10px] text-gray-500 mb-1 last:mb-0">
+              <span className="font-medium text-gray-700">{p.positionTitle}</span>
+              <span className="text-gray-400"> — {p.organizationName}</span>
+            </div>
+          ))}
         </div>
       )}
     </div>

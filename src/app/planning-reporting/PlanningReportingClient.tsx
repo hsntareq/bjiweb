@@ -9,9 +9,13 @@ import {
 	HeartHandshake,
 	Megaphone, MessagesSquare, Printer, Save, Scale, Users2, Wallet
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import toast from "react-hot-toast";
 import { getDawatTemplate, getOrgTemplate, getTrainingTemplate, getSocialWelfareTemplate, getStateReformTemplate, getBaitulmalTemplate, getRemarkCommentTemplate, OrgLevel } from "./templates";
+import { useSession } from "next-auth/react";
+import { isTokenExpired } from "../../lib/getAuthToken";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 type Organization = { id: number; name: string; type: string; children?: Organization[] };
 
@@ -40,7 +44,9 @@ const emptyCompReport = {
 	remarks: {}
 };
 
-export default function PlanningReportingClient({ accessToken }: { accessToken: string }) {
+export default function PlanningReportingClient({ accessToken: initialToken }: { accessToken: string }) {
+	const { data: session } = useSession();
+	const [fallbackToken, setFallbackToken] = useState<string | null>(null);
 		const [year, setYear] = useState(new Date().getFullYear());
 	const [month, setMonth] = useState(new Date().getMonth() + 1);
 	const [organizations, setOrganizations] = useState<{ id: number, name: string, type: string }[]>([]);
@@ -113,12 +119,19 @@ const monthNames = [
 		"July", "August", "September", "October", "November", "December"
 	];
 
-	const flattenOrganizations = (orgs: Organization[]): { id: number, name: string, type: string }[] => {
-		let result: { id: number, name: string, type: string }[] = [];
+	const flattenOrganizations = (orgs: Organization[], parentId: number | null = null): any[] => {
+		let result: any[] = [];
 		for (const org of orgs) {
-			result.push({ id: org.id, name: org.name, type: org.type });
-			if (org.children && org.children.length > 0) {
-				result = result.concat(flattenOrganizations(org.children));
+			const children = org.children || [];
+			result.push({ 
+				id: org.id, 
+				name: org.name, 
+				type: org.type, 
+				parentId,
+				childIds: children.map(c => c.id)
+			});
+			if (children.length > 0) {
+				result = result.concat(flattenOrganizations(children, org.id));
 			}
 		}
 		return result;
@@ -138,14 +151,65 @@ const monthNames = [
 		}
 	}, [selectedOrgId, isMounted]);
 
+	const refreshBackendToken = useCallback(async (): Promise<string | null> => {
+		const provider = (session as any)?.provider;
+		const googleId = (session as any)?.googleId;
+		const email = session?.user?.email;
+		if (provider !== "google" || !googleId || !email) return null;
+		try {
+			const res = await fetch(`${API_URL}/auth/google`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ googleId, email }),
+			});
+			if (res.ok) {
+				const data = await res.json();
+				const nextToken = data.access_token;
+				if (nextToken) {
+					setFallbackToken(nextToken);
+					return nextToken;
+				}
+			}
+			return null;
+		} catch {
+			return null;
+		}
+	}, [session]);
+
+	const getToken = useCallback(async (): Promise<string | null> => {
+		const token = fallbackToken || (session as any)?.accessToken || initialToken;
+		if (!token || isTokenExpired(token)) {
+			const refreshed = await refreshBackendToken();
+			if (refreshed) return refreshed;
+		}
+		return token;
+	}, [fallbackToken, session, initialToken, refreshBackendToken]);
+
 	useEffect(() => {
 		const fetchOrgs = async () => {
+			const token = await getToken();
+			if (!token) return;
+			
 			try {
-				const response = await fetch('http://localhost:3001/organization/hierarchy/tree', {
-					headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+				const response = await fetch(`${API_URL}/organization/hierarchy/tree`, {
+					headers: { Authorization: `Bearer ${token}` },
 				});
 				if (response.status === 401 || response.status === 403) {
-					console.error("Unauthorized access to organizations");
+					const refreshedToken = await refreshBackendToken();
+					if (refreshedToken) {
+						const retryRes = await fetch(`${API_URL}/organization/hierarchy/tree`, {
+							headers: { Authorization: `Bearer ${refreshedToken}` },
+						});
+						if (retryRes.ok) {
+							const data = await retryRes.json();
+							const flatList = flattenOrganizations(data);
+							setOrganizations(flatList);
+							if (flatList.length > 0 && !selectedOrgId) {
+								setSelectedOrgId(flatList[0].id);
+							}
+						}
+						return;
+					}
 					window.location.href = "/login";
 					return;
 				}
@@ -165,16 +229,39 @@ const monthNames = [
 			}
 		};
 		fetchOrgs();
-	}, [accessToken]);
+	}, [getToken, refreshBackendToken]);
 
 	useEffect(() => {
-		if (!accessToken) return;
-		fetch('http://localhost:3001/auth/me', {
-			headers: { Authorization: `Bearer ${accessToken}` },
-		})
-			.then(r => r.ok ? r.json() : null)
-			.then(data => {
-				if (data) {
+		async function fetchMe() {
+			const token = await getToken();
+			if (!token) return;
+			
+			try {
+				const r = await fetch(`${API_URL}/auth/me`, {
+					headers: { Authorization: `Bearer ${token}` },
+				});
+				if (r.status === 401) {
+					const refreshedToken = await refreshBackendToken();
+					if (refreshedToken) {
+						const retryRes = await fetch(`${API_URL}/auth/me`, {
+							headers: { Authorization: `Bearer ${refreshedToken}` },
+						});
+						if (retryRes.ok) {
+							const data = await retryRes.json();
+							setUserContext({
+								organizationId: data.organizationId,
+								orgType: data.orgType,
+								orgName: data.orgName,
+								positionTitle: data.positionTitle,
+								parentOrgId: data.parentOrgId,
+								parentOrgType: data.parentOrgType,
+							});
+						}
+						return;
+					}
+				}
+				if (r.ok) {
+					const data = await r.json();
 					setUserContext({
 						organizationId: data.organizationId,
 						orgType: data.orgType,
@@ -189,20 +276,24 @@ const monthNames = [
 						window.history.replaceState({}, '', url.toString());
 					}
 				}
-			})
-			.catch(() => {});
-	}, [accessToken]);
+			} catch (err) {
+				console.error("Failed to fetch me", err);
+			}
+		}
+		fetchMe();
+	}, [getToken, refreshBackendToken]);
 
 	const isFuture = year > new Date().getFullYear() || (year === new Date().getFullYear() && month > new Date().getMonth() + 1);
 
 	// Access control: determine ownership and editor roles robustly
-	const selectedOrg = organizations.find(o => o.id === selectedOrgId);
+	const selectedOrg: any = organizations.find(o => o.id === selectedOrgId);
 	const userOrgId = userContext?.organizationId ?? null;
 	const userOwnsSelectedOrg = (userOrgId !== null) && Number(userOrgId) === Number(selectedOrgId);
 	const EDITOR_POSITIONS = ['president', 'secretary', 'office', 'office secretary'];
 	const userPosition = (userContext?.positionTitle ?? '').toString().toLowerCase();
 	const isEditor = userPosition && EDITOR_POSITIONS.includes(userPosition);
-	const canEdit = userOwnsSelectedOrg && !!isEditor && !isFuture;
+	const isChildOfUserOrg = selectedOrg?.parentId === Number(userOrgId);
+	const canEdit = (userOwnsSelectedOrg || isChildOfUserOrg) && !!isEditor && !isFuture;
 	// canView: any user who owns the org (any position) or is in a parent org
 	const isWardOrg = (userContext?.orgType ?? '').toUpperCase() === 'WARD';
 	const isParentOrgUser = userContext?.orgType != null && userContext.orgType !== 'WARD' && userContext.orgType !== 'UNIT';
@@ -211,16 +302,17 @@ const monthNames = [
 
 	const fetchData = async () => {
 		if (!selectedOrgId) return;
+		const token = await getToken();
 		// Clear stale data immediately so accordions show empty while loading
 		setCompReport(emptyCompReport);
 		setLoading(true);
 		try {
 			const [compRes, planRes] = await Promise.all([
-				fetch(`http://localhost:3001/comprehensive-report/organization/${selectedOrgId}?year=${year}&month=${month}`, {
-					headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+				fetch(`${API_URL}/comprehensive-report/organization/${selectedOrgId}?year=${year}&month=${month}`, {
+					headers: token ? { Authorization: `Bearer ${token}` } : {},
 				}),
-				fetch(`http://localhost:3001/monthly-plan?month=${year}-${String(month).padStart(2, '0')}`, {
-					headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+				fetch(`${API_URL}/monthly-plan?month=${year}-${String(month).padStart(2, '0')}`, {
+					headers: token ? { Authorization: `Bearer ${token}` } : {},
 				})
 			]);
 			if (compRes.status === 401 || compRes.status === 403) {
@@ -259,11 +351,12 @@ const monthNames = [
 			toast.error('Error: No organization selected!');
 			return;
 		}
+		const token = await getToken();
 		try {
 			setSaving(true);
-			const res = await fetch(`http://localhost:3001/comprehensive-report`, {
+			const res = await fetch(`${API_URL}/comprehensive-report`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json', ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+				headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
 				body: JSON.stringify({ organizationId: selectedOrgId, year, month, [section]: data })
 			});
 			if (res.status === 401 || res.status === 403) {
@@ -294,11 +387,12 @@ const monthNames = [
 			toast.error('Error: No organization selected!');
 			return;
 		}
+		const token = await getToken();
 		try {
 			setSaving(true);
-			const res = await fetch(`http://localhost:3001/monthly-plan`, {
+			const res = await fetch(`${API_URL}/monthly-plan`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json', ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+				headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
 				body: JSON.stringify({ organizationId: selectedOrgId, year, month, ...plan })
 			});
 			if (res.status === 401 || res.status === 403) {
@@ -329,11 +423,12 @@ const monthNames = [
 			toast.error('Error: No organization selected!');
 			return;
 		}
+		const token = await getToken();
 		try {
 			setSaving(true);
-			const res = await fetch(`http://localhost:3001/comprehensive-report`, {
+			const res = await fetch(`${API_URL}/comprehensive-report`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json', ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+				headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
 				body: JSON.stringify({
 					organizationId: selectedOrgId,
 					year,
@@ -367,12 +462,13 @@ const monthNames = [
 	const resetSection = async (sections) => {
 		if (!selectedOrgId) { toast.error('Error: No organization selected!'); return; }
 		if (!window.confirm('Are you sure you want to reset this section? This cannot be undone.')) return;
+		const token = await getToken();
 		try {
 			setSaving(true);
 			const resetSections = Array.isArray(sections) ? sections : [sections];
-			const res = await fetch(`http://localhost:3001/comprehensive-report`, {
+			const res = await fetch(`${API_URL}/comprehensive-report`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json', ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+				headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
 				body: JSON.stringify({ organizationId: selectedOrgId, year, month, resetSections })
 			});
 			if (res.ok) {
@@ -387,6 +483,7 @@ const monthNames = [
 	const resetAll = async () => {
 		if (!selectedOrgId) { toast.error('Error: No organization selected!'); return; }
 		if (!window.confirm('Are you sure you want to reset ALL report data for this org/month? This cannot be undone.')) return;
+		const token = await getToken();
 		try {
 			setSaving(true);
 			const resetSections = [
@@ -395,9 +492,9 @@ const monthNames = [
 				'studentJoining','safar','donors','orgMeetings','unitOrganization','training','socialWork',
 				'political','finance','baitulmal','organizationData','dawah','miscellaneous','remarks'
 			];
-			const res = await fetch(`http://localhost:3001/comprehensive-report`, {
+			const res = await fetch(`${API_URL}/comprehensive-report`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json', ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+				headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
 				body: JSON.stringify({ organizationId: selectedOrgId, year, month, resetSections })
 			});
 			if (res.ok) { const text = await res.text(); const data = text ? JSON.parse(text) : null; if (data) setCompReport(data); toast.success('All report data reset successfully'); } else { const err = await res.text(); console.error('Reset all failed', err); toast.error('Reset failed'); }
@@ -488,7 +585,10 @@ const monthNames = [
                             <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v6h6"/></svg>
                             Reset All
                         </button>
-                        <button onClick={() => window.open(`/planning-reporting/print?orgId=${selectedOrgId}&year=${year}&month=${month}&orglevel=${(selectedOrg?.type || userContext?.orgType || 'ward').toLowerCase()}&token=${accessToken}`, '_blank')} className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-xl hover:bg-gray-900 transition-colors shadow-lg">
+                        <button onClick={async () => {
+							const token = await getToken();
+							window.open(`/planning-reporting/print?orgId=${selectedOrgId}&year=${year}&month=${month}&orglevel=${(selectedOrg?.type || userContext?.orgType || 'ward').toLowerCase()}&token=${token}`, '_blank');
+						}} className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-xl hover:bg-gray-900 transition-colors shadow-lg">
 						<Printer className="w-4 h-4 shrink-0" />
 						Print Report
 					</button>
