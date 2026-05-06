@@ -414,18 +414,8 @@ export default function UsersClient({
               });
               
               if (hasOrgAccess) {
-                const levels = ['CENTRAL', 'DIVISION', 'CITY', 'THANA', 'WARD', 'UNIT'];
-                const userLevelIndex = levels.indexOf(data.orgType);
-                const nextLevelIndex = userLevelIndex !== -1 && userLevelIndex + 1 < levels.length 
-                  ? userLevelIndex + 1 
-                  : userLevelIndex;
-                
-                setSelectedLevel(levels[nextLevelIndex]);
-                if (nextLevelIndex !== userLevelIndex) {
-                  setSelectedOrgId(null);
-                } else {
-                  setSelectedOrgId(data.organizationId);
-                }
+                setSelectedLevel(data.orgType);
+                setSelectedOrgId(null);
               } else {
                 setSelectedLevel(data.orgType);
                 setSelectedOrgId(data.organizationId);
@@ -434,6 +424,7 @@ export default function UsersClient({
             return;
           }
         }
+
         if (res.ok) {
           const data = await res.json();
           setUserContext({
@@ -444,18 +435,8 @@ export default function UsersClient({
           });
           
           if (hasOrgAccess) {
-            const levels = ['CENTRAL', 'DIVISION', 'CITY', 'THANA', 'WARD', 'UNIT'];
-            const userLevelIndex = levels.indexOf(data.orgType);
-            const nextLevelIndex = userLevelIndex !== -1 && userLevelIndex + 1 < levels.length 
-              ? userLevelIndex + 1 
-              : userLevelIndex;
-            
-            setSelectedLevel(levels[nextLevelIndex]);
-            if (nextLevelIndex !== userLevelIndex) {
-              setSelectedOrgId(null);
-            } else {
-              setSelectedOrgId(data.organizationId);
-            }
+            setSelectedLevel(data.orgType);
+            setSelectedOrgId(null);
           } else {
             setSelectedLevel(data.orgType);
             setSelectedOrgId(data.organizationId);
@@ -505,8 +486,9 @@ export default function UsersClient({
       const token = await getToken();
       setLoading(true);
       try {
+        const actualLevel = availableOrgs.find(o => o.id === selectedOrgId)?.type || selectedLevel;
         const res = await fetch(
-          `${API_URL}/users/by-organization?orgId=${selectedOrgId}&level=${selectedLevel}`,
+          `${API_URL}/users/by-organization?orgId=${selectedOrgId}&level=${actualLevel}`,
           {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
           }
@@ -552,25 +534,35 @@ export default function UsersClient({
     // Non-authorized: locked to their own level only
     if (!hasOrgAccess) return [userContext.orgType];
     
-    // Authorized: show all child levels (if exists, else their own level)
-    if (userLevelIndex + 1 < levelOptions.length) {
-      return levelOptions.slice(userLevelIndex + 1);
-    }
-    return [userContext.orgType];
+    // Authorized: show their own level and all child levels
+    return levelOptions.slice(userLevelIndex);
   }, [userContext?.orgType, hasOrgAccess]);
 
   const filteredOrgOptions = useMemo(() => {
+    if (!userContext) return [];
+    
+    // If an authorized user selects their own level, show direct children (Wards for Thana)
+    if (hasOrgAccess && selectedLevel === userContext.orgType) {
+      const levels = ['CENTRAL', 'DIVISION', 'CITY', 'THANA', 'WARD', 'UNIT'];
+      const userLevelIndex = levels.indexOf(userContext.orgType);
+      const childLevel = userLevelIndex !== -1 && userLevelIndex + 1 < levels.length 
+        ? levels[userLevelIndex + 1] 
+        : null;
+      
+      if (childLevel) {
+        return availableOrgs.filter(o => o.type === childLevel);
+      }
+    }
+
     const orgsAtLevel = availableOrgs.filter(o => o.type === selectedLevel);
     
-    if (!userContext) return orgsAtLevel;
-
     if (!hasOrgAccess) {
       if (!userContext.parentOrgId) return orgsAtLevel;
       // Restrict to siblings: same parent as the user's org
       return orgsAtLevel.filter(o => o.parentId === userContext.parentOrgId);
     } else {
       // Authorized: since availableOrgs only contains their descendants 
-      // (because we did not use global=true), we can just return all orgs at the selected level
+      // we can just return all orgs at the selected level
       return orgsAtLevel;
     }
   }, [availableOrgs, selectedLevel, hasOrgAccess, userContext]);
