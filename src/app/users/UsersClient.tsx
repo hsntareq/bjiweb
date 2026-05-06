@@ -195,6 +195,7 @@ export default function UsersClient({
   useEffect(() => {
     if (!selectedOrgId || !selectedLevel) {
       setUserData({ currentOrgUsers: [], childOrgUsers: [] });
+      setLoading(false);
       return;
     }
 
