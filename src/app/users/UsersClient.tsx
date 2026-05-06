@@ -209,7 +209,10 @@ export default function UsersClient({
       if (!token) return;
       
       try {
-        const res = await fetch(`${API_URL}/organization/hierarchy/tree?global=true`, {
+        const url = hasOrgAccess 
+          ? `${API_URL}/organization/hierarchy/tree`
+          : `${API_URL}/organization/hierarchy/tree?global=true`;
+        const res = await fetch(url, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) {
@@ -277,9 +280,11 @@ export default function UsersClient({
     // Non-authorized: locked to their own level only
     if (!hasOrgAccess) return [userContext.orgType];
     
-    // Authorized: locked to direct child level (if exists, else their own level)
-    const nextLevelIndex = userLevelIndex + 1 < levelOptions.length ? userLevelIndex + 1 : userLevelIndex;
-    return [levelOptions[nextLevelIndex]];
+    // Authorized: show all child levels (if exists, else their own level)
+    if (userLevelIndex + 1 < levelOptions.length) {
+      return levelOptions.slice(userLevelIndex + 1);
+    }
+    return [userContext.orgType];
   }, [userContext?.orgType, hasOrgAccess]);
 
   const filteredOrgOptions = useMemo(() => {
@@ -292,12 +297,9 @@ export default function UsersClient({
       // Restrict to siblings: same parent as the user's org
       return orgsAtLevel.filter(o => o.parentId === userContext.parentOrgId);
     } else {
-      // Authorized: restrict to direct children
-      if (selectedLevel === userContext.orgType) {
-        return orgsAtLevel.filter(o => o.id === userContext.organizationId);
-      } else {
-        return orgsAtLevel.filter(o => o.parentId === userContext.organizationId);
-      }
+      // Authorized: since availableOrgs only contains their descendants 
+      // (because we did not use global=true), we can just return all orgs at the selected level
+      return orgsAtLevel;
     }
   }, [availableOrgs, selectedLevel, hasOrgAccess, userContext]);
 
