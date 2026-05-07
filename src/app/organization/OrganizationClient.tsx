@@ -23,9 +23,17 @@ interface OrganizationClientProps {
 	userEmail?: string;
 	accessToken?: string;
 	isGlobal?: boolean;
+	userOrgId?: number | null;
+	userOrgType?: string | null;
 }
 
-export default function OrganizationClient({ userEmail = 'default', accessToken = '', isGlobal = false }: OrganizationClientProps) {
+export default function OrganizationClient({ 
+	userEmail = 'default', 
+	accessToken = '', 
+	isGlobal = false,
+	userOrgId = null,
+	userOrgType = null,
+}: OrganizationClientProps) {
 	const [organizations, setOrganizations] = useState<Organization[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null);
@@ -163,7 +171,7 @@ export default function OrganizationClient({ userEmail = 'default', accessToken 
 	const fetchHierarchy = async () => {
 		try {
 			setLoading(true);
-			const url = isGlobal ? 'http://localhost:3001/organization/hierarchy/tree?global=true' : 'http://localhost:3001/organization/hierarchy/tree';
+			const url = isGlobal ? 'http://localhost:3001/org-management/organizations/tree?global=true' : 'http://localhost:3001/org-management/organizations/tree';
 			const response = await fetch(url, {
 				headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
 			});
@@ -208,7 +216,7 @@ export default function OrganizationClient({ userEmail = 'default', accessToken 
 		}
 
 		try {
-			const response = await fetch(`http://localhost:3001/organization/${selectedOrganization.id}`, {
+			const response = await fetch(`http://localhost:3001/org-management/organizations/${selectedOrganization.id}`, {
 				method: 'DELETE',
 			});
 
@@ -226,7 +234,7 @@ export default function OrganizationClient({ userEmail = 'default', accessToken 
 
 	const handleFormSubmit = async (formData: any) => {
 		try {
-			let url = 'http://localhost:3001/organization';
+			let url = 'http://localhost:3001/org-management/organizations';
 			let method = 'POST';
 			const body: any = {
 				name: formData.name,
@@ -399,6 +407,9 @@ export default function OrganizationClient({ userEmail = 'default', accessToken 
 							onAddChild={handleAddChild}
 							childCount={selectedOrganization.children?.length || 0}
 							userEmail={userEmail}
+							accessToken={accessToken}
+							userOrgId={userOrgId}
+							userOrgType={userOrgType}
 						/>
 					) : (
 						<div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-12 text-center min-h-[32rem] flex flex-col justify-center">

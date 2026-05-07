@@ -11,7 +11,7 @@ export default async function OrganizationPage() {
   return (
     <div className="min-h-screen bg-white">
       <AppHeader session={session} />
-      <main className="max-w-6xl mx-auto px-6 py-10">
+      <main className="max-w-full mx-auto px-6 py-10">
         {!authUser?.hasOrgAccess ? (
           <AccessDenied />
         ) : (
@@ -22,7 +22,12 @@ export default async function OrganizationPage() {
               </h1>
               <p className="text-gray-400 text-sm mt-1">Manage the organizational hierarchy (Central, City, Thana, Ward, Unit)</p>
             </div>
-            <OrganizationClient userEmail={session.user?.email || 'default'} accessToken={(session as any)?.accessToken || ''} />
+            <OrganizationClient 
+              userEmail={session.user?.email || 'default'} 
+              accessToken={(session as any)?.accessToken || ''} 
+              userOrgId={authUser?.organizationId || null}
+              userOrgType={authUser?.orgType || null}
+            />
           </>
         )}
       </main>

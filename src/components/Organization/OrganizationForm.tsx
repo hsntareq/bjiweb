@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 interface Organization {
 	id: number;
 	name: string;
+	bnName?: string;
 	type: string;
 }
 
@@ -24,9 +25,20 @@ export const OrganizationForm: React.FC<OrganizationFormProps> = ({
 	parentOrganization,
 	organizationTypes,
 }) => {
+	const getNextLevelType = (parentType?: string) => {
+		switch (parentType) {
+			case 'CENTRAL': return 'CITY';
+			case 'CITY': return 'THANA';
+			case 'THANA': return 'WARD';
+			case 'WARD': return 'UNIT';
+			default: return 'CENTRAL';
+		}
+	};
+
 	const [formData, setFormData] = useState({
 		name: initialData?.name || '',
-		type: initialData?.type || parentOrganization?.type || 'CENTRAL',
+		bnName: (initialData as any)?.bnName || '',
+		type: initialData?.type || (parentOrganization ? getNextLevelType(parentOrganization.type) : 'CENTRAL'),
 		division: '',
 		city: '',
 		thana: '',
@@ -61,10 +73,10 @@ export const OrganizationForm: React.FC<OrganizationFormProps> = ({
 
 	const fields: Record<string, string[]> = {
 		CENTRAL: ['name'],
-		CITY: ['name', 'division'],
-		THANA: ['name', 'city'],
+		CITY: ['name'],
+		THANA: ['name'],
 		WARD: ['name', 'wardNumber'],
-		UNIT: ['name', 'unitName'],
+		UNIT: ['name'],
 	};
 
 	const visibleFields = fields[formData.type] || ['name'];
@@ -98,6 +110,21 @@ export const OrganizationForm: React.FC<OrganizationFormProps> = ({
 							required
 							className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
 							placeholder="Enter organization name"
+						/>
+					</div>
+
+					{/* Bengali Name Field */}
+					<div>
+						<label className="block text-sm font-medium text-gray-700 mb-1">
+							Organization Name (Bengali)
+						</label>
+						<input
+							type="text"
+							name="bnName"
+							value={formData.bnName}
+							onChange={handleChange}
+							className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-bengali"
+							placeholder="সংগঠনের নাম লিখুন"
 						/>
 					</div>
 

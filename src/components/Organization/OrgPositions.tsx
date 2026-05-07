@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Crown, Users, Shield, BookOpen, Loader, Plus, UserMinus, ChevronDown, Trash2 } from 'lucide-react';
+import { UserProfilePopover } from '../UserProfilePopover';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
@@ -89,9 +90,20 @@ interface Position {
 interface OrgPositionsProps {
   organizationId: number;
   organizationType: string;
+  organization?: any;
+  userOrgId?: number | null;
+  userOrgType?: string | null;
+  accessToken?: string;
 }
 
-export function OrgPositions({ organizationId, organizationType }: OrgPositionsProps) {
+export function OrgPositions({ 
+  organizationId, 
+  organizationType,
+  organization,
+  userOrgId,
+  userOrgType,
+  accessToken
+}: OrgPositionsProps) {
   const [positions, setPositions] = useState<Position[]>([]);
   const [members, setMembers] = useState<OrgMember[]>([]);
   const [loading, setLoading] = useState(true);
@@ -100,6 +112,26 @@ export function OrgPositions({ organizationId, organizationType }: OrgPositionsP
   const [newTitle, setNewTitle] = useState('');
   const [newUserId, setNewUserId] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const [popoverUser, setPopoverUser] = useState<any | null>(null);
+  const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
+
+  const handleNameClick = (e: React.MouseEvent<HTMLElement>, user: any) => {
+    e.stopPropagation();
+    if (popoverUser?.id === user.id) {
+      setPopoverUser(null);
+      setPopoverAnchor(null);
+    } else {
+      setPopoverUser(user);
+      setPopoverAnchor(e.currentTarget);
+    }
+  };
+
+  const isDirectChild = organization?.parentId === userOrgId;
+  const isOwnOrg = organizationId === userOrgId;
+  const isCentral = userOrgType === 'CENTRAL';
+  const canManage = isDirectChild || isOwnOrg || isCentral;
 
   const groups = POSITION_GROUPS[organizationType] ?? [];
 
@@ -128,51 +160,75 @@ export function OrgPositions({ organizationId, organizationType }: OrgPositionsP
   };
 
   const getAuthHeader = (): Record<string, string> => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    const token = accessToken || (typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null);
     return token ? { Authorization: `Bearer ${token}` } : {};
   };
 
   const seedPositions = async () => {
-    await fetch(`${API_URL}/org-positions/seed`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ organizationId, orgType: organizationType }),
-    });
-    await fetchAll();
+    if (submitting) return;
+    setSubmitting(true);
+    try {
+      await fetch(`${API_URL}/org-positions/seed`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ organizationId, orgType: organizationType }),
+      });
+      await fetchAll();
+    } catch (e) {
+      setError('Failed to seed positions');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const assignUser = async (positionId: number, userId: number | null) => {
-    await fetch(`${API_URL}/org-positions/${positionId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId }),
-    });
-    setAssigningId(null);
-    await fetchAll();
+    if (submitting) return;
+    setSubmitting(true);
+    try {
+      await fetch(`${API_URL}/org-positions/${positionId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+      setAssigningId(null);
+      await fetchAll();
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const addPosition = async (group: string) => {
-    if (!newTitle.trim()) return;
-    await fetch(`${API_URL}/org-positions`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        organizationId,
-        positionTitle: newTitle.trim(),
-        positionGroup: group,
-        userId: newUserId ? parseInt(newUserId) : undefined,
-      }),
-    });
-    setAddingGroup(null);
-    setNewTitle('');
-    setNewUserId('');
-    await fetchAll();
+    if (!newTitle.trim() || submitting) return;
+    setSubmitting(true);
+    try {
+      await fetch(`${API_URL}/org-positions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          organizationId,
+          positionTitle: newTitle.trim(),
+          positionGroup: group,
+          userId: newUserId ? parseInt(newUserId) : undefined,
+        }),
+      });
+      setAddingGroup(null);
+      setNewTitle('');
+      setNewUserId('');
+      await fetchAll();
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const removePosition = async (positionId: number) => {
-    if (!confirm('Remove this position slot?')) return;
-    await fetch(`${API_URL}/org-positions/${positionId}`, { method: 'DELETE' });
-    await fetchAll();
+    if (submitting || !confirm('Remove this position slot?')) return;
+    setSubmitting(true);
+    try {
+      await fetch(`${API_URL}/org-positions/${positionId}`, { method: 'DELETE' });
+      await fetchAll();
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -188,12 +244,19 @@ export function OrgPositions({ organizationId, organizationType }: OrgPositionsP
       <div className="text-center py-10">
         <BookOpen className="w-12 h-12 mx-auto text-gray-300 mb-3" />
         <p className="text-gray-500 mb-4">No positions defined yet</p>
-        <button
-          onClick={seedPositions}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
-        >
-          Create Default Positions
-        </button>
+        {canManage ? (
+          <button
+            onClick={seedPositions}
+            disabled={submitting}
+            className={`px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {submitting ? 'Creating...' : 'Create Default Positions'}
+          </button>
+        ) : (
+          <p className="text-xs text-amber-600 bg-amber-50 px-3 py-1 rounded-full inline-block">
+            View-only access for this organization level
+          </p>
+        )}
       </div>
     );
   }
@@ -237,7 +300,12 @@ export function OrgPositions({ organizationId, organizationType }: OrgPositionsP
                       {pos.positionTitle}
                     </span>
                     {pos.user ? (
-                      <span className="text-sm text-gray-700 font-medium">{pos.user.name || pos.user.email}</span>
+                      <button
+                        onClick={(e) => handleNameClick(e, pos.user)}
+                        className="text-sm text-gray-700 font-medium hover:text-indigo-600 transition-colors"
+                      >
+                        {pos.user.name || pos.user.email}
+                      </button>
                     ) : (
                       <span className="text-sm text-gray-400 italic">Vacant</span>
                     )}
@@ -263,14 +331,16 @@ export function OrgPositions({ organizationId, organizationType }: OrgPositionsP
                     </div>
                   ) : (
                     <div className="flex items-center gap-1 shrink-0">
-                      <button
-                        onClick={() => setAssigningId(pos.id)}
-                        className="text-xs px-2 py-1 rounded bg-white border border-gray-200 hover:border-indigo-400 text-gray-600 hover:text-indigo-600 transition-colors"
-                        title="Assign member"
-                      >
-                        <ChevronDown className="w-3 h-3" />
-                      </button>
-                      {pos.user && (
+                      {canManage && (
+                        <button
+                          onClick={() => setAssigningId(pos.id)}
+                          className="text-xs px-2 py-1 rounded bg-white border border-gray-200 hover:border-indigo-400 text-gray-600 hover:text-indigo-600 transition-colors"
+                          title="Assign member"
+                        >
+                          <ChevronDown className="w-3 h-3" />
+                        </button>
+                      )}
+                      {canManage && pos.user && (
                         <button
                           onClick={() => assignUser(pos.id, null)}
                           className="text-xs px-1 py-1 rounded hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
@@ -279,13 +349,15 @@ export function OrgPositions({ organizationId, organizationType }: OrgPositionsP
                           <UserMinus className="w-3 h-3" />
                         </button>
                       )}
-                      <button
-                        onClick={() => removePosition(pos.id)}
-                        className="text-xs px-1 py-1 rounded hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
-                        title="Remove position slot"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                      </button>
+                      {canManage && (
+                        <button
+                          onClick={() => removePosition(pos.id)}
+                          className="text-xs px-1 py-1 rounded hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+                          title="Remove position slot"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
@@ -293,7 +365,7 @@ export function OrgPositions({ organizationId, organizationType }: OrgPositionsP
             </div>
 
             {/* Add position row */}
-            {addingGroup === group ? (
+            {canManage && (addingGroup === group ? (
               <div className="px-4 py-2 border-t border-gray-100 flex items-center gap-2 flex-wrap">
                 <input
                   type="text"
@@ -320,9 +392,10 @@ export function OrgPositions({ organizationId, organizationType }: OrgPositionsP
                 </select>
                 <button
                   onClick={() => addPosition(group)}
-                  className="text-xs px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                  disabled={submitting}
+                  className={`text-xs px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  Add
+                  {submitting ? '...' : 'Add'}
                 </button>
                 <button onClick={() => { setAddingGroup(null); setNewTitle(''); setNewUserId(''); }}
                   className="text-xs text-gray-400 hover:text-gray-600">
@@ -336,12 +409,23 @@ export function OrgPositions({ organizationId, organizationType }: OrgPositionsP
               >
                 <Plus className="w-3 h-3" /> Add position slot
               </button>
-            )}
+            ))}
           </div>
         );
       })}
 
       {error && <p className="text-xs text-red-500">{error}</p>}
+
+      {popoverUser && popoverAnchor && (
+        <UserProfilePopover
+          user={popoverUser}
+          anchorEl={popoverAnchor}
+          onClose={() => {
+            setPopoverUser(null);
+            setPopoverAnchor(null);
+          }}
+        />
+      )}
     </div>
   );
 }

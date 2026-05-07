@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Users, TrendingUp, UserCheck, Loader } from 'lucide-react';
+import { UserProfilePopover, RankBadge } from '../UserProfilePopover';
 
 interface TeamMember {
   id: number;
@@ -11,6 +12,8 @@ interface TeamMember {
   roleId: number;
   canCreateUsers: boolean;
   isActive: boolean;
+  rank: string;
+  isAdv: boolean;
 }
 
 interface TeamStats {
@@ -35,6 +38,19 @@ export function OrganizationMembers({
   const [stats, setStats] = useState<TeamStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [popoverUser, setPopoverUser] = useState<any | null>(null);
+  const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
+
+  const handleNameClick = (e: React.MouseEvent<HTMLElement>, user: any) => {
+    e.stopPropagation();
+    if (popoverUser?.id === user.id) {
+      setPopoverUser(null);
+      setPopoverAnchor(null);
+    } else {
+      setPopoverUser(user);
+      setPopoverAnchor(e.currentTarget);
+    }
+  };
 
   useEffect(() => {
     if (organizationId) {
@@ -119,10 +135,8 @@ export function OrganizationMembers({
           <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-500">Can Create Users</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {Object.values(stats.membersByRole).reduce((sum, val) => sum + (val || 0), 0)}
-                </p>
+                <p className="text-sm font-medium text-gray-500">Direct Members</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.directMembers || 0}</p>
               </div>
               <TrendingUp className="w-8 h-8 text-purple-400" />
             </div>
@@ -148,13 +162,20 @@ export function OrganizationMembers({
                   <th className="px-4 py-3 text-left font-semibold text-gray-700">Email</th>
                   <th className="px-4 py-3 text-left font-semibold text-gray-700">Mobile</th>
                   <th className="px-4 py-3 text-left font-semibold text-gray-700">Status</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">Can Create</th>
+                  <th className="px-4 py-3 text-left font-semibold text-gray-700">Rank</th>
                 </tr>
               </thead>
               <tbody>
                 {members.map((member) => (
                   <tr key={member.id} className="hover:bg-gray-50 border-t border-gray-200">
-                    <td className="px-4 py-3 text-gray-900">{member.name || 'N/A'}</td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={(e) => handleNameClick(e, member)}
+                        className="text-left font-medium text-gray-900 hover:text-indigo-600 focus:outline-none transition-colors"
+                      >
+                        {member.name || 'N/A'}
+                      </button>
+                    </td>
                     <td className="px-4 py-3 text-gray-600 text-xs break-all">{member.email}</td>
                     <td className="px-4 py-3 text-gray-600">{member.mobile || 'N/A'}</td>
                     <td className="px-4 py-3">
@@ -169,15 +190,7 @@ export function OrganizationMembers({
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      {member.canCreateUsers ? (
-                        <span className="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                          Yes
-                        </span>
-                      ) : (
-                        <span className="px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                          No
-                        </span>
-                      )}
+                      <RankBadge rank={member.rank} isAdv={member.isAdv} />
                     </td>
                   </tr>
                 ))}
@@ -191,10 +204,15 @@ export function OrganizationMembers({
         )}
       </div>
 
-      {error && (
-        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800 text-sm">
-          {error}
-        </div>
+      {popoverUser && popoverAnchor && (
+        <UserProfilePopover
+          user={popoverUser}
+          anchorEl={popoverAnchor}
+          onClose={() => {
+            setPopoverUser(null);
+            setPopoverAnchor(null);
+          }}
+        />
       )}
     </div>
   );

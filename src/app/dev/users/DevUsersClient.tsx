@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { Search, Loader, ChevronUp, ChevronDown, Building2, Phone, MapPin, Briefcase, X, Droplets, Home, Landmark } from 'lucide-react';
+import { Search, Loader, ChevronUp, ChevronDown, Building2, Phone, MapPin, Briefcase, X, Droplets, Home, Landmark, Copy, Check } from 'lucide-react';
 
 interface UserRow {
   id: number;
@@ -360,6 +360,7 @@ export default function DevUsersClient() {
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [popoverUser, setPopoverUser] = useState<UserRow | null>(null);
   const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
+  const [copiedId, setCopiedId] = useState<number | null>(null);
 
   // Debounce search
   useEffect(() => {
@@ -639,7 +640,31 @@ export default function DevUsersClient() {
                         <span className={user.blurAdv ? 'blur-[3px] select-none' : ''}>{user.fullname || <span className="text-gray-400">—</span>}</span>
                       </button>
                     </td>
-                    <td className={`px-4 py-3 text-gray-500 ${user.blurAdv ? 'blur-[3px] select-none' : ''}`}>{user.email}</td>
+                    <td className="px-4 py-3 group/email relative">
+                      <div className={`flex items-center gap-2 text-gray-500 ${user.blurAdv ? 'blur-[3px] select-none' : ''}`}>
+                        <span className="truncate max-w-[180px]">{user.email}</span>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(user.email);
+                            setCopiedId(user.id);
+                            setTimeout(() => setCopiedId(null), 2000);
+                          }}
+                          className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-indigo-600 transition-all opacity-0 group-hover/email:opacity-100 focus:opacity-100"
+                          title="Copy email"
+                        >
+                          {copiedId === user.id ? (
+                            <Check className="w-3.5 h-3.5 text-green-500" />
+                          ) : (
+                            <Copy className="w-3.5 h-3.5" />
+                          )}
+                        </button>
+                      </div>
+                      {copiedId === user.id && (
+                        <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] px-2 py-1 rounded shadow-lg pointer-events-none animate-in fade-in slide-in-from-bottom-1">
+                          Copied!
+                        </div>
+                      )}
+                    </td>
                     <td className="px-4 py-3">
                       {user.rank
                         ? <RankBadge rank={user.rank} isAdv={user.isAdv} blurred={user.blurAdv} />

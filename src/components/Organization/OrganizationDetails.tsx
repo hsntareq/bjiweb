@@ -15,6 +15,9 @@ interface Organization {
 	wardNumber?: number;
 	unitName?: string;
 	children?: Organization[];
+	demoMembers?: number;
+	activists?: number;
+	associates?: number;
 }
 
 interface OrganizationDetailsProps {
@@ -25,6 +28,8 @@ interface OrganizationDetailsProps {
 	childCount?: number;
 	userEmail?: string;
 	accessToken?: string;
+	userOrgId?: number | null;
+	userOrgType?: string | null;
 }
 
 const typeColors: Record<string, { border: string; light: string; text: string; accent: string; button: string }> = {
@@ -91,9 +96,12 @@ export const OrganizationDetails: React.FC<OrganizationDetailsProps> = ({
 	childCount = 0,
 	userEmail = 'default',
 	accessToken = '',
+	userOrgId = null,
+	userOrgType = null,
 }) => {
 	const colors = typeColors[organization.type] || typeColors.UNIT;
 	const [activeTab, setActiveTab] = useState<'details' | 'positions' | 'members'>('details');
+
 	const [showMenu, setShowMenu] = useState(false);
 	const menuRef = useRef<HTMLDivElement>(null);
 	const [visibleTabs, setVisibleTabs] = useState<Set<string>>(new Set(['details', 'positions', 'members']));
@@ -322,6 +330,25 @@ export const OrganizationDetails: React.FC<OrganizationDetailsProps> = ({
 								<p className="text-xl font-bold text-gray-900">{unitCount}</p>
 							</div>
 						)}
+
+						{/* M/A/S Stats Badge Row */}
+						<div className="col-span-2 mt-2 pt-4 border-t border-gray-100">
+							<p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Personnel Strength (Recursive)</p>
+							<div className="flex gap-3">
+								<div className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg border border-blue-100">
+									<Users className="w-4 h-4" />
+									<span className="text-sm font-bold">Members: {organization.demoMembers || 0}</span>
+								</div>
+								<div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-100">
+									<Users className="w-4 h-4" />
+									<span className="text-sm font-bold">Activists: {organization.activists || 0}</span>
+								</div>
+								<div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-lg border border-amber-100">
+									<Users className="w-4 h-4" />
+									<span className="text-sm font-bold">Associates: {organization.associates || 0}</span>
+								</div>
+							</div>
+						</div>
 					</div>
 
 					{childCount === 0 && (
@@ -344,6 +371,10 @@ export const OrganizationDetails: React.FC<OrganizationDetailsProps> = ({
 				<OrgPositions
 					organizationId={organization.id}
 					organizationType={organization.type}
+					organization={organization}
+					userOrgId={userOrgId}
+					userOrgType={userOrgType}
+					accessToken={accessToken}
 				/>
 			)}
 

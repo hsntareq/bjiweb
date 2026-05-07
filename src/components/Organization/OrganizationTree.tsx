@@ -46,22 +46,12 @@ const TreeNode: React.FC<{
 	const isSelected = selectedId === node.id;
 	const isVisible = !visibleTypes || visibleTypes.has(node.type);
 
-	// Generate consistent demo stats based on organization ID
-	const generateDemoStats = (id: number): { members: number; activists: number; associates: number } => {
-		const seed = id * 7;
-		return {
-			members: (seed % 20) + 5,
-			activists: ((seed * 3) % 15) + 3,
-			associates: ((seed * 5) % 10) + 2,
-		};
-	};
 
 	// Calculate totals including children
 	const calculateChildStats = (org: Organization): { members: number; activists: number; associates: number } => {
-		const demoStats = generateDemoStats(org.id);
-		let members = org.demoMembers || demoStats.members;
-		let activists = org.activists || demoStats.activists;
-		let associates = org.associates || demoStats.associates;
+		let members = org.demoMembers || 0;
+		let activists = org.activists || 0;
+		let associates = org.associates || 0;
 
 		if (org.children && org.children.length > 0) {
 			org.children.forEach(child => {
