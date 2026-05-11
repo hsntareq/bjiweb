@@ -101,6 +101,8 @@ export const OrganizationDetails: React.FC<OrganizationDetailsProps> = ({
 }) => {
 	const colors = typeColors[organization.type] || typeColors.UNIT;
 	const [activeTab, setActiveTab] = useState<'details' | 'positions' | 'members'>('details');
+	const [positions, setPositions] = useState<any[]>([]);
+	const [leadership, setLeadership] = useState<{ president?: string; secretary?: string; officeSecretary?: string }>({});
 
 	const [showMenu, setShowMenu] = useState(false);
 	const menuRef = useRef<HTMLDivElement>(null);
@@ -127,6 +129,26 @@ export const OrganizationDetails: React.FC<OrganizationDetailsProps> = ({
 		if (!settingsLoaded) return;
 		localStorage.setItem(storageKey, JSON.stringify({ visibleTabs: Array.from(visibleTabs) }));
 	}, [visibleTabs, settingsLoaded, storageKey]);
+
+	useEffect(() => {
+		const fetchPositions = async () => {
+			try {
+				const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/org-positions?organizationId=${organization.id}`);
+				if (response.ok) {
+					const data = await response.json();
+					setPositions(data);
+					
+					const president = data.find((p: any) => p.positionTitle === 'President' && p.user)?.user?.name;
+					const secretary = data.find((p: any) => p.positionTitle === 'Secretary' && p.user)?.user?.name;
+					const officeSecretary = data.find((p: any) => (p.positionTitle === 'Office Secretary' || p.positionTitle === 'Office') && p.user)?.user?.name;
+					setLeadership({ president, secretary, officeSecretary });
+				}
+			} catch (e) {
+				console.error('Failed to fetch positions for details', e);
+			}
+		};
+		fetchPositions();
+	}, [organization.id]);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -306,6 +328,38 @@ export const OrganizationDetails: React.FC<OrganizationDetailsProps> = ({
 								<p className="text-lg font-semibold text-gray-800">{organization.unitName}</p>
 							</div>
 						)}
+						
+						{/* Leadership Section */}
+						<div className="col-span-2 grid grid-cols-2 gap-4 mt-2 p-4 bg-gray-50 rounded-xl border border-gray-100">
+							<div className="space-y-1">
+								<div className="flex items-center gap-2">
+									<div className="p-1.5 bg-blue-100 text-blue-600 rounded-lg">
+										<Landmark className="w-4 h-4" />
+									</div>
+									<p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">President</p>
+								</div>
+								<p className="text-lg font-bold text-gray-900">{leadership.president || <span className="text-gray-300 italic font-normal">Not assigned</span>}</p>
+							</div>
+							<div className="space-y-1">
+								<div className="flex items-center gap-2">
+									<div className="p-1.5 bg-emerald-100 text-emerald-600 rounded-lg">
+										<Users className="w-4 h-4" />
+									</div>
+									<p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Secretary</p>
+								</div>
+								<p className="text-lg font-bold text-gray-900">{leadership.secretary || <span className="text-gray-300 italic font-normal">Not assigned</span>}</p>
+							</div>
+							<div className="col-span-2 space-y-1 mt-2">
+								<div className="flex items-center gap-2">
+									<div className="p-1.5 bg-amber-100 text-amber-600 rounded-lg">
+										<Building2 className="w-4 h-4" />
+									</div>
+									<p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Office Secretary</p>
+								</div>
+								<p className="text-lg font-bold text-gray-900">{leadership.officeSecretary || <span className="text-gray-300 italic font-normal">Not assigned</span>}</p>
+							</div>
+						</div>
+
 						{organization.type === 'CENTRAL' && (
 							<div className="space-y-1">
 								<p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Cities / Thanas / Wards / Units</p>

@@ -25,7 +25,7 @@ export function UnitRemarkCommentTemplate({ compReport, formatVal: _formatVal, c
             প্রধান সমস্যাসমূহঃ
           </h4>
           <ul className="space-y-1 text-xs text-gray-600">
-            {(compReport.remarks?.problems || ['-', '-', '-', '-', '-']).map((val: string, idx: number) => (
+            {(Array.isArray(compReport.remarks?.problems) ? compReport.remarks.problems : ['-', '-', '-', '-', '-']).map((val: string, idx: number) => (
               <li key={idx} className="flex gap-2 p-1.5 bg-red-50/30 rounded">
                 <span className="font-bold text-red-300">{idx + 1}.</span>
                 <span>{val || '-'}</span>
@@ -39,7 +39,7 @@ export function UnitRemarkCommentTemplate({ compReport, formatVal: _formatVal, c
             সম্ভাবনাঃ
           </h4>
           <ul className="space-y-1 text-xs text-gray-600">
-            {(compReport.remarks?.opportunities || ['-', '-', '-', '-', '-']).map((val: string, idx: number) => (
+            {(Array.isArray(compReport.remarks?.opportunities) ? compReport.remarks.opportunities : ['-', '-', '-', '-', '-']).map((val: string, idx: number) => (
               <li key={idx} className="flex gap-2 p-1.5 bg-emerald-50/30 rounded">
                 <span className="font-bold text-emerald-300">{idx + 1}.</span>
                 <span>{val || '-'}</span>

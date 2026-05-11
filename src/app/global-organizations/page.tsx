@@ -10,7 +10,7 @@ export default async function GlobalOrganizationPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <AppHeader session={session} />
+      <AppHeader session={session} hasOrgAccess={authUser?.hasOrgAccess ?? false} />
       <main className="max-w-6xl mx-auto px-6 py-10">
         {!authUser?.hasOrgAccess ? (
           <AccessDenied />

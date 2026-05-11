@@ -83,9 +83,6 @@ const TreeNode: React.FC<{
 				className={`flex items-center gap-2 ${isCompact ? 'p-1' : 'p-2'} rounded-lg cursor-pointer transition-all duration-200 ${rowClass}`}
 				onClick={() => {
 					onSelect?.(node);
-					if (hasChildren) {
-						setIsExpanded(!isExpanded);
-					}
 				}}
 				style={{ marginLeft: `${level * 0.75}rem` }}
 			>

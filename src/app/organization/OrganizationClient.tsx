@@ -218,6 +218,7 @@ export default function OrganizationClient({
 		try {
 			const response = await fetch(`http://localhost:3001/org-management/organizations/${selectedOrganization.id}`, {
 				method: 'DELETE',
+				headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
 			});
 
 			if (!response.ok) {
@@ -239,6 +240,7 @@ export default function OrganizationClient({
 			const body: any = {
 				name: formData.name,
 				type: formData.type,
+				bnName: formData.bnName,
 			};
 
 			if (formData.division) body.division = formData.division;
@@ -261,6 +263,7 @@ export default function OrganizationClient({
 				method,
 				headers: {
 					'Content-Type': 'application/json',
+					...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
 				},
 				body: JSON.stringify(body),
 			});
@@ -302,7 +305,7 @@ export default function OrganizationClient({
 			{/* Main Content */}
 			<div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
 				{/* Left: Compact Organization Tree */}
-				<div className="xl:col-span-4 space-y-4 xl:sticky xl:top-24">
+				<div className="xl:col-span-5 space-y-4 xl:sticky xl:top-24">
 					<div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-4">
 						<div className="flex items-center justify-between gap-3 mb-4">
 							<h2 className="text-base font-bold text-gray-900">Organization Tree</h2>
@@ -398,7 +401,7 @@ export default function OrganizationClient({
 				</div>
 
 				{/* Right: Larger Organization Details Workspace */}
-				<div className="xl:col-span-8">
+				<div className="xl:col-span-7">
 					{selectedOrganization ? (
 						<OrganizationDetails
 							organization={selectedOrganization}

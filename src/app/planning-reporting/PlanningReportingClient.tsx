@@ -57,6 +57,8 @@ export default function PlanningReportingClient({ accessToken: initialToken }: {
 	const [loading, setLoading] = useState(false);
 	const [saving, setSaving] = useState(false);
 
+	const selectedOrg: any = organizations.find(o => o.id === selectedOrgId);
+
 	// Initialize from localStorage or URL after mount
 	useEffect(() => {
 		const searchParams = new URLSearchParams(window.location.search);
@@ -85,6 +87,9 @@ export default function PlanningReportingClient({ accessToken: initialToken }: {
 			if (selectedOrgId) {
 				url.searchParams.set('orgId', selectedOrgId.toString());
 				localStorage.setItem('reporting_org_id', selectedOrgId.toString());
+				if (selectedOrg?.type) {
+					url.searchParams.set('orglevel', selectedOrg.type.toLowerCase());
+				}
 			}
 			url.searchParams.set('year', year.toString());
 			url.searchParams.set('month', month.toString());
@@ -92,7 +97,7 @@ export default function PlanningReportingClient({ accessToken: initialToken }: {
 			localStorage.setItem('reporting_month', month.toString());
 			window.history.replaceState({}, '', url.toString());
 		}
-	}, [selectedOrgId, year, month, isMounted]);
+	}, [selectedOrgId, selectedOrg?.type, year, month, isMounted]);
 
 	// Basic Planning state
 	const [plan, setPlan] = useState<any>({
@@ -270,11 +275,6 @@ const monthNames = [
 						parentOrgId: data.parentOrgId,
 						parentOrgType: data.parentOrgType,
 					});
-					if (data.orgType) {
-						const url = new URL(window.location.href);
-						url.searchParams.set('orglevel', data.orgType.toLowerCase());
-						window.history.replaceState({}, '', url.toString());
-					}
 				}
 			} catch (err) {
 				console.error("Failed to fetch me", err);
@@ -286,14 +286,26 @@ const monthNames = [
 	const isFuture = year > new Date().getFullYear() || (year === new Date().getFullYear() && month > new Date().getMonth() + 1);
 
 	// Access control: determine ownership and editor roles robustly
-	const selectedOrg: any = organizations.find(o => o.id === selectedOrgId);
 	const userOrgId = userContext?.organizationId ?? null;
 	const userOwnsSelectedOrg = (userOrgId !== null) && Number(userOrgId) === Number(selectedOrgId);
+	
+	// Check if selected org is a descendant of user org
+	const isDescendantOfUserOrg = useMemo(() => {
+		if (!selectedOrg || !userOrgId) return false;
+		let current = selectedOrg;
+		// Follow parent chain upwards
+		while (current && current.parentId !== null) {
+			if (Number(current.parentId) === Number(userOrgId)) return true;
+			current = organizations.find(o => o.id === current.parentId);
+		}
+		return false;
+	}, [selectedOrg, userOrgId, organizations]);
+
 	const EDITOR_POSITIONS = ['president', 'secretary', 'office', 'office secretary'];
 	const userPosition = (userContext?.positionTitle ?? '').toString().toLowerCase();
 	const isEditor = userPosition && EDITOR_POSITIONS.includes(userPosition);
-	const isChildOfUserOrg = selectedOrg?.parentId === Number(userOrgId);
-	const canEdit = (userOwnsSelectedOrg || isChildOfUserOrg) && !!isEditor && !isFuture;
+	
+	const canEdit = (userOwnsSelectedOrg || isDescendantOfUserOrg) && !!isEditor && !isFuture;
 	// canView: any user who owns the org (any position) or is in a parent org
 	const isWardOrg = (userContext?.orgType ?? '').toUpperCase() === 'WARD';
 	const isParentOrgUser = userContext?.orgType != null && userContext.orgType !== 'WARD' && userContext.orgType !== 'UNIT';

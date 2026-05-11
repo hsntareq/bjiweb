@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
-import {  Loader, User, Search, ChevronDown, Building2 , Phone, MapPin, Briefcase, X, Droplets, Home, Landmark } from 'lucide-react';
+import {  Loader, User, Search, ChevronDown, Building2 , Phone, MapPin, Briefcase, X, Droplets, Home, Landmark, Plus } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { isTokenExpired } from '../../lib/getAuthToken';
 import { UserProfilePopover, UserProfileData, RankBadge } from '@/components/UserProfilePopover';
+import UserForm from '@/components/UserForm';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -76,6 +77,8 @@ export default function UsersClient({
 
   const [popoverUser, setPopoverUser] = useState<any | null>(null);
   const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
+
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const handleNameClick = (e: React.MouseEvent<HTMLElement>, user: any) => {
     e.stopPropagation();
@@ -251,6 +254,92 @@ export default function UsersClient({
     fetchUsers();
   }, [selectedOrgId, selectedLevel, getToken, userContext, availableOrgs]);
 
+  const handleResetPassword = async (userId: number) => {
+    const newPassword = window.prompt("Enter new password for this user:");
+    if (!newPassword) return;
+
+    const token = await getToken();
+    if (!token) return;
+
+    try {
+      const res = await fetch(`${API_URL}/auth/admin-reset-password`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify({ userId, newPassword }),
+      });
+
+      if (res.ok) {
+        alert("Password reset successfully!");
+      } else {
+        const errorData = await res.json();
+        alert(`Failed to reset password: ${errorData.message || 'Unknown error'}`);
+      }
+    } catch (err) {
+      console.error("Failed to reset password", err);
+      alert("An error occurred while resetting the password.");
+    }
+  };
+
+  const handleRemoveUser = async (userId: number) => {
+    if (!confirm("Are you sure you want to remove this user? This action cannot be undone.")) return;
+
+    const token = await getToken();
+    if (!token) return;
+
+    try {
+      const res = await fetch(`${API_URL}/users/${userId}`, {
+        method: 'DELETE',
+        headers: { 
+          Authorization: `Bearer ${token}` 
+        },
+      });
+
+      if (res.ok) {
+        alert("User removed successfully!");
+        // Refresh data
+        window.location.reload(); 
+      } else {
+        const errorData = await res.json();
+        alert(`Failed to remove user: ${errorData.message || 'Unknown error'}`);
+      }
+    } catch (err) {
+      console.error("Failed to remove user", err);
+      alert("An error occurred while removing the user.");
+    }
+  };
+
+  const handleCreateUser = async (data: any) => {
+    const token = await getToken();
+    if (!token) return;
+
+    try {
+      const res = await fetch(`${API_URL}/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        alert("User created successfully!");
+        setShowCreateModal(false);
+        // Refresh users list
+        window.location.reload();
+      } else {
+        const errorData = await res.json();
+        alert(`Failed to create user: ${errorData.message || 'Unknown error'}`);
+      }
+    } catch (err) {
+      console.error("Failed to create user", err);
+      alert("An error occurred while creating the user.");
+    }
+  };
+
   const flattenOrgs = (orgs: any[], parentName: string | null = null): OrgOption[] => {
     let result: OrgOption[] = [];
     for (const org of orgs) {
@@ -324,14 +413,27 @@ export default function UsersClient({
 
   return (
     <div className="space-y-6">
-      {/* User Context */}
-      {userContext && (
-        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4">
-          <p className="text-sm text-indigo-900">
-            <span className="font-semibold">Your Organization:</span> {userContext.orgName} ({userContext.orgType})
-          </p>
-        </div>
-      )}
+      {/* User Context and Create Action */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {userContext && (
+          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 flex-1">
+            <p className="text-sm text-indigo-900">
+              <span className="font-semibold">Your Organization:</span> {userContext.orgName} ({userContext.orgType})
+            </p>
+          </div>
+        )}
+        
+        {effectiveHasOrgAccess && (
+          <button
+            onClick={() => setShowCreateModal(true)}
+            disabled={!selectedOrgId && selectedLevel !== userContext?.orgType}
+            className="flex items-center justify-center gap-2 px-6 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+          >
+            <Plus className="w-5 h-5" />
+            Create User
+          </button>
+        )}
+      </div>
 
       {/* Filter Section */}
       <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
@@ -555,6 +657,19 @@ export default function UsersClient({
             setPopoverUser(null);
             setPopoverAnchor(null);
           }}
+          isAdmin={userContext?.hasOrgAccess}
+          onResetPassword={handleResetPassword}
+          onRemoveUser={handleRemoveUser}
+        />
+      )}
+
+      {showCreateModal && (
+        <UserForm
+          orgId={selectedOrgId || userContext?.organizationId || null}
+          orgName={availableOrgs.find(o => o.id === (selectedOrgId || userContext?.organizationId))?.name || userContext?.orgName || null}
+          orgType={availableOrgs.find(o => o.id === (selectedOrgId || userContext?.organizationId))?.type || userContext?.orgType || null}
+          onClose={() => setShowCreateModal(false)}
+          onSubmit={handleCreateUser}
         />
       )}
     </div>

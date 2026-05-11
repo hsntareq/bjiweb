@@ -25,7 +25,8 @@ export const RemarksModal: React.FC<RemarksModalProps> = ({
   }, [isOpen]);
 
   const handleListChange = (section: string, index: number, value: string) => {
-    const list = [...(data[section] || ['', '', '', '', ''])];
+    const currentList = Array.isArray(data[section]) ? data[section] : ['', '', '', '', ''];
+    const list = [...currentList];
     list[index] = value;
     setData((prev: any) => ({ ...prev, [section]: list }));
   };
@@ -59,7 +60,8 @@ export const RemarksModal: React.FC<RemarksModalProps> = ({
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   const addSuggestion = (section: string, suggestion: string) => {
-    const list = [...(data[section] || ['', '', '', '', ''])];
+    const currentList = Array.isArray(data[section]) ? data[section] : ['', '', '', '', ''];
+    const list = [...currentList];
     const emptyIndex = list.findIndex(item => !item);
     
     if (emptyIndex !== -1) {
@@ -128,7 +130,7 @@ export const RemarksModal: React.FC<RemarksModalProps> = ({
                       </div>
                    </div>
                    <div className="space-y-3">
-                      {(data[section.id] || ['', '', '', '', '']).map((val: string, idx: number) => (
+                      {(Array.isArray(data[section.id]) ? data[section.id] : ['', '', '', '', '']).map((val: string, idx: number) => (
                          <div key={idx} className="flex gap-2 items-center">
                             <span className="text-xs font-bold text-gray-400">{idx + 1}.</span>
                             <input 
@@ -141,7 +143,8 @@ export const RemarksModal: React.FC<RemarksModalProps> = ({
                             {idx >= 5 && (
                               <button 
                                 onClick={() => {
-                                  const newList = [...data[section.id]];
+                                  const currentList = Array.isArray(data[section.id]) ? data[section.id] : [];
+                                  const newList = [...currentList];
                                   newList.splice(idx, 1);
                                   setData((prev: any) => ({ ...prev, [section.id]: newList }));
                                 }}

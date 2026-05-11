@@ -65,10 +65,13 @@ export function RankBadge({ rank, isAdv }: { rank: string; isAdv?: boolean }) {
   );
 }
 
-export function UserProfilePopover({ user, anchorEl, onClose }: {
+export function UserProfilePopover({ user, anchorEl, onClose, isAdmin, onResetPassword, onRemoveUser }: {
   user: UserProfileData;
   anchorEl: HTMLElement;
   onClose: () => void;
+  isAdmin?: boolean;
+  onResetPassword?: (userId: number) => void;
+  onRemoveUser?: (userId: number) => void;
 }) {
   const popoverRef = useRef<HTMLDivElement>(null);
   const initials = (user.fullname || user.email || 'U')[0].toUpperCase();
@@ -306,6 +309,24 @@ export function UserProfilePopover({ user, anchorEl, onClose }: {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Admin Actions */}
+      {isAdmin && (
+        <div className="mt-4 pt-3 border-t border-gray-100 flex flex-col gap-2">
+          <button
+            onClick={() => onResetPassword?.(user.id)}
+            className="w-full py-2 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold rounded-lg border border-red-200 transition-colors flex items-center justify-center gap-2"
+          >
+            Reset Password
+          </button>
+          <button
+            onClick={() => onRemoveUser?.(user.id)}
+            className="w-full py-2 bg-gray-50 hover:bg-gray-100 text-gray-500 text-xs font-bold rounded-lg border border-gray-200 transition-colors flex items-center justify-center gap-2"
+          >
+            Remove User
+          </button>
         </div>
       )}
     </div>

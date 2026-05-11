@@ -1,10 +1,10 @@
 "use client";
 import axios from "axios";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { isTokenExpired } from "../../lib/getAuthToken";
+import { isTokenExpired, getAuthToken } from "../../lib/getAuthToken";
 import { useLocale } from "../../lib/locale";
 import MonthlyPlanFormWrapper from "../dashboard/monthly-plan-form-wrapper";
 import PersonalReportFormWrapper from "../dashboard/personal-report-form-wrapper";
@@ -117,7 +117,8 @@ export default function PersonalReportTabs() {
 	}, [session]);
 
 	const getToken = useCallback(async (): Promise<string | null> => {
-		const token = fallbackToken || ((session as any)?.accessToken as string | undefined) || null;
+		const sessionToken = getAuthToken(session);
+		const token = fallbackToken || sessionToken;
 		if (!token || isTokenExpired(token)) {
 			const refreshed = await refreshBackendToken();
 			if (refreshed) return refreshed;
@@ -148,7 +149,7 @@ export default function PersonalReportTabs() {
 					axios.get(`${API_URL}/personal-report/monthly-summary`, {
 						params: { month: selectedMonth, userId },
 						headers: token ? { Authorization: `Bearer ${token}` } : {},
-					}).catch((e) => { console.error("[StatusTab] summary fetch failed", e?.response?.status); return null; }),
+					}).catch(() => null),
 					axios.get(`${API_URL}/monthly-report`, {
 						params: { month: selectedMonth, userId },
 						headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -156,9 +157,12 @@ export default function PersonalReportTabs() {
 					axios.get(`${API_URL}/monthly-plan`, {
 						params: { month: selectedMonth, userId },
 						headers: token ? { Authorization: `Bearer ${token}` } : {},
-					}).catch((e) => { console.error("[StatusTab] plan fetch failed", e?.response?.status); return null; }),
+					}).catch(() => null),
 				]);
 				if (isMounted) {
+					const all401 = [summaryRes, reportRes, planRes].every(r => r === null || r === undefined);
+					// If all failed, check if it was due to auth
+					// Actually we only care if they returned 401
 					setSummaryData(summaryRes?.data || null);
 					const nextReportData = reportRes?.data
 						? {

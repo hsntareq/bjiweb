@@ -57,7 +57,7 @@ export function OrganizationMembers({
       fetchMembers();
       fetchStats();
     }
-  }, [organizationId]);
+  }, [organizationId, accessToken]);
 
   const fetchMembers = async () => {
     try {

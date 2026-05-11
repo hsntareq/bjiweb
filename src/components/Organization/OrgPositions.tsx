@@ -16,19 +16,22 @@ export const POSITION_GROUPS: Record<string, { group: string; label: string; des
     { group: 'TEAM', label: 'Active Team', description: '4–7 most active members', min: 4, max: 7 },
   ],
   THANA: [
-    { group: 'EXECUTIVE', label: 'Secretariat', description: 'President, Secretary and Secretariat members' },
-    { group: 'KORMO_PORISHODH', label: 'Kormo Porishodh', description: '5–10 senior members', min: 5, max: 10 },
-    { group: 'SHURA', label: 'Thana Shura', description: 'Elected by members of this Thana' },
+    { group: 'TOP', label: 'Top Leadership', description: 'President and Secretary' },
+    { group: 'EXECUTIVE', label: 'Secretariat', description: 'Secretariat members' },
+    { group: 'KORMO_PORISHODH', label: 'Kormo Porishodh', description: 'Working Committee' },
+    { group: 'SHURA', label: 'Thana Shura', description: 'Consultative Assembly' },
   ],
   CITY: [
-    { group: 'EXECUTIVE', label: 'Secretariat', description: 'President, Secretary and Secretariat members' },
-    { group: 'KORMO_PORISHODH', label: 'Kormo Porishodh', description: '5–10 senior members', min: 5, max: 10 },
-    { group: 'SHURA', label: 'City Shura', description: 'Elected by city members' },
+    { group: 'TOP', label: 'Top Leadership', description: 'President and Secretary' },
+    { group: 'EXECUTIVE', label: 'Secretariat', description: 'Secretariat members' },
+    { group: 'KORMO_PORISHODH', label: 'Kormo Porishodh', description: 'Working Committee' },
+    { group: 'SHURA', label: 'City Shura', description: 'Consultative Assembly' },
   ],
   CENTRAL: [
-    { group: 'EXECUTIVE', label: 'Secretariat', description: 'President, Secretary and Secretariat members' },
-    { group: 'KORMO_PORISHODH', label: 'Kormo Porishodh', description: '5–10 senior members', min: 5, max: 10 },
-    { group: 'SHURA', label: 'Central Shura', description: 'Elected by all members' },
+    { group: 'TOP', label: 'Top Leadership', description: 'President and Secretary' },
+    { group: 'EXECUTIVE', label: 'Secretariat', description: 'Secretariat members' },
+    { group: 'KORMO_PORISHODH', label: 'Kormo Porishodh', description: 'Working Committee' },
+    { group: 'SHURA', label: 'Central Shura', description: 'Consultative Assembly' },
   ],
 };
 
@@ -36,18 +39,25 @@ export const DEFAULT_POSITION_TITLES: Record<string, string[]> = {
   UNIT_EXECUTIVE: ['President', 'Secretary', 'Baitulmal', 'Office', 'Librarian', 'Sports'],
   WARD_EXECUTIVE: ['President', 'Secretary', 'Baitulmal', 'Librarian', 'Sports'],
   WARD_TEAM: ['Team Member'],
-  THANA_EXECUTIVE: ['President', 'Secretary', 'Secretariat Member'],
+  THANA_TOP: ['President', 'Secretary'],
+  THANA_EXECUTIVE: ['Office Secretary', 'Organizing Secretary', 'Baitulmal Secretary'],
   THANA_KORMO_PORISHODH: ['Kormo Porishodh Member'],
   THANA_SHURA: ['Shura Member'],
-  CITY_EXECUTIVE: ['President', 'Secretary', 'Secretariat Member'],
+  CITY_TOP: ['President', 'Secretary'],
+  CITY_EXECUTIVE: ['Office Secretary', 'Organizing Secretary', 'Baitulmal Secretary'],
   CITY_KORMO_PORISHODH: ['Kormo Porishodh Member'],
   CITY_SHURA: ['Shura Member'],
-  CENTRAL_EXECUTIVE: ['President', 'Secretary', 'Secretariat Member'],
+  CENTRAL_TOP: ['President', 'Secretary'],
+  CENTRAL_EXECUTIVE: ['Office Secretary', 'Organizing Secretary', 'Baitulmal Secretary'],
   CENTRAL_KORMO_PORISHODH: ['Kormo Porishodh Member'],
   CENTRAL_SHURA: ['Shura Member'],
 };
 
 const GROUP_COLORS: Record<string, { bg: string; border: string; badge: string; icon: React.ReactNode }> = {
+  TOP: {
+    bg: 'bg-indigo-50', border: 'border-indigo-200', badge: 'bg-indigo-100 text-indigo-700',
+    icon: <Shield className="w-4 h-4 text-indigo-600" />,
+  },
   EXECUTIVE: {
     bg: 'bg-blue-50', border: 'border-blue-200', badge: 'bg-blue-100 text-blue-700',
     icon: <Crown className="w-4 h-4 text-blue-600" />,
@@ -139,7 +149,7 @@ export function OrgPositions({
     if (organizationId) {
       fetchAll();
     }
-  }, [organizationId]);
+  }, [organizationId, accessToken]);
 
   const fetchAll = async () => {
     setLoading(true);
@@ -151,7 +161,14 @@ export function OrgPositions({
         }),
       ]);
       if (posRes.ok) setPositions(await posRes.json());
-      if (memRes.ok) setMembers(await memRes.json());
+      
+      if (memRes.ok) {
+        setMembers(await memRes.json());
+      } else {
+        const errorData = await memRes.text();
+        console.error('Failed to load members:', memRes.status, errorData);
+        if (memRes.status === 401) setError('Session expired. Please log in again.');
+      }
     } catch (e) {
       setError('Failed to load positions');
     } finally {
@@ -187,7 +204,10 @@ export function OrgPositions({
     try {
       await fetch(`${API_URL}/org-positions/${positionId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...getAuthHeader()
+        },
         body: JSON.stringify({ userId }),
       });
       setAssigningId(null);
@@ -263,26 +283,33 @@ export function OrgPositions({
 
   return (
     <div className="space-y-4">
-      {groups.map(({ group, label, description, min, max }) => {
-        const groupPositions = positions.filter((p) => p.positionGroup === group);
-        const colors = GROUP_COLORS[group] ?? GROUP_COLORS.EXECUTIVE;
+      {groups.map((group) => {
+        const groupPositions = positions.filter((p) => p.positionGroup === group.group);
+        const colors = GROUP_COLORS[group.group] || GROUP_COLORS.EXECUTIVE;
         const filled = groupPositions.filter((p) => p.userId).length;
+        
+        // Only show vacant slots for TOP and EXECUTIVE groups.
+        // For others, only show if they have a user assigned or if the user is currently assigning.
+        const visiblePositions = groupPositions.filter(pos => {
+          if (group.group === 'TOP' || group.group === 'EXECUTIVE') return true;
+          return pos.user !== null || assigningId === pos.id;
+        });
 
         return (
-          <div key={group} className={`rounded-xl border ${colors.border} ${colors.bg} overflow-hidden`}>
+          <div key={group.group} className={`rounded-xl border ${colors.border} overflow-hidden shadow-sm`}>
             {/* Group Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-opacity-50" style={{ borderColor: 'inherit' }}>
               <div className="flex items-center gap-2">
                 {colors.icon}
                 <div>
-                  <span className="font-semibold text-gray-900 text-sm">{label}</span>
-                  <p className="text-xs text-gray-500">{description}</p>
+                  <div className="font-semibold text-gray-900 text-sm">{group.label}</div>
+                  <p className="text-xs text-gray-500">{group.description}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                {(min || max) && (
+                {(group.min || group.max) && (
                   <span className="text-xs text-gray-400">
-                    {min && max ? `${min}–${max}` : max ? `max ${max}` : `min ${min}`} members
+                    {group.min && group.max ? `${group.min}–${group.max}` : group.max ? `max ${group.max}` : `min ${group.min}`} members
                   </span>
                 )}
                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${colors.badge}`}>
@@ -293,10 +320,10 @@ export function OrgPositions({
 
             {/* Positions list */}
             <div className="divide-y divide-gray-100">
-              {groupPositions.map((pos) => (
-                <div key={pos.id} className="flex items-center gap-3 px-4 py-2.5">
-                  <div className="flex-1 min-w-0">
-                    <span className={`inline-block text-xs px-2 py-0.5 rounded font-medium mr-2 ${colors.badge}`}>
+              {visiblePositions.map((pos) => (
+                <div key={pos.id} className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <span className={`inline-block text-xs px-2 py-0.5 rounded font-medium ${colors.badge}`}>
                       {pos.positionTitle}
                     </span>
                     {pos.user ? (
@@ -365,7 +392,7 @@ export function OrgPositions({
             </div>
 
             {/* Add position row */}
-            {canManage && (addingGroup === group ? (
+            {canManage && (addingGroup === group.group ? (
               <div className="px-4 py-2 border-t border-gray-100 flex items-center gap-2 flex-wrap">
                 <input
                   type="text"
@@ -373,10 +400,10 @@ export function OrgPositions({
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   className="text-xs border border-gray-300 rounded px-2 py-1 flex-1 min-w-32"
-                  list={`titles-${group}`}
+                  list={`titles-${group.group}`}
                 />
-                <datalist id={`titles-${group}`}>
-                  {(DEFAULT_POSITION_TITLES[`${organizationType}_${group}`] ?? []).map((t) => (
+                <datalist id={`titles-${group.group}`}>
+                  {(DEFAULT_POSITION_TITLES[`${organizationType}_${group.group}`] ?? []).map((t) => (
                     <option key={t} value={t} />
                   ))}
                 </datalist>
@@ -391,7 +418,7 @@ export function OrgPositions({
                   ))}
                 </select>
                 <button
-                  onClick={() => addPosition(group)}
+                  onClick={() => addPosition(group.group)}
                   disabled={submitting}
                   className={`text-xs px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
@@ -404,7 +431,7 @@ export function OrgPositions({
               </div>
             ) : (
               <button
-                onClick={() => setAddingGroup(group)}
+                onClick={() => setAddingGroup(group.group)}
                 className="w-full flex items-center gap-1 px-4 py-2 text-xs text-gray-400 hover:text-indigo-600 hover:bg-white/60 transition-colors border-t border-transparent hover:border-gray-100"
               >
                 <Plus className="w-3 h-3" /> Add position slot

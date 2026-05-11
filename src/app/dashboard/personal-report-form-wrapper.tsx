@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useLocale } from "../../lib/locale";
-import { isTokenExpired } from "../../lib/getAuthToken";
+import { isTokenExpired, getAuthToken } from "../../lib/getAuthToken";
 import PersonalReportForm from "./personal-report-form";
 
 const WRAPPER_TEXT = {
@@ -72,8 +72,9 @@ export default function PersonalReportFormWrapper({
 		}
 	}, [session]);
 
-	const getAuthToken = useCallback(async (): Promise<string | null> => {
-		let token = fallbackToken || ((session as any)?.accessToken as string | undefined) || null;
+	const getAuthTokenAsync = useCallback(async (): Promise<string | null> => {
+		const sessionToken = getAuthToken(session);
+		const token = fallbackToken || sessionToken;
 		
 		if (session && (!token || isTokenExpired(token))) {
 			const refreshedToken = await refreshBackendToken();
@@ -121,7 +122,7 @@ export default function PersonalReportFormWrapper({
 		if (!isDateInitialized || status === "loading") return;
 
 		async function fetchReport() {
-			const token = await getAuthToken();
+			const token = await getAuthTokenAsync();
 			if (!token) {
 				setDefaultData(null);
 				return;
@@ -156,7 +157,7 @@ export default function PersonalReportFormWrapper({
 	}, [date, isDateInitialized, status]);
 
 	async function authorizedPost(url: string, data: any) {
-		let token = await getAuthToken();
+		let token = await getAuthTokenAsync();
 		if (!token) {
 			throw new Error("You must be logged in to submit a report.");
 		}

@@ -3,7 +3,7 @@ import axios from "axios";
 import { Loader2, Plus, Save, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
-import { isTokenExpired } from "../../lib/getAuthToken";
+import { isTokenExpired, getAuthToken } from "../../lib/getAuthToken";
 import { useLocale } from "../../lib/locale";
 import { emptyMonthlyPlan, MonthlyPlanData } from "./monthly-plan-form";
 
@@ -266,8 +266,9 @@ export default function StatusTabWrapper({
 		}
 	}, [session]);
 
-	const getAuthToken = useCallback(async (): Promise<string | null> => {
-		let token = fallbackToken || ((session as any)?.accessToken as string | undefined) || null;
+	const getAuthTokenAsync = useCallback(async (): Promise<string | null> => {
+		const sessionToken = getAuthToken(session);
+		const token = fallbackToken || sessionToken;
 		if (session && (!token || isTokenExpired(token))) {
 			const refreshedToken = await refreshBackendToken();
 			if (refreshedToken) return refreshedToken;
@@ -276,7 +277,7 @@ export default function StatusTabWrapper({
 	}, [fallbackToken, session, refreshBackendToken]);
 
 	const authorizedPost = useCallback(async (url: string, data: any) => {
-		let token = await getAuthToken();
+		let token = await getAuthTokenAsync();
 		if (!token) throw new Error("Not authenticated");
 
 		try {
